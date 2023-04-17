@@ -1,0 +1,36 @@
+.wrapper {
+    margin: 0 20px 0 auto;
+    width: 300px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.search-input {
+    flex: 1;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    font-size: 14px;
+    padding: 8px 10px;
+    padding-right: 36px;
+    outline: none;
+    caret-color: var(--heading-section-text);
+    color: #969696;
+
+    &::placeholder {
+        color: var(--heading-section-text);
+    }
+
+    &:focus {
+        border-color: #999999;
+    }
+}
+
+.icon-search {
+    position: absolute;
+    right: 2%;
+    padding-left: 4px;
+    font-size: 24px;
+    color: #ccc;
+    border-left: 2px solid #ccc;
+}

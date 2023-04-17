@@ -1,0 +1,43 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400;500&display=swap');
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Raleway', sans-serif;
+    scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+    height: 30px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--second-text-color);
+    border-radius: 10px;
+}
+
+:root {
+    --primary-text-color: #848383;
+    --second-text-color: #696969;
+    --primary-color: #88a1e0;
+    --second-color: #fe9065;
+    --menu-color: #3e8ec4;
+    --menu-second-color: #56aee9;
+    --heading-section-text: #ababab;
+    --section-color: #f7f7f7;
+    --border-top-item-color: #e8e8e8;
+    --working-color: #42e49e;
+    --stop-work-color: #f98e50;
+    --leave-work-color: #4daedb;
+    --button-primary-color: #6f5cc4;
+    --button-second-color: #ada5d4;
+    --button-third-color: #9c8bf5;
+}

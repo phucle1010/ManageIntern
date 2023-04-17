@@ -1,0 +1,142 @@
+.wrapper {
+    padding-top: 20px;
+}
+
+.title-heading {
+    color: var(--primary-text-color);
+    font-size: 16px;
+    margin: 0;
+}
+
+.main-heading {
+    color: var(--second-text-color);
+    font-size: 15px;
+    margin: 0;
+}
+
+.filters {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+}
+
+.filter-select-item {
+    min-width: 100px;
+    margin-right: 20px;
+    padding: 4px 0 4px 4px;
+    border-radius: 6px;
+    border: 1px solid #dadada;
+    color: #b1b1b1;
+    outline: none;
+}
+
+.student-container {
+    margin-top: 20px;
+}
+
+.menu-list {
+    display: flex;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+.menu-item {
+    width: 15%;
+    margin: 0 calc((100% - 15% * 6) / 12);
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.student-list {
+    margin-top: 10px;
+    padding: 0 10px;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+.student-item {
+    padding: 20px 0;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--section-color);
+
+    &:last-child {
+        border: none;
+    }
+}
+
+.student-item-detail {
+    width: 15%;
+    margin: 0 calc((100% - 15% * 6) / 12);
+    font-size: 14px;
+}
+
+.score-input {
+    width: 50%;
+    padding: 4px 2px;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #e5e5e5;
+    caret-color: #ccc;
+
+    &::placeholder {
+        color: #959595;
+    }
+
+    &:focus {
+        border-bottom: 1px solid var(--primary-color);
+    }
+}
+
+.btn-save {
+    margin-right: 10px;
+    color: #df94c1;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.btn-restore {
+    margin-right: 10px;
+    color: var(--working-color);
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.btn-edit {
+    color: var(--second-color);
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.option {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-save-all {
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #fff;
+    background-color: var(--leave-work-color);
+    outline: none;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}

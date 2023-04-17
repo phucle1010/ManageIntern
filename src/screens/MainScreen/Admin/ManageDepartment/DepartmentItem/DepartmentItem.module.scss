@@ -1,0 +1,58 @@
+:root {
+    --avatar-width: 15%;
+}
+
+.wrapper {
+    // margin: 20px 0;
+    padding: 15px 10px;
+    display: flex;
+    align-items: center;
+    border-top: 1px solid var(--border-top-item-color);
+}
+
+.detail-item {
+    width: 90%;
+    display: flex;
+    align-items: center;
+}
+
+.data-item {
+    font-size: 14px;
+    width: calc(100% / 5);
+}
+
+.options {
+    width: 10%;
+    display: flex;
+    align-items: center;
+}
+
+.option-item {
+    padding-left: 10px;
+}
+
+.option-item:first-child {
+    padding-left: 0;
+}
+
+.view-icon {
+    color: #f89880;
+}
+
+.edit-icon {
+    color: #40b5ad;
+}
+
+.delete-icon {
+    color: #ff7499;
+}
+
+.view-icon,
+.edit-icon,
+.delete-icon {
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.7;
+    }
+}

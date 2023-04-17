@@ -1,0 +1,131 @@
+.wrapper {
+    width: 700px;
+    position: fixed;
+    top: 15%;
+    left: calc(100% - 700px);
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background-color: #fff;
+    border-radius: 6px;
+    border: 1px solid var(--primary-color);
+    animation: showOverlay 0.2s ease-in-out forwards;
+}
+
+@keyframes showOverlay {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.main-heading {
+    margin-bottom: 30px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #929292;
+}
+
+.close-main-btn {
+    float: right;
+    padding: 3px;
+    color: #fff;
+    background-color: var(--button-second-color);
+    font-size: 24px;
+    border-radius: 6px;
+    user-select: none;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.job-general {
+    display: flex;
+}
+
+.job-summary,
+.job-descs {
+    flex: 1;
+}
+
+.job-img {
+    width: 100%;
+    height: 200px;
+    margin-bottom: 20px;
+
+    & img {
+        width: 70%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+}
+
+.btn-share-job {
+    display: flex;
+    align-items: center;
+    padding: 4px 20px;
+    background-color: var(--leave-work-color);
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+
+    & span {
+        margin-left: 10px;
+    }
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.title-heading {
+    font-size: 16px;
+    color: var(--second-text-color);
+
+    &.skills {
+        font-size: 15px;
+        color: var(--primary-text-color);
+        display: block;
+    }
+}
+
+.job-skills {
+    margin-bottom: 20px;
+}
+
+.job-skills-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.job-skill-item {
+    margin-top: 10px;
+    margin-right: 20px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background-color: var(--working-color);
+    font-size: 15px;
+    color: #fff;
+    user-select: none;
+}
+
+.job-desc-item {
+    margin-bottom: 20px;
+}
+
+.job-desc-content {
+    display: block;
+    margin-top: 5px;
+    margin-left: 10px;
+    font-size: 15px;
+    line-height: 20px;
+    text-align: justify;
+}

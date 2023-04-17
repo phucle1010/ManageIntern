@@ -1,0 +1,33 @@
+.following-category {
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.main-heading {
+    color: var(--second-text-color);
+    font-size: 16px;
+    margin: 0;
+}
+
+.notice-list {
+    margin: 10px 0;
+}
+
+.notice-item {
+    display: block;
+    width: fit-content;
+    margin: 10px 0;
+    padding: 6px 20px;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 14px;
+    user-select: none;
+
+    &.system {
+        background-color: var(--working-color);
+    }
+
+    &.teacher {
+        background-color: var(--second-color);
+    }
+}

@@ -1,0 +1,136 @@
+.job-list {
+    margin: 20px 0;
+}
+
+.main-heading {
+    color: var(--second-text-color);
+    font-size: 16px;
+    margin: 0;
+}
+
+.job-menu {
+    display: flex;
+    margin-top: 20px;
+    padding: 4px;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.job-menu-item,
+.job-item {
+    width: 18%;
+    margin: 10px calc((100% - 18% * 5) / 10);
+    font-size: 15px;
+}
+
+.job-menu-item {
+    font-weight: bold;
+}
+
+.job-category {
+    margin: 20px 0;
+}
+
+.job-info-list {
+    margin: 10px 0;
+    padding: 4px;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.job-info-item {
+    display: flex;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--section-color);
+
+    &:last-child {
+        border: none;
+    }
+}
+
+.btn-choose {
+    padding: 6px 20px;
+    background-color: var(--working-color);
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.request-list {
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+.request-item {
+    margin: 10px 0;
+    padding: 10px;
+    display: flex;
+    border-bottom: 1px solid var(--section-color);
+
+    & span {
+        display: block;
+        width: calc(100% / 3);
+        font-size: 14px;
+    }
+
+    & span.isActive {
+        color: var(--working-color);
+    }
+
+    & span.unActive {
+        color: var(--stop-work-color);
+    }
+}
+
+.chosed-job {
+    width: 70%;
+    height: 185px;
+    margin: 20px auto 30px auto;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px 1px #e2e2e2;
+    background-color: #ffff;
+}
+
+.chosed-job-item {
+    margin: 10px 0;
+    display: flex;
+    font-size: 14px;
+
+    & h4 {
+        margin-right: 10px;
+    }
+}
+
+.options-btn {
+    float: right;
+}
+
+.btn-regist,
+.btn-cancel {
+    padding: 6px 20px;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    background-color: var(--primary-color);
+    color: #fff;
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.btn-cancel {
+    margin-left: 20px;
+    background-color: var(--second-color);
+}

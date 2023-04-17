@@ -1,0 +1,5 @@
+Một vài state cần store:
+- selectedItem (Trong Menu)
+- selectedSectionItem (Main Section)
+- role (Quyền truy cập)
+- successfulLogin (Đăng ký thành công)
