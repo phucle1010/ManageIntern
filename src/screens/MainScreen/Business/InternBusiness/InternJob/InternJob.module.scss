@@ -1,11 +1,10 @@
-.title-heading {
-    color: var(--primary-text-color);
+.main-heading {
+    color: var(--second-text-color);
     font-size: 16px;
     margin: 0;
-    margin-bottom: 30px;
 }
 
-.business-list {
+.job-list {
     margin-top: 20px;
     display: flex;
     flex-wrap: wrap;
@@ -15,6 +14,7 @@
     margin: 10px calc((100% - 22% * 4) / 8);
     padding: 10px;
     width: 22%;
+    height: 300px;
     border-radius: 8px;
     border: 1px solid transparent;
     background-color: #fff;

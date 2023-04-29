@@ -1,0 +1,31 @@
+.main-heading {
+    color: var(--second-text-color);
+    font-size: 16px;
+    margin: 0;
+}
+
+.requirement-category {
+    margin: 20px 0;
+}
+
+.menu-list {
+    margin-top: 30px;
+    padding: 8px 2px;
+    display: flex;
+    background-color: #fff;
+    border-radius: 8px;
+}
+
+.menu-item {
+    margin: 0 calc((100% - 15% * 6) / 12);
+    width: 15%;
+    font-size: 14px;
+    color: var(--primary-text-color);
+}
+
+.pending-list {
+    margin-top: 20px;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 8px;
+}

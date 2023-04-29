@@ -88,7 +88,6 @@ const AccountStudent = () => {
                         <InputField key={index} title={inputItem.title} value={inputItem.name} />
                     ))}
                 </div>
-                {/* <div className={cx('profile-options')}></div> */}
             </div>
             <button className={cx('option-btn', 'signout-btn')} onClick={() => window.location.reload()}>
                 Đăng xuất

@@ -10,6 +10,7 @@ const cx = classNames.bind(styles);
 const ADMIN = 1;
 const TEACHER = 2;
 const STUDENT = 3;
+const BUSINESS = 4;
 
 const Login = ({ setRole, setSuccessfulLogin }) => {
     const navigate = useNavigate();
@@ -45,6 +46,10 @@ const Login = ({ setRole, setSuccessfulLogin }) => {
             authenAccount(STUDENT);
             return;
         }
+        if (user.email === 'business' && user.pass === '123456') {
+            authenAccount(BUSINESS);
+            return;
+        }
         setError(true);
     };
 
@@ -60,6 +65,10 @@ const Login = ({ setRole, setSuccessfulLogin }) => {
                 break;
             case STUDENT:
                 setRole(STUDENT);
+                setStateSuccessfulLogin();
+                break;
+            case BUSINESS:
+                setRole(BUSINESS);
                 setStateSuccessfulLogin();
                 break;
             default:

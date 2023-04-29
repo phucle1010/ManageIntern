@@ -19,9 +19,9 @@ const JobDesc = ({ job, closeScreen }) => {
                         <span className={cx('title-heading', 'skills')}>Kĩ năng yêu cầu:</span>
 
                         <div className={cx('job-skills-list')}>
-                            {job.skills.map((skill) => (
-                                <span key={skill.id} className={cx('job-skill-item')}>
-                                    {skill.name}
+                            {job.skills.map((skill, index) => (
+                                <span key={index} className={cx('job-skill-item')}>
+                                    {skill}
                                 </span>
                             ))}
                         </div>

@@ -4,11 +4,13 @@ import { RoleContext } from '../../App';
 const Admin = React.lazy(() => import('./Admin'));
 const Teacher = React.lazy(() => import('./Teacher'));
 const Student = React.lazy(() => import('./Student'));
+const Business = React.lazy(() => import('./Business'));
 
 const ADMIN_ROLE = 1;
 const TEACHER_ROLE = 2;
 const STUDENT_ROLE = 3;
-const ROLES = [ADMIN_ROLE, TEACHER_ROLE, STUDENT_ROLE];
+const BUSINESS_ROLE = 4;
+const ROLES = [ADMIN_ROLE, TEACHER_ROLE, STUDENT_ROLE, BUSINESS_ROLE];
 
 const MenuContext = createContext();
 
@@ -36,6 +38,9 @@ const Home = () => {
                 break;
             case STUDENT_ROLE:
                 MainHome = Student;
+                break;
+            case BUSINESS_ROLE:
+                MainHome = Business;
                 break;
             default:
                 break;

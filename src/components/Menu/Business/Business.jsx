@@ -1,20 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from 'react';
-import styles from './Admin.module.scss';
 import classNames from 'classnames/bind';
-import {
-    Reorder,
-    Cottage,
-    Person,
-    SupervisedUserCircle,
-    School,
-    Class,
-    HomeWork,
-    Business,
-    AccountCircle,
-} from '@mui/icons-material';
-import { MenuContext } from '../../../screens/Home/Home';
+import styles from './Business.module.scss';
+import { AccountCircle, Cottage, HomeWork, Reorder } from '@mui/icons-material';
 
+import { MenuContext } from '../../../screens/Home/Home';
 import MenuItem from '../MenuItem';
 
 const cx = classNames.bind(styles);
@@ -26,33 +16,8 @@ const MENUS = [
         accessRole: 'admin',
     },
     {
-        name: 'Sinh viên',
-        icon: Person,
-        accessRole: 'admin',
-    },
-    {
-        name: 'Giảng viên',
-        icon: SupervisedUserCircle,
-        accessRole: 'admin',
-    },
-    {
-        name: 'Khoa',
-        icon: School,
-        accessRole: 'admin',
-    },
-    {
-        name: 'Lớp',
-        icon: Class,
-        accessRole: 'admin',
-    },
-    {
         name: 'Thực tập',
         icon: HomeWork,
-        accessRole: 'admin',
-    },
-    {
-        name: 'Doanh nghiệp',
-        icon: Business,
         accessRole: 'admin',
     },
     {
@@ -62,9 +27,10 @@ const MENUS = [
     },
 ];
 
-const Admin = ({ setMinimizeMenu, selectedSectionItem, setSelectedSectionItem }) => {
+const Business = ({ setMinimizeMenu, selectedSectionItem, setSelectedSectionItem }) => {
     const { minimizeMenu } = useContext(MenuContext);
     const [selectedItem, setSelectedItem] = useState(0);
+
     useEffect(() => {
         if (Object.keys(selectedSectionItem).length === 0) {
             setSelectedSectionItem(MENUS[0]);
@@ -98,4 +64,4 @@ const Admin = ({ setMinimizeMenu, selectedSectionItem, setSelectedSectionItem })
     );
 };
 
-export default Admin;
+export default Business;

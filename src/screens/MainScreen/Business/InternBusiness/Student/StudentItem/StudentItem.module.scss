@@ -1,0 +1,40 @@
+.student-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 2px;
+    border: 1px solid var(--section-color);
+
+    &:last-child {
+        border-color: transparent;
+    }
+}
+
+.student-info {
+    margin: 0 calc((100% - 12% * 7) / 14);
+    width: 12%;
+    font-size: 14px;
+
+    & .avt {
+        width: 50px;
+        height: 50px;
+    }
+
+    & .status {
+        padding: 6px 20px;
+        border: none;
+        border-radius: 20px;
+        background-color: var(--second-color);
+        color: #fff;
+        user-select: none;
+
+        &.interning {
+            background-color: var(--working-color);
+        }
+    }
+}
+
+.btn-option {
+    font-size: 20px;
+    color: var(--primary-color);
+    cursor: pointer;
+}
