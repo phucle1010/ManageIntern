@@ -57,6 +57,7 @@ const Admin = ({ ...props }) => {
                 MainSection = AccountAdmin;
                 break;
             default:
+                MainSection = null;
                 break;
         }
     })();

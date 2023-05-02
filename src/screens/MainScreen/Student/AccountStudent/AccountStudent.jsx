@@ -1,6 +1,9 @@
 import React from 'react';
 import classNames from 'classnames/bind';
 import styles from './AccountStudent.module.scss';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setRole } from '../../../../reducers/login';
 
 const cx = classNames.bind(styles);
 
@@ -61,6 +64,18 @@ const InputField = ({ title, value }) => {
 };
 
 const AccountStudent = () => {
+    const dispatch = useDispatch();
+
+    const handleLogout = () => {
+        axios.put('/user/logout').then((res) => {
+            if (res.data.statusCode === 200) {
+                localStorage.setItem('user_token', JSON.stringify(''));
+                dispatch(setRole({ role: 0 }));
+                window.location.reload();
+            }
+        });
+    };
+
     return (
         <div className={cx('wrapper')}>
             <h3 className={cx('title-heading')}>TÀI KHOẢN</h3>
@@ -89,7 +104,7 @@ const AccountStudent = () => {
                     ))}
                 </div>
             </div>
-            <button className={cx('option-btn', 'signout-btn')} onClick={() => window.location.reload()}>
+            <button className={cx('option-btn', 'signout-btn')} onClick={handleLogout}>
                 Đăng xuất
             </button>
         </div>

@@ -1,6 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { createContext, useEffect, useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { RoleContext } from '../../App';
+import { useSelector, useDispatch } from 'react-redux';
+import { setRole } from '../../reducers/login';
+
 const Admin = React.lazy(() => import('./Admin'));
 const Teacher = React.lazy(() => import('./Teacher'));
 const Student = React.lazy(() => import('./Student'));
@@ -15,21 +19,50 @@ const ROLES = [ADMIN_ROLE, TEACHER_ROLE, STUDENT_ROLE, BUSINESS_ROLE];
 const MenuContext = createContext();
 
 const Home = () => {
-    const { role, successfulLogin } = useContext(RoleContext);
+    const roleState = useSelector((state) => state.role);
+    const dispatch = useDispatch();
     const [minimizeMenu, setMinimizeMenu] = useState(false);
     const [selectedSectionItem, setSelectedSectionItem] = useState({});
 
     let MainHome = null;
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!successfulLogin) {
-            navigate('/login');
+    const handleGetUserData = () => {
+        const userToken = localStorage.getItem('user_token');
+        if (userToken === null) {
+            localStorage.setItem('user_token', JSON.stringify(''));
+        } else {
+            if (JSON.parse(userToken) === '') {
+                navigate('/login');
+            } else {
+                axios.get('/user/data', { params: { token: JSON.parse(userToken) } }).then((res) => {
+                    switch (res.data.responseData[0].permission_id) {
+                        case ADMIN_ROLE:
+                            dispatch(setRole({ role: ADMIN_ROLE }));
+                            break;
+                        case TEACHER_ROLE:
+                            dispatch(setRole({ role: TEACHER_ROLE }));
+                            break;
+                        case STUDENT_ROLE:
+                            dispatch(setRole({ role: STUDENT_ROLE }));
+                            break;
+                        case BUSINESS_ROLE:
+                            dispatch(setRole({ role: BUSINESS_ROLE }));
+                            break;
+                        default:
+                            break;
+                    }
+                });
+            }
         }
-    });
+    };
+
+    useEffect(() => {
+        handleGetUserData();
+    }, [roleState.role]);
 
     (function () {
-        switch (role) {
+        switch (roleState.role) {
             case ADMIN_ROLE:
                 MainHome = Admin;
                 break;
@@ -48,7 +81,7 @@ const Home = () => {
     })();
 
     return (
-        ROLES.includes(role) &&
+        roleState.role !== 0 &&
         MainHome !== null && (
             <MenuContext.Provider value={{ minimizeMenu }}>
                 <MainHome

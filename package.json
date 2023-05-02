@@ -9,9 +9,11 @@
         "@mui/icons-material": "^5.11.16",
         "@mui/material": "^5.11.16",
         "@nextui-org/react": "^1.0.0-beta.12",
+        "@reduxjs/toolkit": "^1.9.5",
         "@testing-library/jest-dom": "^5.16.5",
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",
+        "axios": "^1.4.0",
         "classnames": "^2.3.2",
         "cross-env": "^7.0.3",
         "currently": "0.0.8",
@@ -20,8 +22,10 @@
         "electron-is-dev": "^2.0.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
+        "react-redux": "^8.0.5",
         "react-router-dom": "^6.9.0",
         "react-scripts": "5.0.1",
+        "redux": "^4.2.1",
         "sass": "^1.60.0",
         "wait-on": "^7.0.1",
         "web-vitals": "^2.1.4"
@@ -34,6 +38,7 @@
         "dev": "concurrently -k \"npm start\" \"npm:electron\"",
         "electron": "wait-on http://localhost:3000 && electron ."
     },
+    "proxy": "http://localhost:8080",
     "main": "public/main.js",
     "homepage": "./",
     "eslintConfig": {

@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
 import styles from './Login.module.scss';
 import classNames from 'classnames/bind';
 import { useNavigate } from 'react-router-dom';
@@ -7,14 +8,9 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const cx = classNames.bind(styles);
 
-const ADMIN = 1;
-const TEACHER = 2;
-const STUDENT = 3;
-const BUSINESS = 4;
-
 const Login = ({ setRole, setSuccessfulLogin }) => {
     const navigate = useNavigate();
-    const [user, setUser] = useState({ email: '', pass: '' });
+    const [user, setUser] = useState({ username: '', pass: '' });
     const [error, setError] = useState(false);
     const [isEmptyFields, setIsEmptyFields] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -31,49 +27,52 @@ const Login = ({ setRole, setSuccessfulLogin }) => {
     }, [showPass]);
 
     const handleLogin = () => {
-        if (user.email === '' || user.pass === '') {
-            setIsEmptyFields(true);
-        }
-        if (user.email === 'admin' && user.pass === '123456') {
-            authenAccount(ADMIN);
-            return;
-        }
-        if (user.email === 'teacher' && user.pass === '123456') {
-            authenAccount(TEACHER);
-            return;
-        }
-        if (user.email === 'student' && user.pass === '123456') {
-            authenAccount(STUDENT);
-            return;
-        }
-        if (user.email === 'business' && user.pass === '123456') {
-            authenAccount(BUSINESS);
-            return;
-        }
-        setError(true);
+        // if (user.username === '' || user.pass === '') {
+        //     setIsEmptyFields(true);
+        // }
+        // if (user.username === 'admin' && user.pass === '123456') {
+        //     authenAccount(ADMIN);
+        //     return;
+        // }
+        // if (user.username === 'teacher' && user.pass === '123456') {
+        //     authenAccount(TEACHER);
+        //     return;
+        // }
+        // if (user.username === 'student' && user.pass === '123456') {
+        //     authenAccount(STUDENT);
+        //     return;
+        // }
+        // if (user.username === 'business' && user.pass === '123456') {
+        //     authenAccount(BUSINESS);
+        //     return;
+        // }
+        // setError(true);
+        axios
+            .post('/user/auth', user)
+            .then((res) => {
+                if (res.data.statusCode === 400) {
+                    console.log(`Lỗi: ${res.data.responseData}`);
+                } else {
+                    const token = res.data.responseData;
+                    storeToken(token);
+                }
+            })
+            .catch((err) => console.log({ err: err }));
     };
 
-    const authenAccount = (role) => {
-        switch (role) {
-            case ADMIN:
-                setRole(ADMIN);
-                setStateSuccessfulLogin();
-                break;
-            case TEACHER:
-                setRole(TEACHER);
-                setStateSuccessfulLogin();
-                break;
-            case STUDENT:
-                setRole(STUDENT);
-                setStateSuccessfulLogin();
-                break;
-            case BUSINESS:
-                setRole(BUSINESS);
-                setStateSuccessfulLogin();
-                break;
-            default:
-                break;
-        }
+    const storeToken = (token) => {
+        axios
+            .post('/user/login/token', {
+                token,
+                username: user.username,
+            })
+            .then((res) => {
+                if (res.data.statusCode === 200) {
+                    localStorage.setItem('user_token', JSON.stringify(token));
+                    setStateSuccessfulLogin();
+                }
+            })
+            .catch((err) => console.log({ err: err }));
     };
 
     const setStateSuccessfulLogin = () => {
@@ -98,14 +97,13 @@ const Login = ({ setRole, setSuccessfulLogin }) => {
                         Vui lòng nhập thông tin đầy đủ để truy cập ứng dụng <span style={{ color: '#e34343' }}>*</span>
                     </i>
                     <div className={cx('input-item')}>
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="username">Tên đăng nhập</label>
                         <input
-                            id="email"
+                            id="username"
                             className={cx(`${error === true && 'notice-error'}`)}
-                            value={user.email}
+                            value={user.username}
                             type="text"
-                            placeholder="abc@gmail.com"
-                            name="email"
+                            name="username"
                             onChange={(e) =>
                                 setUser({
                                     ...user,
@@ -128,7 +126,7 @@ const Login = ({ setRole, setSuccessfulLogin }) => {
                                 className={cx(`${error === true && 'notice-error'}`)}
                                 value={user.pass}
                                 type="password"
-                                placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
+                                // placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
                                 name="pass"
                                 onChange={(e) =>
                                     setUser({
