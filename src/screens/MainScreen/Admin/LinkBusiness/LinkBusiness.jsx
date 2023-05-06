@@ -7,6 +7,7 @@ import BusinessItem from './BusinessItem';
 import DetailBusiness from './DetailBusiness';
 import { Add } from '@mui/icons-material';
 import NewBusiness from './NewBusiness';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
@@ -42,8 +43,32 @@ const LinkBusiness = () => {
     });
     const [businesses, setBusinesses] = useState([]);
 
-    useEffect(() => {
+    /*useEffect(() => {
         setBusinesses(BUSINESSES);
+    }, []);*/
+
+    useEffect(() => {
+        axios
+            .get(`/user/business`)
+            .then((res) => {
+                setBusinesses(
+                    res.data.map(business => ({
+                        ...business,
+                        id: business.id,
+                        name: business.username,
+                        img: business.image,
+                        phone: business.phone,
+                        email: business.email,
+                        address: business.address,
+                        establishDate: business.establish_date,
+                        sector: business.industry_sector,
+                        representator: business.full_name,
+                        desc: business.short_desc,
+                    }))
+                );
+                console.log(res.data);
+            })
+            .catch((err) => { console.log({err: err})});
     }, []);
 
     useEffect(() => {
@@ -74,6 +99,7 @@ const LinkBusiness = () => {
                     setNewBusiness={setNewBusiness}
                     editable={true}
                     lastIndex={businesses[businesses.length - 1].id || 1}
+                    newBusiness={newBusiness}
                 />
             )}
         </div>
