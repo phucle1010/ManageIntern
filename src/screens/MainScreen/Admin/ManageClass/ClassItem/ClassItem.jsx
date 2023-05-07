@@ -18,13 +18,13 @@ const ClassItem = ({ classInfo }) => {
                     <span className={cx('title-heading')}>{classInfo.id}</span>
                 </div>
                 <div className={cx('data-item')}>
-                    <span className={cx('title-heading')}>{classInfo.name}</span>
+                    <span className={cx('title-heading')}>{classInfo.class_name}</span>
                 </div>
                 <div className={cx('data-item')}>
-                    <span className={cx('title-heading')}>{classInfo.department}</span>
+                    <span className={cx('title-heading')}>{classInfo.department_name}</span>
                 </div>
                 <div className={cx('data-item')}>
-                    <span className={cx('title-heading')}>{classInfo.quantity}</span>
+                    <span className={cx('title-heading')}>{classInfo.students}</span>
                 </div>
             </div>
             <div className={cx('options')}>
@@ -38,8 +38,8 @@ const ClassItem = ({ classInfo }) => {
                     <Delete className={cx('delete-icon')} />
                 </div>
             </div>
-            {viewClass && <NewClass close={setViewClass} editable={false} />}
-            {editClass && <NewClass close={setEditClass} editable={true} />}
+            {viewClass && <NewClass close={setViewClass} editable={false} classInfo={classInfo}/>}
+            {editClass && <NewClass close={setEditClass} editable={true} classInfo={classInfo}/>}
         </div>
     );
 };

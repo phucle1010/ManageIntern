@@ -1,49 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './ManageClass.module.scss';
 
 import SearchBox from '../../../../components/SearchBox';
 import ClassItem from './ClassItem';
 import NewClass from './NewClass/NewClass';
+import axios from 'axios';
+
 
 const cx = classNames.bind(styles);
 
 const HEADINGS = ['Mã lớp', 'Tên lớp', 'Khoa', 'Sĩ số'];
 
-const classes = [
-    {
-        id: 1,
-        name: 'KTPM2020',
-        department: 'Công nghệ phần mềm',
-        quantity: 108,
-    },
-    {
-        id: 2,
-        name: 'KTMT2021',
-        department: 'Kỹ thuật máy tính',
-        quantity: 100,
-    },
-    {
-        id: 3,
-        name: 'KHMT2019',
-        department: 'Khoa học máy tính',
-        quantity: 105,
-    },
-];
-
 const ManageClass = () => {
     const [showNewClass, setShowNewClass] = useState(false);
+    const [classList, setClassList] = useState([{}]);
+    const [academicYear, setAcademicYear] = useState([]);
+    const [year, setYear] = useState(null);
+
+    useEffect(() => {
+        axios
+            .get('/class/academicyear')
+            .then((res) => setAcademicYear(res.data))
+            .catch((err) => console.log({err: err}));
+    }, []);
+
+    useEffect(() => {
+        getClassAll();
+    }, []);   
+
+    const getClassAll = () => {
+        axios
+            .get('/class')
+            .then((res) => setClassList(res.data))
+            .catch((err) => console.log({err: err}));
+    };
+
+    const getClassYear = () => {
+        axios
+            .get(`/class/year?year='${year}'`)
+            .then((res) => setClassList(res.data))
+            .catch((err) => console.log({err: err}));
+    };
+
+    useEffect(() => {
+        if (year === ""){
+            getClassAll();
+        }else if (year !== null){
+            getClassYear();
+        }
+    }, [year]);
+
 
     return (
         <div className={cx('wrapper')}>
             <h3 className={cx('list-heading')}>DANH SÁCH LỚP</h3>
             <SearchBox className={cx('search')} />
             <div className={cx('filters')}>
-                <select className={cx('filter-select-item')}>
-                    <option value="">Năm học</option>
-                    <option value="">2020</option>
-                    <option value="">2021</option>
-                    <option value="">2022</option>
+                <select value={year} className={cx('filter-select-item')} 
+                    onChange={(e) => {
+                        setYear(e.target.value)
+
+                        }} >
+                    <option value="" > Tất cả </option>
+                    {academicYear.map((years) => (
+                        <option
+                            key={years.academic_year}
+                            value={years.academic_year}
+                            className={cx('option-value')}
+                        >
+                            {years.academic_year}
+                        </option>
+                    ))}
                 </select>
                 <select className={cx('filter-select-item')}>
                     <option value="">Học kỳ</option>
@@ -67,11 +95,10 @@ const ManageClass = () => {
                     </ul>
                     <h5 className={cx('option-heading-list', 'option-heading')}>Lựa chọn</h5>
                 </div>
-
-                {classes.length > 0 &&
-                    classes.map((classInfo) => <ClassItem key={classInfo.id} classInfo={classInfo} />)}
+                {classList.length > 0 &&
+                    classList.map((classInfo) => <ClassItem key={classInfo.id} classInfo={classInfo} />)}
             </div>
-            {showNewClass === true && <NewClass close={setShowNewClass} editable={true} />}
+            {showNewClass === true && <NewClass close={setShowNewClass} editable={true} classInfo={null}/>}
         </div>
     );
 };
