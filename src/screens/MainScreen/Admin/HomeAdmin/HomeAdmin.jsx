@@ -12,10 +12,10 @@ const cx = classNames.bind(styles);
 
 const HomeAdmin = () => {
     const admin = useSelector((state) => state.user);
-    const [isLoading, setIsLoading] = useState(true);
     const [school, setSchool] = useState({});
     const [programs, setPrograms] = useState([]);
     const [chosedProgram, setChosedProgram] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const email = admin.email;
