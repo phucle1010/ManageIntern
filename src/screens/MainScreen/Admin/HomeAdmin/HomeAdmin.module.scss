@@ -3,3 +3,63 @@
     font-size: 16px;
     margin: 0;
 }
+
+.list-heading {
+    color: var(--second-text-color);
+    font-size: 15px;
+    margin: 0;
+}
+
+.program-list {
+    margin-top: 20px;
+    margin-right: 20px;
+}
+
+.program-item {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #ffff;
+
+    & .program-name {
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    & .program-school {
+        margin-top: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--second-text-color);
+    }
+}
+
+.btn-add {
+    float: right;
+    margin-top: 20px;
+    margin-right: 20px;
+    padding: 6px 20px;
+    display: flex;
+    align-items: center;
+    border: 1px solid transparent;
+    outline: none;
+    border-radius: 6px;
+    user-select: none;
+    background-color: var(--button-primary-color);
+    color: #fff;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #8f7aec;
+    }
+
+    &.edit {
+        margin-top: 10px;
+        float: none;
+        background-color: var(--second-color);
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}

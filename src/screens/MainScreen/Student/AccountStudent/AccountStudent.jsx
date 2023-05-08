@@ -3,7 +3,8 @@ import classNames from 'classnames/bind';
 import styles from './AccountStudent.module.scss';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { setRole } from '../../../../reducers/login';
+import { setRole } from '../../../../reducers/permission';
+import { setUserInfo } from '../../../../reducers/user';
 
 const cx = classNames.bind(styles);
 
@@ -71,7 +72,7 @@ const AccountStudent = () => {
             if (res.data.statusCode === 200) {
                 localStorage.setItem('user_token', JSON.stringify(''));
                 dispatch(setRole({ role: 0 }));
-                window.location.reload();
+                dispatch(setUserInfo({}));
             }
         });
     };

@@ -5,10 +5,10 @@ import { Close } from '@mui/icons-material';
 
 const cx = classNames.bind(styles);
 
-const NewStudent = ({ close, editable }) => {
+const NewStudent = ({ show, editable }) => {
     return (
         <div className={cx('wrapper')}>
-            <Close className={cx('close-main-btn')} onClick={() => close(false)} />
+            <Close className={cx('close-main-btn')} onClick={() => show(false)} />
             <h3 className={cx('main-heading')}>Thông tin sinh viên</h3>
             <div className={cx('user-info')}>
                 <div className={cx('user-upload')}>

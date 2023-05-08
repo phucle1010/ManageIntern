@@ -23,7 +23,7 @@ const Menu = ({ setMinimizeMenu, setSelectedSectionItem, selectedSectionItem }) 
     let MenuComponent = null;
 
     (function () {
-        switch (roleState.role) {
+        switch (roleState) {
             case ADMIN_ROLE:
                 MenuComponent = AdminMenu;
                 break;
