@@ -7,6 +7,7 @@ import axios from 'axios';
 import SearchBox from '../../../../components/SearchBox';
 import NewDepartment from './NewDepartment';
 import DepartmentItem from './DepartmentItem/DepartmentItem';
+import LoadingSpinner from '../../../../components/LoadingSpinner';
 
 const cx = classNames.bind(styles);
 
@@ -15,7 +16,7 @@ const HEADINGS = ['Mã khoa', 'Tên khoa', 'Trưởng khoa', 'Số ngành học'
 const Department = () => {
     const admin = useSelector((state) => state.user);
     const [school, setSchool] = useState({});
-    const [departments, setDepartmens] = useState([]);
+    const [departments, setDepartments] = useState([]);
     const [chosedDepartment, setChosedDepartment] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [editable, setEditable] = useState(true);
@@ -42,7 +43,7 @@ const Department = () => {
                     },
                 })
                 .then((res) => {
-                    setDepartmens(res.data.responseData);
+                    setDepartments(res.data.responseData);
                 })
                 .then(() => setIsLoading(false));
         }
@@ -50,50 +51,57 @@ const Department = () => {
 
     return (
         <div className={cx('wrapper')}>
-            <h3 className={cx('list-heading')}>DANH SÁCH KHOA</h3>
-            <SearchBox className={cx('search')} />
-            <div className={cx('btn-options')}>
-                <button
-                    className={cx('btn-add')}
-                    onClick={() =>
-                        setChosedDepartment({
-                            id: null,
-                            department_name: '',
-                            department_head: '',
-                            majors: null,
-                            school_id: Object.keys(school).length > 0 && school.id,
-                        })
-                    }
-                >
-                    Thêm mới
-                </button>
-                <button className={cx('btn-add', 'btn-export')}>Xuất File</button>
-            </div>
+            {isLoading === true ? (
+                <LoadingSpinner />
+            ) : (
+                <React.Fragment>
+                    <h3 className={cx('list-heading')}>DANH SÁCH KHOA</h3>
+                    <SearchBox className={cx('search')} />
+                    <div className={cx('btn-options')}>
+                        <button
+                            className={cx('btn-add')}
+                            onClick={() =>
+                                setChosedDepartment({
+                                    id: null,
+                                    department_name: '',
+                                    department_head: '',
+                                    majors: null,
+                                    school_id: Object.keys(school).length > 0 && school.id,
+                                })
+                            }
+                        >
+                            Thêm mới
+                        </button>
+                        <button className={cx('btn-add', 'btn-export')}>Xuất File</button>
+                    </div>
 
-            <div className={cx('department-list')}>
-                <div className={cx('department-heading-list')}>
-                    <ul className={cx('main-heading-list')}>
-                        {HEADINGS.map((heading, index) => (
-                            <li className={cx('main-heading')} key={index}>
-                                {heading}
-                            </li>
-                        ))}
-                    </ul>
-                    <h5 className={cx('option-heading-list', 'option-heading')}>Lựa chọn</h5>
-                </div>
+                    <div className={cx('department-list')}>
+                        <div className={cx('department-heading-list')}>
+                            <ul className={cx('main-heading-list')}>
+                                {HEADINGS.map((heading, index) => (
+                                    <li className={cx('main-heading')} key={index}>
+                                        {heading}
+                                    </li>
+                                ))}
+                            </ul>
+                            <h5 className={cx('option-heading-list', 'option-heading')}>Lựa chọn</h5>
+                        </div>
 
-                {departments.length > 0 &&
-                    departments.map((department) => (
-                        <DepartmentItem
-                            key={department.id}
-                            department={department}
-                            setChosedDepartment={setChosedDepartment}
-                            setEditable={setEditable}
-                        />
-                    ))}
-            </div>
-            {Object.keys(chosedDepartment).length > 0 && (
-                <NewDepartment show={setChosedDepartment} editable={editable} department={chosedDepartment} />
+                        {departments.length > 0 &&
+                            departments.map((department) => (
+                                <DepartmentItem
+                                    key={department.id}
+                                    department={department}
+                                    setChosedDepartment={setChosedDepartment}
+                                    setEditable={setEditable}
+                                />
+                            ))}
+                    </div>
+
+                    {Object.keys(chosedDepartment).length > 0 && (
+                        <NewDepartment show={setChosedDepartment} editable={editable} department={chosedDepartment} />
+                    )}
+                </React.Fragment>
             )}
         </div>
     );

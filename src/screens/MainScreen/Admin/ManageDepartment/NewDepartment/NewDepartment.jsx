@@ -9,6 +9,7 @@ const cx = classNames.bind(styles);
 const NewDepartment = ({ show, editable, department }) => {
     const [departmentItem, setDepartmentItem] = useState(department);
     const [teachers, setTeachers] = useState([]);
+
     console.log(departmentItem);
 
     useEffect(() => {
@@ -28,17 +29,21 @@ const NewDepartment = ({ show, editable, department }) => {
     }, [departmentItem.id]);
 
     const handlePostDepartment = () => {
-        const showResponse = (response) => {
+        const showResponse = (response, status) => {
             alert(response);
-            if (response === 200) {
+            if (status === 200) {
                 show({});
             }
         };
 
         if (departmentItem.id === null) {
-            axios.post('/admin/department/new', departmentItem).then((res) => showResponse(res.data.responseData));
+            axios
+                .post('/admin/department/new', departmentItem)
+                .then((res) => showResponse(res.data.responseData, res.data.statusCode));
         } else {
-            axios.put('/admin/department/edit', departmentItem).then((res) => showResponse(res.data.responseData));
+            axios
+                .put('/admin/department/edit', departmentItem)
+                .then((res) => showResponse(res.data.responseData, res.data.statusCode));
         }
     };
 

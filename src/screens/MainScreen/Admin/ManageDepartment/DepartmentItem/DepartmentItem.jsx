@@ -16,7 +16,7 @@ const DepartmentItem = ({ department, setChosedDepartment, setEditable }) => {
                     <span className={cx('title-heading')}>{department.department_name}</span>
                 </div>
                 <div className={cx('data-item')}>
-                    <span className={cx('title-heading')}>{department.department_head || 'Còn trống'}</span>
+                    <span className={cx('title-heading')}>{department.full_name || 'Còn trống'}</span>
                 </div>
                 <div className={cx('data-item')}>
                     <span className={cx('title-heading')}>{department.majors}</span>
