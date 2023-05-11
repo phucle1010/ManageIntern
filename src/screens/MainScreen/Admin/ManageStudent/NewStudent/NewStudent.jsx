@@ -1,11 +1,108 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import classNames from 'classnames/bind';
 import styles from './NewStudent.module.scss';
 import { Close } from '@mui/icons-material';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
-const NewStudent = ({ close, editable }) => {
+const NewStudent = ({ close, editable, studentinfo }) => {
+    const [departmentlist, setDepartmentList] = useState([]);
+    const [classlist, setCLassList] = useState([]);
+    const [majorlist, setMajorList] = useState([]);
+
+    const [newStudent, setNewStudent] = useState({
+        image: '',
+        full_name: '',
+        dob: '',
+        email: '',
+        address: '',
+        department_id: '',
+        class_id: '',
+        major_id: '',
+    });
+
+    useEffect(() => {
+        if (studentinfo) {
+            const dateFromMySQL = studentinfo.dob;
+            const dateOnly = dateFromMySQL.substr(0, 10); // Lấy ra phần ngày tháng (YYYY-MM-DD)
+            const inputDate = new Date(dateOnly);
+            const formattedDate = inputDate.toISOString().slice(0,10);
+            setNewStudent(prevStudent => {
+            return {
+              ...newStudent,
+              image: studentinfo.image,
+              full_name: studentinfo.full_name,
+              dob: formattedDate,
+              email: studentinfo.email,
+              address: studentinfo.address,
+              department_id: studentinfo.id,
+              class_id: studentinfo.class_id,
+              major_id: studentinfo.major_id,
+            };
+          });
+        }
+      }, [studentinfo]);
+
+    useEffect(() => {
+        axios
+            .get('/department')
+            .then((res) => setDepartmentList(res.data))
+            .catch((err) => console.log({err: err}));
+    }, []);
+
+    useEffect(() => {
+        if (newStudent.department_id !== "") {
+            axios
+                .get(`/class/department?department_id=${newStudent.department_id}`)
+                .then((res) => setCLassList(res.data))
+                .catch((err) => console.log(err));
+        }
+    }, [newStudent.department_id]);
+
+    useEffect(() => {
+        if (newStudent.department_id !== "") {
+            axios
+                .get(`/major/department?department_id=${newStudent.department_id}`)
+                .then((res) => setMajorList(res.data))
+                .catch((err) => console.log(err));
+        }
+    }, [newStudent.department_id]);
+
+    const handleSave = () => {
+        axios
+            .post('/student/add', newStudent)
+            .then((res) => {
+                alert(res.data.responseData);
+                window.location.reload();
+            })
+            .catch((err) => console.log(err));
+    }
+
+    const handleUpdate = () => {
+        axios
+            .put('/student/update', {newStudent: newStudent, user_id: studentinfo.user_id})
+            .then((res) => {
+                if(res.statusCode === 400){
+                    window.alert(`Lỗi ${res.data.responseData}`);
+                }else if(res.statusCode === 401){
+                    window.alert(`Lỗi ${res.data.responseData}`);
+                }else{
+                    window.alert(res.data.responseData);
+                    window.location.reload();
+                }
+            })
+            .catch((err) => {console.log({err: err})})
+    }
+
+    const handleClickSave = () => {
+        if(studentinfo){
+            handleUpdate();
+        }else{
+            handleSave();
+        }
+    }
+
     return (
         <div className={cx('wrapper')}>
             <Close className={cx('close-main-btn')} onClick={() => close(false)} />
@@ -32,9 +129,16 @@ const NewStudent = ({ close, editable }) => {
                             <input
                                 className={cx('input-item')}
                                 type="text"
-                                name="name"
+                                name="full_name"
                                 placeholder="Nguyễn Văn A"
                                 readOnly={!editable}
+                                value={newStudent.full_name}
+                                onChange={(e) => setNewStudent((prev) => {
+                                    return{
+                                        ...prev,
+                                        [e.target.name]: e.target.value,
+                                    };
+                                })}
                             />
                         </div>
                         <div className={cx('user-data-item')}>
@@ -42,9 +146,16 @@ const NewStudent = ({ close, editable }) => {
                             <input
                                 className={cx('input-item')}
                                 type="date"
-                                name="birth"
+                                name="dob"
                                 placeholder="10/10/2002"
                                 readOnly={!editable}
+                                value={newStudent.dob}
+                                onChange={(e) => setNewStudent((prev) => {
+                                    return{
+                                        ...prev,
+                                        [e.target.name]: e.target.value,
+                                    };
+                                })}
                             />
                         </div>
                         <div className={cx('user-data-item')}>
@@ -55,6 +166,13 @@ const NewStudent = ({ close, editable }) => {
                                 name="email"
                                 placeholder="abc@gmail.com"
                                 readOnly={!editable}
+                                value={newStudent.email}
+                                onChange={(e) => setNewStudent((prev) => {
+                                    return{
+                                        ...prev,
+                                        [e.target.name]: e.target.value,
+                                    };
+                                })}
                             />
                         </div>
                         <div className={cx('user-data-item', 'full-width')}>
@@ -65,38 +183,82 @@ const NewStudent = ({ close, editable }) => {
                                 name="address"
                                 placeholder="Thành phố Hồ Chí Minh"
                                 readOnly={!editable}
+                                value={newStudent.address}
+                                onChange={(e) => setNewStudent((prev) => {
+                                    return{
+                                        ...prev,
+                                        [e.target.name]: e.target.value,
+                                    };
+                                })}
                             />
                         </div>
                         <div className={cx('user-data-item')}>
                             <h5 className={cx('input-title')}>Khoa</h5>
-                            <select className={cx('input-item')} name="department" readOnly={!editable}>
-                                <option>Chọn Khoa</option>
-                                <option>Công nghệ phần mềm</option>
-                                <option>Kỹ thuật máy tính</option>
+                            <select className={cx('input-item')} name="department_id" readOnly={!editable}
+                                value={newStudent.department_id} onChange={(e) => e.target.value !== "" && 
+                                setNewStudent((prev) => {
+                                    return {
+                                        ...prev,
+                                        [e.target.name]: e.target.value,
+                                    };
+                                })}>
+                                <option value="">Chọn Khoa</option>
+                                {departmentlist.map((department) => (
+                                    <option
+                                        key={department.id}
+                                        value={department.id}
+                                    >
+                                        {department.department_name}
+                                    </option>
+                                ))}
                             </select>
                         </div>
                         <div className={cx('user-data-item')}>
                             <h5 className={cx('input-title')}>Lớp</h5>
-                            <input
-                                className={cx('input-item')}
-                                type="text"
-                                name="class"
-                                placeholder="KTPM2020"
-                                readOnly={!editable}
-                            />
+                            <select className={cx('input-item')} name="class_id" readOnly={!editable}
+                                value={newStudent.class_id} onChange={(e) => e.target.value !== "" && 
+                                setNewStudent((prev) => {
+                                    return {
+                                        ...prev,
+                                        [e.target.name]: e.target.value,
+                                    };
+                                })}>
+                                <option value="">Chọn Lớp</option>
+                                {classlist.map((classes) => (
+                                    <option
+                                        key={classes.id}
+                                        value={classes.id}
+                                    >
+                                        {classes.class_name}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         <div className={cx('user-data-item', 'full-width')}>
                             <h5 className={cx('input-title')}>Ngành học</h5>
-                            <select className={cx('input-item')} name="major" readOnly={!editable}>
-                                <option>Chọn ngành học</option>
-                                <option>Kỹ thuật phần mềm</option>
-                                <option>Kỹ thuật máy tính</option>
+                            <select className={cx('input-item')} name="major_id" readOnly={!editable}
+                            value={newStudent.major_id} onChange={(e) => e.target.value !== "" && 
+                            setNewStudent((prev) => {
+                                return {
+                                    ...prev,
+                                    [e.target.name]: e.target.value,
+                                };
+                            })}>
+                                <option value="">Chọn ngành học</option>
+                                {majorlist.map((major) => (
+                                    <option
+                                        key={major.id}
+                                        value={major.id}
+                                    >
+                                        {major.major_name}
+                                    </option>
+                                ))}
                             </select>
                         </div>
                     </div>
                 </div>
             </div>
-            <button className={cx('save-btn')}>Lưu</button>
+            <button className={cx('save-btn')} onClick={() => handleClickSave()}>Lưu</button>
         </div>
     );
 };

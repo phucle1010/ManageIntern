@@ -21,7 +21,7 @@ const NewClass = ({ close, editable , classInfo}) => {
     useEffect(() => {
         if (classInfo) {
             console.log(classInfo);
-          setNewClass(prevClass => {
+            setNewClass(prevClass => {
             return {
               ...newclass,
               name: classInfo.class_name,
