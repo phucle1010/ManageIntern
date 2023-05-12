@@ -48,14 +48,30 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex, newBusin
                     <h4 className={cx('upload-heading')}>Hình ảnh</h4>
                     <div className={cx('upload-avatar')}>
                         <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU"
+                            src={ newBusiness.img ||"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU"}
                             alt=""
                         />
                     </div>
                     <label className={cx('upload-btn')} htmlFor={cx('upload-input')}>
                         Chọn File
                     </label>
-                    <input type="file" id={cx('upload-input')} readOnly={!editable} />
+                    <input type="file" id={cx('upload-input')} readOnly={!editable} name="img"  onChange={(e) => {
+                            const getbase64 = (file) => {
+                                let reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = () => {
+                                    setNewBusiness((prev) => {
+                                        return {
+                                            ...prev,
+                                            [e.target.name]: reader.result,
+                                        };
+                                    });
+                                };
+                            };
+                            if (e.target.files && e.target.files[0]) {
+                                getbase64(e.target.files[0]);
+                            }
+                        }}/>
                 </div>
                 <div className={cx('business-detail')}>
                     <h4 className={cx('detail-heading')}>Chi tiết doanh nghiệp</h4>

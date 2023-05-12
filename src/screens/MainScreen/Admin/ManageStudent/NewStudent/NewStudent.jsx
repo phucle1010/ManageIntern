@@ -112,14 +112,30 @@ const NewStudent = ({ close, editable, studentinfo }) => {
                     <h4 className={cx('upload-heading')}>Ảnh đại diện</h4>
                     <div className={cx('upload-avatar')}>
                         <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU"
+                            src={ newStudent.image || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU"}
                             alt=""
                         />
                     </div>
                     <label className={cx('upload-btn')} htmlFor={cx('upload-input')}>
                         Chọn File
                     </label>
-                    <input type="file" id={cx('upload-input')} readOnly={!editable} />
+                    <input type="file" id={cx('upload-input')} readOnly={!editable} name="image"  onChange={(e) => {
+                            const getbase64 = (file) => {
+                                let reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = () => {
+                                    setNewStudent((prev) => {
+                                        return {
+                                            ...prev,
+                                            [e.target.name]: reader.result,
+                                        };
+                                    });
+                                };
+                            };
+                            if (e.target.files && e.target.files[0]) {
+                                getbase64(e.target.files[0]);
+                            }
+                        }}/>
                 </div>
                 <div className={cx('user-detail')}>
                     <h4 className={cx('detail-heading')}>Thông tin cá nhân</h4>
