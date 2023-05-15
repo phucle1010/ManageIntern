@@ -14,7 +14,7 @@ const DetailBusiness = ({ business, openScreen }) => {
                 <div className={cx('profile-options')}>
                     <div className={cx('profile-avt')}>
                         <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU"
+                            src={ business.img || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU"}
                             alt=""
                         />
                     </div>
