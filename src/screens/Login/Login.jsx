@@ -8,7 +8,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const cx = classNames.bind(styles);
 
-const Login = ({ setRole, setSuccessfulLogin }) => {
+const Login = () => {
     const navigate = useNavigate();
     const [user, setUser] = useState({ username: '', pass: '' });
     const [error, setError] = useState(false);
@@ -27,31 +27,11 @@ const Login = ({ setRole, setSuccessfulLogin }) => {
     }, [showPass]);
 
     const handleLogin = () => {
-        // if (user.username === '' || user.pass === '') {
-        //     setIsEmptyFields(true);
-        // }
-        // if (user.username === 'admin' && user.pass === '123456') {
-        //     authenAccount(ADMIN);
-        //     return;
-        // }
-        // if (user.username === 'teacher' && user.pass === '123456') {
-        //     authenAccount(TEACHER);
-        //     return;
-        // }
-        // if (user.username === 'student' && user.pass === '123456') {
-        //     authenAccount(STUDENT);
-        //     return;
-        // }
-        // if (user.username === 'business' && user.pass === '123456') {
-        //     authenAccount(BUSINESS);
-        //     return;
-        // }
-        // setError(true);
         axios
             .post('/user/auth', user)
             .then((res) => {
                 if (res.data.statusCode === 400) {
-                    console.log(`Lỗi: ${res.data.responseData}`);
+                    setError(true);
                 } else {
                     const token = res.data.responseData;
                     storeToken(token);
@@ -77,7 +57,6 @@ const Login = ({ setRole, setSuccessfulLogin }) => {
 
     const setStateSuccessfulLogin = () => {
         setSuccess(true);
-        setSuccessfulLogin(true);
         setTimeout(() => navigate('/'), 2000);
     };
 

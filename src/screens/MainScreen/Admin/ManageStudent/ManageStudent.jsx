@@ -98,7 +98,7 @@ const ManageStudent = () => {
 
                 {studentlist.length > 0 && studentlist.map((student) => <StudentItem key={student.student_id} student={student} />)}
             </div>
-            {showNewStudent === true && <NewStudent close={setShowNewStudent} editable={true} />}
+            {showNewStudent === true && <NewStudent show={setShowNewStudent} editable={true} />}
         </div>
     );
 };

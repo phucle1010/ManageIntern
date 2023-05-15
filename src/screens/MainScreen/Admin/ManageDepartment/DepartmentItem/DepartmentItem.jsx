@@ -1,16 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import classNames from 'classnames/bind';
 import styles from './DepartmentItem.module.scss';
 import { Delete, Edit, Visibility } from '@mui/icons-material';
 
-import NewDepartment from '../NewDepartment';
-
 const cx = classNames.bind(styles);
 
-const DepartmentItem = ({ department }) => {
-    const [viewDepartment, setViewDepartment] = useState(false);
-    const [editDepartment, setEditDepartment] = useState(false);
-
+const DepartmentItem = ({ department, setChosedDepartment, setEditable }) => {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('detail-item')}>
@@ -18,13 +13,10 @@ const DepartmentItem = ({ department }) => {
                     <span className={cx('title-heading')}>{department.id}</span>
                 </div>
                 <div className={cx('data-item')}>
-                    <span className={cx('title-heading')}>{department.name}</span>
+                    <span className={cx('title-heading')}>{department.department_name}</span>
                 </div>
                 <div className={cx('data-item')}>
-                    <span className={cx('title-heading')}>{department.dean}</span>
-                </div>
-                <div className={cx('data-item')}>
-                    <span className={cx('title-heading')}>{department.teachers}</span>
+                    <span className={cx('title-heading')}>{department.full_name || 'Còn trống'}</span>
                 </div>
                 <div className={cx('data-item')}>
                     <span className={cx('title-heading')}>{department.majors}</span>
@@ -32,17 +24,27 @@ const DepartmentItem = ({ department }) => {
             </div>
             <div className={cx('options')}>
                 <div className={cx('option-item')}>
-                    <Visibility className={cx('view-icon')} onClick={() => setViewDepartment(true)} />
+                    <Visibility
+                        className={cx('view-icon')}
+                        onClick={() => {
+                            setChosedDepartment(department);
+                            setEditable(false);
+                        }}
+                    />
                 </div>
                 <div className={cx('option-item')}>
-                    <Edit className={cx('edit-icon')} onClick={() => setEditDepartment(true)} />
+                    <Edit
+                        className={cx('edit-icon')}
+                        onClick={() => {
+                            setChosedDepartment(department);
+                            setEditable(true);
+                        }}
+                    />
                 </div>
                 <div className={cx('option-item')}>
                     <Delete className={cx('delete-icon')} />
                 </div>
             </div>
-            {viewDepartment && <NewDepartment close={setViewDepartment} editable={false} />}
-            {editDepartment && <NewDepartment close={setEditDepartment} editable={true} />}
         </div>
     );
 };

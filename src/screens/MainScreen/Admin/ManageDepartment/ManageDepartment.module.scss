@@ -1,17 +1,7 @@
-.filters {
+.btn-options {
     margin: 20px 0;
     display: flex;
     align-items: center;
-}
-
-.filter-select-item {
-    min-width: 100px;
-    margin-right: 20px;
-    padding: 4px 0 4px 4px;
-    border-radius: 6px;
-    border: 1px solid #dadada;
-    color: #b1b1b1;
-    outline: none;
 }
 
 .department-list {
@@ -35,7 +25,6 @@
 }
 
 .btn-add {
-    margin-left: 30px;
     padding: 6px 20px;
     display: flex;
     align-items: center;
@@ -52,6 +41,7 @@
     }
 
     &.btn-export {
+        margin-left: 30px;
         border-color: var(--button-primary-color);
         background-color: #fff;
         color: var(--button-primary-color);
@@ -90,5 +80,5 @@
 }
 
 .main-heading {
-    width: calc(100% / 5);
+    width: calc(100% / 4);
 }
