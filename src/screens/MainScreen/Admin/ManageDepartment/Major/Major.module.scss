@@ -1,8 +1,9 @@
 .wrapper {
-    width: 700px;
+    width: 500px;
+    height: 500px;
     position: fixed;
-    top: 20%;
-    left: calc(100% - 700px);
+    top: -20%;
+    left: calc(50%);
     transform: translateX(-50%);
     padding: 10px 20px;
     background-color: #fff;
@@ -20,6 +21,29 @@
     }
 }
 
+.toolbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    padding: 10px 20px;
+}
+
+.close-main-btn {
+    float: right;
+    padding: 3px;
+    color: #fff;
+    background-color: var(--button-second-color);
+    font-size: 24px;
+    border-radius: 6px;
+    user-select: none;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
 .main-heading {
     margin-bottom: 30px;
     font-size: 20px;
@@ -27,17 +51,18 @@
     color: #929292;
 }
 
-.department-detail {
-    flex: 1;
-    padding-left: 4px;
+.title-heading {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #929292;
 }
 
-.department-form {
-    display: flex;
-    flex-wrap: wrap;
+.major-form {
+    margin-top: 40px;
 }
 
-.department-data-item {
+.major-data-item {
     width: 48%;
     margin-bottom: 16px;
     margin-right: 2%;
@@ -64,13 +89,16 @@
     outline: none;
 }
 
-.close-main-btn {
-    float: right;
-    padding: 3px;
+.add-btn {
+    // float: right;
+    margin: 0 0 20px auto;
+    padding: 6px 20px;
     color: #fff;
-    background-color: var(--button-second-color);
-    font-size: 24px;
+    line-height: 20px;
+    background-color: var(--working-color);
+    font-size: 14px;
     border-radius: 6px;
+    border: none;
     user-select: none;
     cursor: pointer;
 
@@ -79,19 +107,32 @@
     }
 }
 
-.btn-options {
-    display: flex;
-    justify-content: space-between;
-    margin-right: 2%;
-    margin-bottom: 10px;
-    padding-left: 4px;
+.major-list {
+    height: 90px;
+    margin-bottom: 20px;
+    padding: 4px;
+    overflow-y: scroll;
 }
 
-.view-major-btn {
-    // float: right;
-    // margin-right: 10px;
-    // margin-bottom: 20px;
-    padding: 6px 20px;
+.major-item {
+    display: flex;
+    margin-bottom: 8px;
+    padding: 4px 10px;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    box-shadow: -2px 2px 4px 2px #dadada;
+}
+
+.major-name {
+    font-size: 15px;
+    font-style: italic;
+    font-weight: 500;
+}
+
+.remove-btn {
+    padding: 2px 20px;
     color: #fff;
     line-height: 20px;
     background-color: var(--second-color);
@@ -107,13 +148,12 @@
 }
 
 .save-btn {
-    // float: right;
-    // margin-right: 10px;
-    // margin-bottom: 20px;
+    float: right;
+    margin: 0 0 20px auto;
     padding: 6px 20px;
     color: #fff;
     line-height: 20px;
-    background-color: var(--button-primary-color);
+    background-color: var(--primary-color);
     font-size: 14px;
     border-radius: 6px;
     border: none;

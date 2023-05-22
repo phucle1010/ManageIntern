@@ -9,7 +9,7 @@ const cx = classNames.bind(styles);
 const NewTeacher = ({ show, editable, teacher, departments }) => {
     const [teacherItem, setTeacherItem] = useState({ ...teacher, current_status: teacher.current_status.data[0] });
 
-    const formattedDate = (inputDate) => new Date(inputDate).toISOString().substring(0, 10);
+    const formmatedDate = (inputDate) => new Date(inputDate).toISOString().substring(0, 10);
 
     const handleTeacherAccount = () => {
         const isCreateNewTeacher = teacherItem.id === null;
@@ -188,7 +188,7 @@ const NewTeacher = ({ show, editable, teacher, departments }) => {
                                 className={cx('input-item')}
                                 type="date"
                                 name="dob"
-                                value={formattedDate(teacherItem.dob)}
+                                value={teacherItem.dob}
                                 readOnly={!editable}
                                 onChange={(e) =>
                                     setTeacherItem((prev) => {
@@ -261,7 +261,7 @@ const NewTeacher = ({ show, editable, teacher, departments }) => {
                                 className={cx('input-item')}
                                 type="date"
                                 name="start_date"
-                                value={formattedDate(teacherItem.start_date)}
+                                value={teacherItem.start_date}
                                 readOnly={!editable}
                                 onChange={(e) =>
                                     setTeacherItem((prev) => {
@@ -358,7 +358,7 @@ const NewTeacher = ({ show, editable, teacher, departments }) => {
                     </div>
                 </div>
             </div>
-            <button className={cx('save-btn')} onClick={handleTeacherAccount}>
+            <button className={cx('save-btn')} onClick={() => console.log(teacherItem)}>
                 Lưu
             </button>
         </div>

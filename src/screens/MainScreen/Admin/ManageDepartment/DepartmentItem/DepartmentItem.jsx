@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import classNames from 'classnames/bind';
 import styles from './DepartmentItem.module.scss';
 import { Delete, Edit, Visibility } from '@mui/icons-material';
@@ -6,6 +7,19 @@ import { Delete, Edit, Visibility } from '@mui/icons-material';
 const cx = classNames.bind(styles);
 
 const DepartmentItem = ({ department, setChosedDepartment, setEditable }) => {
+    const [departmentHead, setDepartmentHead] = useState(null);
+
+    useEffect(() => {
+        axios
+            .get('/admin/department/head', {
+                params: {
+                    department_head: department.department_head === null ? -1 : department.department_head,
+                },
+            })
+            .then((res) => setDepartmentHead(res.data.responseData))
+            .catch((err) => console.lg(err));
+    }, [department.department_head]);
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('detail-item')}>
@@ -16,7 +30,7 @@ const DepartmentItem = ({ department, setChosedDepartment, setEditable }) => {
                     <span className={cx('title-heading')}>{department.department_name}</span>
                 </div>
                 <div className={cx('data-item')}>
-                    <span className={cx('title-heading')}>{department.full_name || 'Còn trống'}</span>
+                    <span className={cx('title-heading')}>{departmentHead?.full_name}</span>
                 </div>
                 <div className={cx('data-item')}>
                     <span className={cx('title-heading')}>{department.majors}</span>

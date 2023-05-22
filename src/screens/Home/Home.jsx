@@ -38,7 +38,7 @@ const Home = () => {
                 navigate('/login');
             } else {
                 axios.get('/user/account/data', { params: { token } }).then((res) => {
-                    switch (res.data.responseData[0].permission_id) {
+                    switch (res.data.responseData[0]?.permission_id) {
                         case ADMIN_ROLE:
                             dispatch(setRole(ADMIN_ROLE));
                             break;

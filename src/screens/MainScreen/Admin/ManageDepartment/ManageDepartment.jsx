@@ -19,7 +19,7 @@ const Department = () => {
     const [departments, setDepartments] = useState([]);
     const [chosedDepartment, setChosedDepartment] = useState({});
     const [isLoading, setIsLoading] = useState(true);
-    const [editable, setEditable] = useState(true);
+    const [editable, setEditable] = useState(false);
 
     useEffect(() => {
         const email = admin.email;
@@ -60,15 +60,15 @@ const Department = () => {
                     <div className={cx('btn-options')}>
                         <button
                             className={cx('btn-add')}
-                            onClick={() =>
+                            onClick={() => {
                                 setChosedDepartment({
                                     id: null,
                                     department_name: '',
                                     department_head: '',
-                                    majors: null,
                                     school_id: Object.keys(school).length > 0 && school.id,
-                                })
-                            }
+                                });
+                                setEditable(true);
+                            }}
                         >
                             Thêm mới
                         </button>
