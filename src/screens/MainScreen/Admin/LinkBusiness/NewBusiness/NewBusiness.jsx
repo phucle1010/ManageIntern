@@ -1,11 +1,44 @@
 import React from 'react';
 import classNames from 'classnames/bind';
 import styles from './NewBusiness.module.scss';
-import { Close } from '@mui/icons-material';
+import { Close, Event } from '@mui/icons-material';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
-const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex }) => {
+const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex, newBusiness }) => {
+
+    const saveBusiness = (newBusiness) => {
+        console.log(newBusiness);
+
+        axios
+            .post('/user/business/add', newBusiness)
+            .then((res) => {
+                console.log(res.data);
+                if(res.statusCode === 400){
+                    window.alert(`Lỗi ${res.data.responseData}`);
+                }else if(res.statusCode === 401){
+                    window.alert(`Lỗi ${res.data.responseData}`);
+                }else{
+                    window.alert(res.data.responseData);
+                    window.location.reload();
+                }
+            })
+            .catch((err) => {console.log({err: err})});
+
+        setNewBusiness({
+            id: 0,
+            name: '',
+            img: '',
+            phone: '',
+            email: '',
+            address: '',
+            establishDate: '',
+            sector: '',
+            representator: '',
+            desc: '',
+        });
+    }
     return (
         <div className={cx('wrapper')}>
             <Close className={cx('close-main-btn')} onClick={() => openScreen(false)} />
@@ -15,14 +48,30 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex }) => {
                     <h4 className={cx('upload-heading')}>Hình ảnh</h4>
                     <div className={cx('upload-avatar')}>
                         <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU"
+                            src={ newBusiness.img ||"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU"}
                             alt=""
                         />
                     </div>
                     <label className={cx('upload-btn')} htmlFor={cx('upload-input')}>
                         Chọn File
                     </label>
-                    <input type="file" id={cx('upload-input')} readOnly={!editable} />
+                    <input type="file" id={cx('upload-input')} readOnly={!editable} name="img"  onChange={(e) => {
+                            const getbase64 = (file) => {
+                                let reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = () => {
+                                    setNewBusiness((prev) => {
+                                        return {
+                                            ...prev,
+                                            [e.target.name]: reader.result,
+                                        };
+                                    });
+                                };
+                            };
+                            if (e.target.files && e.target.files[0]) {
+                                getbase64(e.target.files[0]);
+                            }
+                        }}/>
                 </div>
                 <div className={cx('business-detail')}>
                     <h4 className={cx('detail-heading')}>Chi tiết doanh nghiệp</h4>
@@ -33,6 +82,7 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex }) => {
                                 className={cx('input-item')}
                                 type="text"
                                 name="name"
+                                value={newBusiness.name}
                                 placeholder="FPT"
                                 readOnly={!editable}
                                 onChange={(e) =>
@@ -51,6 +101,7 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex }) => {
                                 className={cx('input-item')}
                                 type="phone"
                                 name="phone"
+                                value={newBusiness.phone}
                                 placeholder="0368xxx"
                                 readOnly={!editable}
                                 onChange={(e) =>
@@ -69,6 +120,7 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex }) => {
                                 className={cx('input-item')}
                                 type="email"
                                 name="email"
+                                value={newBusiness.email}
                                 placeholder="abc@gmail.com"
                                 readOnly={!editable}
                                 onChange={(e) =>
@@ -87,6 +139,7 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex }) => {
                                 className={cx('input-item')}
                                 type="text"
                                 name="address"
+                                value={newBusiness.address}
                                 // placeholder="Hồ Chí Minh"
                                 readOnly={!editable}
                                 onChange={(e) =>
@@ -105,6 +158,7 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex }) => {
                                 className={cx('input-item')}
                                 type="text"
                                 name="sector"
+                                value={newBusiness.sector}
                                 // placeholder="Hồ Chí Minh"
                                 readOnly={!editable}
                                 onChange={(e) =>
@@ -123,6 +177,7 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex }) => {
                                 className={cx('input-item')}
                                 type="text"
                                 name="representator"
+                                value={newBusiness.representator}
                                 // placeholder="Hồ Chí Minh"
                                 readOnly={!editable}
                                 onChange={(e) =>
@@ -141,6 +196,7 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex }) => {
                                 className={cx('input-item')}
                                 rows={3}
                                 name="desc"
+                                value={newBusiness.desc}
                                 placeholder="Mô tả"
                                 readOnly={!editable}
                                 onChange={(e) =>
@@ -159,12 +215,7 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex }) => {
             <button
                 className={cx('save-btn')}
                 onClick={() => {
-                    setNewBusiness((prev) => {
-                        return {
-                            ...prev,
-                            id: lastIndex + 1,
-                        };
-                    });
+                    saveBusiness(newBusiness);
                     openScreen(false);
                 }}
             >

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import styles from './ResetPassword.module.scss';
 import classNames from 'classnames/bind';
@@ -18,6 +19,15 @@ const ResetPassword = () => {
 
     const handleVerify = () => {
         if (!exactEmail) {
+            axios
+                .post('/user/resetpassword/email', {email: email})
+                .then((res) => {
+                    if(res.data.statusCode === 200){
+                        setExactEmail(true);
+                    }
+                })
+                .catch((err) => { console.log({err: err})});
+
             if (email === '') {
                 setIsEmptyFields(true);
             } else if (email !== 'user') {
