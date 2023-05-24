@@ -1,25 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import classNames from 'classnames/bind';
+import axios from 'axios';
 import styles from './StudentItem.module.scss';
 import { Avatar } from '@mui/material';
 import { Edit, Visibility, Delete } from '@mui/icons-material';
-import NewStudent from '../NewStudent/NewStudent';
-import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
-const StudentItem = ({ student }) => {
-    const [viewStudent, setViewStudent] = useState(false);
-    const [editStudent, setEditStudent] = useState(false);
-    const handleDelet = () => {
+const StudentItem = ({ student, setChosedStudent, setEditable, setShowNewStudent }) => {
+    const handleDelete = () => {
         axios
-            .post('/student/delete', {user_id: student.user_id, username: student.email})
+            .post('/student/delete', { user_id: student.user_id, username: student.email })
             .then((res) => {
                 alert(res.data.responseData);
                 window.location.reload();
             })
             .catch((err) => console.log(err));
-    }
+    };
     return (
         <div className={cx('wrapper')}>
             <div className={cx('detail-item')}>
@@ -38,28 +35,42 @@ const StudentItem = ({ student }) => {
                 <div className={cx('data-item')}>
                     <span
                         className={cx('title-heading', {
-                            'graduted-status': student.current_status === 0,
-                            'studying-status': student.current_status === 1,
+                            'graduted-status': student.current_status.data[0] === 0,
+                            'studying-status': student.current_status.data[0] === 1,
                             //'stop-status': student.status === 'Nghỉ học',
                         })}
                     >
-                        {student.current_status?'Đang học' : 'Tốt nghiệp'}
+                        {student.current_status ? 'Đang học' : 'Tốt nghiệp'}
                     </span>
                 </div>
             </div>
             <div className={cx('options')}>
                 <div className={cx('option-item')}>
-                    <Visibility className={cx('view-icon')} onClick={() => setViewStudent(true)} />
+                    <Visibility
+                        className={cx('view-icon')}
+                        onClick={() => {
+                            setChosedStudent(student);
+                            setEditable(false);
+                            setShowNewStudent(true);
+                        }}
+                    />
                 </div>
                 <div className={cx('option-item')}>
-                    <Edit className={cx('edit-icon')} onClick={() => setEditStudent(true)} />
+                    <Edit
+                        className={cx('edit-icon')}
+                        onClick={() => {
+                            setChosedStudent(student);
+                            setEditable(true);
+                            setShowNewStudent(true);
+                        }}
+                    />
                 </div>
                 <div className={cx('option-item')}>
-                    <Delete className={cx('delete-icon')} onClick={() => handleDelet()}/>
+                    <Delete className={cx('delete-icon')} onClick={handleDelete} />
                 </div>
             </div>
-            {viewStudent && <NewStudent close={setViewStudent} editable={false} studentinfo={student}/>}
-            {editStudent && <NewStudent close={setEditStudent} editable={true} studentinfo={student}/>}
+            {/* {viewStudent && <NewStudent close={setViewStudent} editable={false} studentinfo={student}/>}
+            {editStudent && <NewStudent close={setEditStudent} editable={true} studentinfo={student}/>} */}
         </div>
     );
 };

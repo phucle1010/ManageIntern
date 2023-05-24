@@ -70,7 +70,7 @@ const Home = () => {
 
     useEffect(() => {
         handleGetUserData();
-    }, [roleState.role]);
+    }, []);
 
     (function () {
         switch (roleState) {

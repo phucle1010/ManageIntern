@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setRole } from '../../../../reducers/permission';
 import { setUserInfo } from '../../../../reducers/user';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -66,6 +67,7 @@ const InputField = ({ title, value }) => {
 
 const AccountStudent = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleLogout = () => {
         axios.put('/user/logout').then((res) => {
@@ -73,6 +75,7 @@ const AccountStudent = () => {
                 localStorage.setItem('user_token', JSON.stringify(''));
                 dispatch(setRole({ role: 0 }));
                 dispatch(setUserInfo({}));
+                setTimeout(() => navigate('/login'), 2000);
             }
         });
     };

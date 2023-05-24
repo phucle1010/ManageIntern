@@ -1,7 +1,7 @@
 .wrapper {
     width: 700px;
     position: fixed;
-    top: 20%;
+    top: 10%;
     left: calc(100% - 700px);
     transform: translateX(-50%);
     padding: 10px 20px;
@@ -9,7 +9,6 @@
     border-radius: 6px;
     border: 1px solid var(--primary-color);
     animation: showOverlay 0.2s ease-in-out forwards;
-    // overflow-y: auto;
 }
 
 @keyframes showOverlay {
@@ -129,7 +128,7 @@
 
 .todo-list {
     margin-top: 10px;
-    max-height: 200px;
+    height: 350px;
     background-color: #fff;
     border-radius: 8px;
     overflow-y: auto;

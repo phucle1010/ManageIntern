@@ -11,6 +11,7 @@ import LoadingSpinner from '../../../../components/LoadingSpinner';
 const cx = classNames.bind(styles);
 
 const HomeAdmin = () => {
+    console.log('admin');
     const admin = useSelector((state) => state.user);
     const [school, setSchool] = useState({});
     const [programs, setPrograms] = useState([]);

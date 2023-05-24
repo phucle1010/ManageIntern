@@ -14,7 +14,10 @@ const DetailBusiness = ({ business, openScreen }) => {
                 <div className={cx('profile-options')}>
                     <div className={cx('profile-avt')}>
                         <img
-                            src={ business.img || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU"}
+                            src={
+                                business.img ||
+                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU'
+                            }
                             alt=""
                         />
                     </div>
@@ -51,7 +54,6 @@ const DetailBusiness = ({ business, openScreen }) => {
                                 className={cx('input-item')}
                                 type="date"
                                 name="entryDate"
-                                // placeholder="Thành phố Hồ Chí Minh"
                                 value={business.establishDate}
                             />
                         </div>
@@ -61,7 +63,6 @@ const DetailBusiness = ({ business, openScreen }) => {
                                 className={cx('input-item')}
                                 type="text"
                                 name="sector"
-                                // placeholder="Thành phố Hồ Chí Minh"
                                 readOnly={true}
                                 value={business.sector}
                             />
@@ -72,7 +73,6 @@ const DetailBusiness = ({ business, openScreen }) => {
                                 className={cx('input-item')}
                                 type="text"
                                 name="representator"
-                                // placeholder="Thành phố Hồ Chí Minh"
                                 readOnly={true}
                                 value={business.representator}
                             />
@@ -83,17 +83,17 @@ const DetailBusiness = ({ business, openScreen }) => {
                                 className={cx('input-item')}
                                 type="text"
                                 name="representator"
-                                // placeholder="Thành phố Hồ Chí Minh"
                                 readOnly={true}
                                 value={business.desc}
+                                rows={3}
                             />
                         </div>
                     </div>
                 </div>
             </div>
-            <div className={cx('option-btn')}>
+            {/* <div className={cx('option-btn')}>
                 <button className={cx('save-btn')}>Lưu thay đổi</button>
-            </div>
+            </div> */}
         </div>
     );
 };
