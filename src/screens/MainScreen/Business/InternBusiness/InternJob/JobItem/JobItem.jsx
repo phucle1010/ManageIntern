@@ -11,9 +11,9 @@ const JobItem = ({ job, setChosedJob }) => {
                 <h4>Mã công việc: {`${job.id}`}</h4>
             </div>
             <div className={cx('job-img')}>
-                <img src={job.img} alt="" />
+                <img src={job.image} alt="" />
             </div>
-            <h4 className={cx('job-name')}>{job.name}</h4>
+            <h4 className={cx('job-name')}>{job.job_name}</h4>
             <span className={cx('job-vacancy')}>{`Số lượng cần tuyển: ${job.vacancies}`}</span>
             <button className={cx('btn-view')} onClick={() => setChosedJob(job)}>
                 Xem chi tiết

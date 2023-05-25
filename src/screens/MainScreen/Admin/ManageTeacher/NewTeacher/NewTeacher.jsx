@@ -358,7 +358,7 @@ const NewTeacher = ({ show, editable, teacher, departments }) => {
                     </div>
                 </div>
             </div>
-            <button className={cx('save-btn')} onClick={() => console.log(teacherItem)}>
+            <button className={cx('save-btn')} onClick={handleTeacherAccount}>
                 Lưu
             </button>
         </div>

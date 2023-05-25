@@ -25,7 +25,6 @@ const Job = ({ job, isLibrary, setChosedJob }) => {
                 <button
                     className={cx('btn-view')}
                     onClick={() => {
-                        console.log(job);
                         setChosedJob(job);
                     }}
                 >
