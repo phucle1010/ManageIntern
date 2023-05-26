@@ -168,11 +168,13 @@ const RegistedSubject = ({ subject, getRegistedSubject }) => {
                     <h4>Giảng viên hướng dẫn: </h4>
                     <span>{registSubject.teacher_name}</span>
                 </div>
-                <div className={cx('options-btn')}>
-                    <button className={cx('btn-cancel')} onClick={handleRemoveRegistedSubject}>
-                        Gỡ yêu cầu
-                    </button>
-                </div>
+                {subject.regist_status.data[0] === 0 && (
+                    <div className={cx('options-btn')}>
+                        <button className={cx('btn-cancel')} onClick={handleRemoveRegistedSubject}>
+                            Gỡ yêu cầu
+                        </button>
+                    </div>
+                )}
             </div>
         </React.Fragment>
     );
