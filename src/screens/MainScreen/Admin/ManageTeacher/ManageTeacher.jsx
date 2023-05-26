@@ -51,12 +51,12 @@ const ManageTeacher = () => {
 
     useEffect(() => {
         axios
-            .get('/admin/teacher')
+            .get('/admin/teacher', {})
             .then((res) => {
                 setTeachers(res.data.responseData);
             })
             .then(() => setIsLoading(false));
-    }, [chosedTeacher]);
+    }, []);
 
     return (
         <div className={cx('wrapper')}>
@@ -88,8 +88,8 @@ const ManageTeacher = () => {
                                     phone: '',
                                     email: '',
                                     address: '',
-                                    dob: new Date().toLocaleString(),
-                                    start_date: new Date().toLocaleString(),
+                                    dob: new Date(),
+                                    start_date: new Date(),
                                     education_level: null,
                                     current_status: {
                                         data: [-1],

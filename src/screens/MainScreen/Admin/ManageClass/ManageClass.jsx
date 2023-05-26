@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './ManageClass.module.scss';
@@ -6,7 +7,6 @@ import SearchBox from '../../../../components/SearchBox';
 import ClassItem from './ClassItem';
 import NewClass from './NewClass/NewClass';
 import axios from 'axios';
-
 
 const cx = classNames.bind(styles);
 
@@ -22,53 +22,50 @@ const ManageClass = () => {
         axios
             .get('/class/academicyear')
             .then((res) => setAcademicYear(res.data))
-            .catch((err) => console.log({err: err}));
+            .catch((err) => console.log({ err: err }));
     }, []);
 
     useEffect(() => {
         getClassAll();
-    }, []);   
+    }, []);
 
     const getClassAll = () => {
         axios
             .get('/class')
             .then((res) => setClassList(res.data))
-            .catch((err) => console.log({err: err}));
+            .catch((err) => console.log({ err: err }));
     };
 
     const getClassYear = () => {
         axios
             .get(`/class/year?year='${year}'`)
             .then((res) => setClassList(res.data))
-            .catch((err) => console.log({err: err}));
+            .catch((err) => console.log({ err: err }));
     };
 
     useEffect(() => {
-        if (year === ""){
+        if (year === '') {
             getClassAll();
-        }else if (year !== null){
+        } else if (year !== null) {
             getClassYear();
         }
     }, [year]);
-
 
     return (
         <div className={cx('wrapper')}>
             <h3 className={cx('list-heading')}>DANH SÁCH LỚP</h3>
             <SearchBox className={cx('search')} />
             <div className={cx('filters')}>
-                <select value={year} className={cx('filter-select-item')} 
+                <select
+                    value={year}
+                    className={cx('filter-select-item')}
                     onChange={(e) => {
-                        setYear(e.target.value)
-
-                        }} >
-                    <option value="" > Tất cả </option>
+                        setYear(e.target.value);
+                    }}
+                >
+                    <option value=""> Tất cả </option>
                     {academicYear.map((years) => (
-                        <option
-                            key={years.academic_year}
-                            value={years.academic_year}
-                            className={cx('option-value')}
-                        >
+                        <option key={years.academic_year} value={years.academic_year} className={cx('option-value')}>
                             {years.academic_year}
                         </option>
                     ))}
@@ -98,7 +95,7 @@ const ManageClass = () => {
                 {classList.length > 0 &&
                     classList.map((classInfo) => <ClassItem key={classInfo.id} classInfo={classInfo} />)}
             </div>
-            {showNewClass === true && <NewClass close={setShowNewClass} editable={true} classInfo={null}/>}
+            {showNewClass === true && <NewClass close={setShowNewClass} editable={true} classInfo={null} />}
         </div>
     );
 };

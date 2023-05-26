@@ -47,13 +47,14 @@ const HomeAdmin = () => {
 
     return (
         <div className={cx('wrapper')}>
-            <h3 className={cx('title-heading')}>TRANG CHỦ</h3>
-            <SearchBox className={cx('search')} />
-            <h4 className={cx('list-heading')}>Danh sách chương trình học</h4>
             {isLoading === true ? (
                 <LoadingSpinner />
             ) : (
-                <>
+                <React.Fragment>
+                    <h3 className={cx('title-heading')}>TRANG CHỦ</h3>
+                    <SearchBox className={cx('search')} />
+                    <h4 className={cx('list-heading')}>Danh sách chương trình học</h4>
+
                     <div className={cx('program-list')}>
                         {programs.length !== 0 &&
                             programs.map((program, index) => (
@@ -78,7 +79,7 @@ const HomeAdmin = () => {
                     >
                         Thêm mới
                     </button>
-                </>
+                </React.Fragment>
             )}
 
             {Object.keys(chosedProgram).length !== 0 && (

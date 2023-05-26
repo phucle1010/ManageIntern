@@ -25,6 +25,7 @@
 
 .job-menu-item {
     font-weight: bold;
+    color: var(--primary-text-color);
 }
 
 .job-category {
@@ -48,7 +49,8 @@
     }
 }
 
-.btn-choose {
+.btn-choose,
+.btn-destroy {
     padding: 6px 20px;
     background-color: var(--working-color);
     color: #fff;
@@ -64,6 +66,10 @@
     }
 }
 
+.btn-destroy {
+    background-color: var(--button-primary-color);
+}
+
 .request-list {
     background-color: #fff;
     border-radius: 8px;
@@ -74,27 +80,56 @@
     padding: 10px;
     display: flex;
     border-bottom: 1px solid var(--section-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
     & span {
         display: block;
-        width: calc(100% / 3);
         font-size: 14px;
     }
 
-    & span.isActive {
-        color: var(--working-color);
+    & span.isPending,
+    & span.isActive,
+    & span.unActive {
+        display: flex;
+        align-items: center;
     }
 
-    & span.unActive {
-        color: var(--stop-work-color);
+    & span.isActive > span {
+        margin-left: 10px;
+        padding: 4px 20px;
+        border-radius: 20px;
+        text-align: center;
+        color: #ffff;
+        background-color: var(--working-color);
+    }
+
+    & span.unActive > span {
+        margin-left: 10px;
+        padding: 4px 20px;
+        border-radius: 20px;
+        text-align: center;
+        color: #ffff;
+        background-color: var(--fail-color);
+    }
+
+    & span.isPending > span {
+        margin-left: 10px;
+        padding: 4px 20px;
+        border-radius: 20px;
+        text-align: center;
+        color: #ffff;
+        background-color: var(--second-color);
     }
 }
 
 .chosed-job {
+    position: relative;
     width: 70%;
-    height: 185px;
     margin: 20px auto 30px auto;
     padding: 10px;
+    padding-bottom: 40px;
     border-radius: 8px;
     box-shadow: 0 4px 20px 1px #e2e2e2;
     background-color: #ffff;
@@ -102,16 +137,18 @@
 
 .chosed-job-item {
     margin: 10px 0;
-    display: flex;
     font-size: 14px;
 
     & h4 {
         margin-right: 10px;
+        margin-bottom: 4px;
     }
 }
 
 .options-btn {
-    float: right;
+    position: absolute;
+    top: 85%;
+    right: 10px;
 }
 
 .btn-regist,

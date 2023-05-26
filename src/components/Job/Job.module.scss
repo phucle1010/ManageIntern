@@ -41,6 +41,11 @@
 
     &.active {
         color: var(--second-color);
+        cursor: default;
+    }
+
+    &.active:hover {
+        opacity: 1;
     }
 }
 

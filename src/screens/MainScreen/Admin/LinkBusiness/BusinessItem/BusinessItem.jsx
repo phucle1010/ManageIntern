@@ -14,7 +14,7 @@ const BusinessItem = ({ business, setChosedBusiness }) => {
             </div>
             <h3 className={cx('business-name')}>{business.name}</h3>
             <h5 className={cx('business-address')}>{business.address}</h5>
-            <h5 className={cx('business-phone')}>{`(+84) ` + business.phone}</h5>
+            <h5 className={cx('business-phone')}>{`(+84) ` + business.phone.substring(1)}</h5>
         </div>
     );
 };

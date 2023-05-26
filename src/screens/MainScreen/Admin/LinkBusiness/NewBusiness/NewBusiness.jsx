@@ -1,13 +1,12 @@
 import React from 'react';
 import classNames from 'classnames/bind';
 import styles from './NewBusiness.module.scss';
-import { Close, Event } from '@mui/icons-material';
+import { Close } from '@mui/icons-material';
 import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
-const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex, newBusiness }) => {
-
+const NewBusiness = ({ openScreen, setNewBusiness, editable, newBusiness }) => {
     const saveBusiness = (newBusiness) => {
         console.log(newBusiness);
 
@@ -15,16 +14,18 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex, newBusin
             .post('/user/business/add', newBusiness)
             .then((res) => {
                 console.log(res.data);
-                if(res.statusCode === 400){
+                if (res.statusCode === 400) {
                     window.alert(`Lỗi ${res.data.responseData}`);
-                }else if(res.statusCode === 401){
+                } else if (res.statusCode === 401) {
                     window.alert(`Lỗi ${res.data.responseData}`);
-                }else{
+                } else {
                     window.alert(res.data.responseData);
                     window.location.reload();
                 }
             })
-            .catch((err) => {console.log({err: err})});
+            .catch((err) => {
+                console.log({ err: err });
+            });
 
         setNewBusiness({
             id: 0,
@@ -38,7 +39,7 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex, newBusin
             representator: '',
             desc: '',
         });
-    }
+    };
     return (
         <div className={cx('wrapper')}>
             <Close className={cx('close-main-btn')} onClick={() => openScreen(false)} />
@@ -48,14 +49,22 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex, newBusin
                     <h4 className={cx('upload-heading')}>Hình ảnh</h4>
                     <div className={cx('upload-avatar')}>
                         <img
-                            src={ newBusiness.img ||"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU"}
+                            src={
+                                newBusiness.img ||
+                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU'
+                            }
                             alt=""
                         />
                     </div>
                     <label className={cx('upload-btn')} htmlFor={cx('upload-input')}>
                         Chọn File
                     </label>
-                    <input type="file" id={cx('upload-input')} readOnly={!editable} name="img"  onChange={(e) => {
+                    <input
+                        type="file"
+                        id={cx('upload-input')}
+                        readOnly={!editable}
+                        name="img"
+                        onChange={(e) => {
                             const getbase64 = (file) => {
                                 let reader = new FileReader();
                                 reader.readAsDataURL(file);
@@ -71,7 +80,8 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, lastIndex, newBusin
                             if (e.target.files && e.target.files[0]) {
                                 getbase64(e.target.files[0]);
                             }
-                        }}/>
+                        }}
+                    />
                 </div>
                 <div className={cx('business-detail')}>
                     <h4 className={cx('detail-heading')}>Chi tiết doanh nghiệp</h4>
