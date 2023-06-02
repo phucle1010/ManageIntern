@@ -32,6 +32,7 @@ const InternJob = () => {
     const [newJob, setNewJob] = useState(initJob);
     const [loaded, setLoaded] = useState(false);
     const [saveClicked, setSaveClicked] = useState(false);
+    const [editable, setEditable] = useState(true);
 
     const getBusinessInfo = async () => {
         await axios
@@ -73,7 +74,7 @@ const InternJob = () => {
         if (businessInfo !== null) {
             getAllJobs();
         }
-    }, [businessInfo]);
+    }, [businessInfo, chosedJob]);
 
     useEffect(() => {
         if (saveClicked) {
@@ -90,12 +91,16 @@ const InternJob = () => {
                     <SearchBox className={cx('search')} />
                     <div className={cx('job-list')}>
                         {jobs.length > 0 &&
-                            jobs.map((job, index) => <JobItem key={index} job={job} setChosedJob={setChosedJob} />)}
+                            jobs.map((job, index) => (
+                                <JobItem key={index} job={job} setChosedJob={setChosedJob} setEditable={setEditable} />
+                            ))}
                         <div className={cx('btn-add')} onClick={() => setOpenNewJobScreen(true)}>
                             <Add className={cx('add-icon')} />
                         </div>
                     </div>
-                    {Object.keys(chosedJob).length > 0 && <JobDesc job={chosedJob} closeScreen={setChosedJob} />}
+                    {Object.keys(chosedJob).length > 0 && (
+                        <JobDesc job={chosedJob} closeScreen={setChosedJob} editable={editable} />
+                    )}
                     {openNewJobScreen === true && (
                         <NewJob
                             openScreen={setOpenNewJobScreen}

@@ -4,7 +4,7 @@ import styles from './JobItem.module.scss';
 
 const cx = classNames.bind(styles);
 
-const JobItem = ({ job, setChosedJob }) => {
+const JobItem = ({ job, setChosedJob, setEditable }) => {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('job-desc')}>
@@ -15,9 +15,26 @@ const JobItem = ({ job, setChosedJob }) => {
             </div>
             <h4 className={cx('job-name')}>{job.job_name}</h4>
             <span className={cx('job-vacancy')}>{`Số lượng cần tuyển: ${job.vacancies}`}</span>
-            <button className={cx('btn-view')} onClick={() => setChosedJob(job)}>
-                Xem chi tiết
-            </button>
+            <div className={cx('btn-options')}>
+                <button
+                    className={cx('btn-view')}
+                    onClick={() => {
+                        setChosedJob(job);
+                        setEditable(false);
+                    }}
+                >
+                    Xem chi tiết
+                </button>
+                <button
+                    className={cx('btn-edit')}
+                    onClick={() => {
+                        setChosedJob(job);
+                        setEditable(true);
+                    }}
+                >
+                    Chỉnh sửa
+                </button>
+            </div>
         </div>
     );
 };

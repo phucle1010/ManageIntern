@@ -8,7 +8,6 @@ import axios from 'axios';
 const cx = classNames.bind(styles);
 
 const NewStudent = ({ open, editable, studentinfo }) => {
-    console.log(open);
     const [departmentlist, setDepartmentList] = useState([]);
     const [classlist, setCLassList] = useState([]);
     const [majorlist, setMajorList] = useState([]);

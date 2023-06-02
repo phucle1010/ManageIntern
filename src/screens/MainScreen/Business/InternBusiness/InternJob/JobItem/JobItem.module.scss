@@ -41,7 +41,13 @@
     font-size: 14px;
 }
 
-.btn-view {
+.btn-options {
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-view,
+.btn-edit {
     padding: 6px 20px;
     border: none;
     border-radius: 8px;
@@ -54,4 +60,8 @@
     &:hover {
         opacity: 0.8;
     }
+}
+
+.btn-edit {
+    background-color: var(--second-color);
 }

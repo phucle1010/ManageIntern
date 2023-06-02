@@ -9,7 +9,12 @@ const cx = classNames.bind(styles);
 const NewTeacher = ({ show, editable, teacher, departments }) => {
     const [teacherItem, setTeacherItem] = useState({ ...teacher, current_status: teacher.current_status.data[0] });
 
-    const formmatedDate = (inputDate) => new Date(inputDate).toISOString().substring(0, 10);
+    const formmatedDate = (date) => {
+        const dateOnly = date.substr(0, 10);
+        const inputDate = new Date(dateOnly);
+        console.log('input date: ', dateOnly);
+        return inputDate.toISOString().slice(0, 10);
+    };
 
     const handleTeacherAccount = () => {
         const isCreateNewTeacher = teacherItem.id === null;
@@ -188,7 +193,7 @@ const NewTeacher = ({ show, editable, teacher, departments }) => {
                                 className={cx('input-item')}
                                 type="date"
                                 name="dob"
-                                value={teacherItem.dob}
+                                value={formmatedDate(teacherItem.dob)}
                                 readOnly={!editable}
                                 onChange={(e) =>
                                     setTeacherItem((prev) => {
@@ -261,7 +266,7 @@ const NewTeacher = ({ show, editable, teacher, departments }) => {
                                 className={cx('input-item')}
                                 type="date"
                                 name="start_date"
-                                value={teacherItem.start_date}
+                                value={formmatedDate(teacherItem.start_date)}
                                 readOnly={!editable}
                                 onChange={(e) =>
                                     setTeacherItem((prev) => {

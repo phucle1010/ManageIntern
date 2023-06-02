@@ -88,8 +88,8 @@ const ManageTeacher = () => {
                                     phone: '',
                                     email: '',
                                     address: '',
-                                    dob: new Date(),
-                                    start_date: new Date(),
+                                    dob: '',
+                                    start_date: '',
                                     education_level: null,
                                     current_status: {
                                         data: [-1],

@@ -8,8 +8,6 @@ const cx = classNames.bind(styles);
 
 const NewBusiness = ({ openScreen, setNewBusiness, editable, newBusiness }) => {
     const saveBusiness = (newBusiness) => {
-        console.log(newBusiness);
-
         axios
             .post('/user/business/add', newBusiness)
             .then((res) => {
@@ -29,15 +27,15 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, newBusiness }) => {
 
         setNewBusiness({
             id: 0,
-            name: '',
-            img: '',
+            company_name: '',
+            image: '',
             phone: '',
             email: '',
             address: '',
-            establishDate: '',
+            establish_date: '',
             sector: '',
             representator: '',
-            desc: '',
+            short_desc: '',
         });
     };
     return (
@@ -63,7 +61,7 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, newBusiness }) => {
                         type="file"
                         id={cx('upload-input')}
                         readOnly={!editable}
-                        name="img"
+                        name="image"
                         onChange={(e) => {
                             const getbase64 = (file) => {
                                 let reader = new FileReader();
@@ -91,8 +89,8 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, newBusiness }) => {
                             <input
                                 className={cx('input-item')}
                                 type="text"
-                                name="name"
-                                value={newBusiness.name}
+                                name="company_name"
+                                value={newBusiness.company_name}
                                 placeholder="FPT"
                                 readOnly={!editable}
                                 onChange={(e) =>
@@ -205,8 +203,8 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, newBusiness }) => {
                             <textarea
                                 className={cx('input-item')}
                                 rows={3}
-                                name="desc"
-                                value={newBusiness.desc}
+                                name="short_desc"
+                                value={newBusiness.short_desc}
                                 placeholder="Mô tả"
                                 readOnly={!editable}
                                 onChange={(e) =>

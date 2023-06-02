@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import classNames from 'classnames/bind';
 import styles from './DetailBusiness.module.scss';
 import { Close } from '@mui/icons-material';
@@ -6,6 +7,20 @@ import { Close } from '@mui/icons-material';
 const cx = classNames.bind(styles);
 
 const DetailBusiness = ({ business, openScreen }) => {
+    const [businessItem, setBusinessItem] = useState(business);
+
+    const handlePutBusiness = async () => {
+        await axios
+            .put('/user/business/edit', businessItem)
+            .then((res) => {
+                alert(res.data.responseData);
+                if (res.data.statusCode === 200) {
+                    openScreen({});
+                }
+            })
+            .catch((err) => alert(err));
+    };
+
     return (
         <div className={cx('wrapper')}>
             <Close className={cx('close-main-btn')} onClick={() => openScreen({})} />
@@ -15,13 +30,38 @@ const DetailBusiness = ({ business, openScreen }) => {
                     <div className={cx('profile-avt')}>
                         <img
                             src={
-                                business.img ||
+                                businessItem.image ||
                                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU'
                             }
                             alt=""
                         />
                     </div>
-                    <h3 className={cx('job-position')}>{business.name}</h3>
+                    <label className={cx('upload-btn')} htmlFor={cx('upload-input')}>
+                        Chọn File
+                    </label>
+                    <input
+                        type="file"
+                        id={cx('upload-input')}
+                        name="image"
+                        onChange={(e) => {
+                            const getbase64 = (file) => {
+                                let reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = () => {
+                                    setBusinessItem((prev) => {
+                                        return {
+                                            ...prev,
+                                            image: reader.result,
+                                        };
+                                    });
+                                };
+                            };
+                            if (e.target.files && e.target.files[0]) {
+                                getbase64(e.target.files[0]);
+                            }
+                        }}
+                    />
+                    <h3 className={cx('job-position')}>{business.company_name}</h3>
                     <h5 className={cx('name')}>{business.address}</h5>
                 </div>
                 <div className={cx('profile-detail')}>
@@ -31,10 +71,18 @@ const DetailBusiness = ({ business, openScreen }) => {
                             <input
                                 className={cx('input-item')}
                                 type="phone"
-                                name="email"
-                                placeholder="0368xxx"
-                                readOnly={true}
-                                value={business.phone}
+                                name="phone"
+                                // placeholder="0368xxx"
+                                // readOnly={true}
+                                value={businessItem.phone}
+                                onChange={(e) =>
+                                    setBusinessItem((prev) => {
+                                        return {
+                                            ...prev,
+                                            [e.target.name]: e.target.value,
+                                        };
+                                    })
+                                }
                             />
                         </div>
                         <div className={cx('user-data-item')}>
@@ -43,9 +91,15 @@ const DetailBusiness = ({ business, openScreen }) => {
                                 className={cx('input-item')}
                                 type="email"
                                 name="email"
-                                placeholder="abc@gmail.com"
-                                readOnly={true}
-                                value={business.email}
+                                value={businessItem.email}
+                                onChange={(e) =>
+                                    setBusinessItem((prev) => {
+                                        return {
+                                            ...prev,
+                                            [e.target.name]: e.target.value,
+                                        };
+                                    })
+                                }
                             />
                         </div>
                         <div className={cx('user-data-item')}>
@@ -53,8 +107,16 @@ const DetailBusiness = ({ business, openScreen }) => {
                             <input
                                 className={cx('input-item')}
                                 type="date"
-                                name="entryDate"
-                                value={business.establishDate}
+                                name="establish_date"
+                                value={businessItem.establish_date}
+                                onChange={(e) =>
+                                    setBusinessItem((prev) => {
+                                        return {
+                                            ...prev,
+                                            [e.target.name]: e.target.value,
+                                        };
+                                    })
+                                }
                             />
                         </div>
                         <div className={cx('user-data-item')}>
@@ -63,8 +125,16 @@ const DetailBusiness = ({ business, openScreen }) => {
                                 className={cx('input-item')}
                                 type="text"
                                 name="sector"
-                                readOnly={true}
-                                value={business.sector}
+                                // readOnly={true}
+                                value={businessItem.sector}
+                                onChange={(e) =>
+                                    setBusinessItem((prev) => {
+                                        return {
+                                            ...prev,
+                                            [e.target.name]: e.target.value,
+                                        };
+                                    })
+                                }
                             />
                         </div>
                         <div className={cx('user-data-item', 'full-width')}>
@@ -73,8 +143,16 @@ const DetailBusiness = ({ business, openScreen }) => {
                                 className={cx('input-item')}
                                 type="text"
                                 name="representator"
-                                readOnly={true}
-                                value={business.representator}
+                                // readOnly={true}
+                                value={businessItem.representator}
+                                onChange={(e) =>
+                                    setBusinessItem((prev) => {
+                                        return {
+                                            ...prev,
+                                            [e.target.name]: e.target.value,
+                                        };
+                                    })
+                                }
                             />
                         </div>
                         <div className={cx('user-data-item', 'full-width')}>
@@ -82,18 +160,28 @@ const DetailBusiness = ({ business, openScreen }) => {
                             <textarea
                                 className={cx('input-item')}
                                 type="text"
-                                name="representator"
-                                readOnly={true}
-                                value={business.desc}
+                                name="short_desc"
+                                // readOnly={true}
+                                value={businessItem.short_desc}
                                 rows={3}
+                                onChange={(e) =>
+                                    setBusinessItem((prev) => {
+                                        return {
+                                            ...prev,
+                                            [e.target.name]: e.target.value,
+                                        };
+                                    })
+                                }
                             />
                         </div>
                     </div>
                 </div>
             </div>
-            {/* <div className={cx('option-btn')}>
-                <button className={cx('save-btn')}>Lưu thay đổi</button>
-            </div> */}
+            <div className={cx('option-btn')}>
+                <button className={cx('save-btn')} onClick={handlePutBusiness}>
+                    Lưu thay đổi
+                </button>
+            </div>
         </div>
     );
 };

@@ -10,9 +10,15 @@ const BusinessItem = ({ business, setChosedBusiness }) => {
         <div className={cx('wrapper')}>
             <div className={cx('business-img')}>
                 <Visibility className={cx('view')} onClick={() => setChosedBusiness(business)} />
-                <img src={business.img} alt="" />
+                <img
+                    src={
+                        business.image ||
+                        'https://t4.ftcdn.net/jpg/04/99/93/31/360_F_499933117_ZAUBfv3P1HEOsZDrnkbNCt4jc3AodArl.jpg'
+                    }
+                    alt=""
+                />
             </div>
-            <h3 className={cx('business-name')}>{business.name}</h3>
+            <h3 className={cx('business-name')}>{business.company_name}</h3>
             <h5 className={cx('business-address')}>{business.address}</h5>
             <h5 className={cx('business-phone')}>{`(+84) ` + business.phone.substring(1)}</h5>
         </div>

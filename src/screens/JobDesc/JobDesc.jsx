@@ -9,9 +9,10 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 
 const cx = classNames.bind(styles);
 
-const JobDesc = ({ job, closeScreen }) => {
+const JobDesc = ({ job, closeScreen, editable }) => {
     const [skills, setSkills] = useState([]);
     const [loaded, setLoaded] = useState(false);
+    const [jobItem, setJobItem] = useState(job);
 
     useEffect(() => {
         axios
@@ -28,6 +29,18 @@ const JobDesc = ({ job, closeScreen }) => {
             })
             .catch((err) => alert(err));
     }, []);
+
+    const handlePutJobDesc = async () => {
+        await axios
+            .put('/business/job/edit', jobItem)
+            .then((res) => {
+                alert(res.data.responseData);
+                if (res.data.statusCode === 200) {
+                    closeScreen({});
+                }
+            })
+            .catch((err) => alert(err));
+    };
 
     return (
         <React.Fragment>
@@ -59,18 +72,103 @@ const JobDesc = ({ job, closeScreen }) => {
                         <div className={cx('job-descs')}>
                             <div className={cx('job-desc-item')}>
                                 <h4 className={cx('title-heading')}>Mô tả công việc</h4>
-                                <p className={cx('job-desc-content')}>{job.job_desc}</p>
+                                {editable ? (
+                                    <textarea
+                                        className={cx('input-item')}
+                                        type="text"
+                                        name="job_desc"
+                                        value={jobItem.job_desc}
+                                        onChange={(e) =>
+                                            setJobItem((prev) => {
+                                                return {
+                                                    ...prev,
+                                                    [e.target.name]: e.target.value,
+                                                };
+                                            })
+                                        }
+                                        rows={5}
+                                        spellCheck={false}
+                                    />
+                                ) : (
+                                    <p className={cx('job-desc-content')}>{jobItem.job_desc}</p>
+                                )}
                             </div>
                             <div className={cx('job-desc-item')}>
                                 <h4 className={cx('title-heading')}>Yêu cầu công việc</h4>
-                                <p className={cx('job-desc-content')}>{job.requirements}</p>
+                                {editable ? (
+                                    <textarea
+                                        className={cx('input-item')}
+                                        type="text"
+                                        name="requirements"
+                                        value={jobItem.requirements}
+                                        onChange={(e) =>
+                                            setJobItem((prev) => {
+                                                return {
+                                                    ...prev,
+                                                    [e.target.name]: e.target.value,
+                                                };
+                                            })
+                                        }
+                                        rows={5}
+                                        spellCheck={false}
+                                    />
+                                ) : (
+                                    <p className={cx('job-desc-content')}>{jobItem.requirements}</p>
+                                )}
                             </div>
                             <div className={cx('job-desc-item')}>
                                 <h4 className={cx('title-heading')}>Thông tin khác</h4>
-                                <p className={cx('job-desc-content')}>{job.another_information}</p>
+                                {editable ? (
+                                    <textarea
+                                        className={cx('input-item')}
+                                        type="text"
+                                        name="another_information"
+                                        value={jobItem.another_information}
+                                        onChange={(e) =>
+                                            setJobItem((prev) => {
+                                                return {
+                                                    ...prev,
+                                                    [e.target.name]: e.target.value,
+                                                };
+                                            })
+                                        }
+                                        rows={3}
+                                        spellCheck={false}
+                                    />
+                                ) : (
+                                    <p className={cx('job-desc-content')}>{jobItem.another_information}</p>
+                                )}
+                            </div>
+                            <div className={cx('job-desc-item')}>
+                                <h4 className={cx('title-heading')}>Số lượng cần tuyển</h4>
+                                {editable ? (
+                                    <textarea
+                                        className={cx('input-item')}
+                                        type="text"
+                                        name="vacancies"
+                                        value={jobItem.vacancies}
+                                        onChange={(e) =>
+                                            setJobItem((prev) => {
+                                                return {
+                                                    ...prev,
+                                                    [e.target.name]: e.target.value,
+                                                };
+                                            })
+                                        }
+                                        rows={1}
+                                        spellCheck={false}
+                                    />
+                                ) : (
+                                    <p className={cx('job-desc-content')}>{jobItem.vacancies}</p>
+                                )}
                             </div>
                         </div>
                     </div>
+                    {editable && (
+                        <button className={cx('btn-save')} onClick={handlePutJobDesc}>
+                            Lưu thay đổi
+                        </button>
+                    )}
                 </div>
             ) : (
                 <LoadingSpinner />

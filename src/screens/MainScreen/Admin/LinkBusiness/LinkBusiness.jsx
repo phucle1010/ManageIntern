@@ -17,36 +17,36 @@ const LinkBusiness = () => {
     const [openNewBusinessScreen, setOpenNewBusinessScreen] = useState(false);
     const [newBusiness, setNewBusiness] = useState({
         id: 0,
-        name: '',
-        img: '',
+        company_name: '',
+        image: '',
         phone: '',
         email: '',
         address: '',
-        establishDate: '',
+        establish_date: '',
         sector: '',
         representator: '',
-        desc: '',
+        short_desc: '',
     });
     const [businesses, setBusinesses] = useState([]);
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
         axios
-            .get(`/user/business`)
+            .get(`/user/business/all`)
             .then((res) => {
                 setBusinesses(
                     res.data.map((business) => ({
                         ...business,
                         id: business.id,
-                        name: business.username,
-                        img: business.image,
+                        company_name: business.company_name,
+                        image: business.image,
                         phone: business.phone,
                         email: business.email,
                         address: business.address,
-                        establishDate: business.establish_date,
+                        establish_date: business.establish_date,
                         sector: business.industry_sector,
-                        representator: business.full_name,
-                        desc: business.short_desc,
+                        representator: business.representator,
+                        short_desc: business.short_desc,
                     })),
                 );
                 setLoaded(true);
@@ -54,8 +54,8 @@ const LinkBusiness = () => {
             .catch((err) => {
                 console.log({ err: err });
             });
-    }, []);
-
+    }, [chosedBusiness]);
+    console.log(businesses);
     useEffect(() => {
         if (newBusiness.id !== 0) {
             setBusinesses((prev) => [...prev, newBusiness]);
@@ -85,7 +85,6 @@ const LinkBusiness = () => {
                             openScreen={setOpenNewBusinessScreen}
                             setNewBusiness={setNewBusiness}
                             editable={true}
-                            // lastIndex={businesses[businesses.length - 1].id || 1}
                             newBusiness={newBusiness}
                         />
                     )}

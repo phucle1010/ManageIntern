@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Suspense, useState } from 'react';
+import { Suspense } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 
 import router from './routes';
