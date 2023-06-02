@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './HomeStudent.module.scss';
 import { ArrowLeft, ArrowRight } from '@mui/icons-material';
-
+import axios from 'axios';
 import SearchBox from '../../../../components/SearchBox';
 import Job from '../../../../components/Job';
 import JobDesc from '../../../JobDesc';
@@ -238,6 +238,25 @@ const HomeStudent = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [numberPages, setNumberPages] = useState(0);
     const [chosedJob, setChosedJob] = useState({});
+    const [jobs, setJobs] = useState([]);
+    const token = JSON.parse(localStorage.getItem('user_token'));
+
+    const loadJobs = () => {
+        axios
+            .get(`/business/jobs`, {headers: {
+                Authorization:  token,
+            }})
+            .then((res) => {
+                setJobs(res.data);
+                console.log(res.data);
+            })
+            .catch((err) => console.log(err));
+    }
+
+    useEffect(() => {
+        loadJobs();
+        console.log(jobs);
+    },[])
 
     const getNumberOfPages = useCallback((list) => {
         if (list.length % MAXIMUM_JOBS_EACH_PAGE === 0) {
@@ -262,8 +281,8 @@ const HomeStudent = () => {
             <div className={cx('job-category')}>
                 <h4 className={cx('list-heading')}>Danh sách công việc</h4>
                 <div className={cx('job-list')}>
-                    {JOBS.length > 0 &&
-                        JOBS.map(
+                    {jobs.length > 0 &&
+                        jobs.map(
                             (job, index) =>
                                 isDisplayedItemOnPage(index) === true && (
                                     <Job job={job} key={job.id} setChosedJob={setChosedJob} isLibrary={false} />

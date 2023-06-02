@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './SendRequest.module.scss';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
@@ -51,6 +52,35 @@ const SENT_JOBS_REQUEST = [
 
 const SendRequest = () => {
     const [selectedJob, setSelectedJob] = useState(null);
+    const [jobs, setJobs] = useState([]);
+    const token = JSON.parse(localStorage.getItem('user_token'));
+    const [cv, setCv] = useState();
+
+    const loadJob = () => {
+        axios
+            .get('/student/job/interested', {
+                headers: {
+                    'Authorization': token
+                }
+            })
+            .then((res) => setJobs(res.data))
+            .catch((err) => console.log(err));
+    } 
+    useEffect(() => {
+        loadJob();
+        console.log(jobs.data);
+    }, []);
+
+    const SendRequest = (job) => {
+        const config = {
+            headers: { Authorization: token }
+          };
+        axios
+            .post(`/student/job/${job.id}`,{appriciationFile: cv}, config)
+            .then((res) => alert('gui yeu cau thanh cong'))
+            .catch((err) => console.log(err));
+
+    }
 
     return (
         <div className={cx('wrapper')}>
@@ -64,12 +94,12 @@ const SendRequest = () => {
                     <span className={cx('job-menu-item')}>Lựa chọn</span>
                 </div>
                 <div className={cx('job-info-list')}>
-                    {FOLLOWING_JOBS.map((job, index) => (
+                    {jobs.map((job, index) => (
                         <div key={job.id} className={cx('job-info-item')}>
                             <span className={cx('job-item')}>{index + 1}</span>
-                            <span className={cx('job-item')}>{job.name}</span>
-                            <span className={cx('job-item')}> {job.major}</span>
-                            <span className={cx('job-item')}>{job.company}</span>
+                            <span className={cx('job-item')}>{job.job_name}</span>
+                            <span className={cx('job-item')}> Software Engineer</span>
+                            <span className={cx('job-item')}>{job.username}</span>
                             <div className={cx('job-item')}>
                                 <button className={cx('btn-choose')} onClick={() => setSelectedJob(job)}>
                                     Chọn
@@ -105,26 +135,41 @@ const SendRequest = () => {
                     <div className={cx('chosed-job')}>
                         <div className={cx('chosed-job-item')}>
                             <h4>Tên công việc: </h4>
-                            <span>{selectedJob.name}</span>
+                            <span>{selectedJob.job_name}</span>
                         </div>
                         <div className={cx('chosed-job-item')}>
                             <h4>Lĩnh vực: </h4>
-                            <span>{selectedJob.major}</span>
+                            <span>{/*selectedJob.major*/} Software Engineer </span>
                         </div>
                         <div className={cx('chosed-job-item')}>
                             <h4>Địa điểm thực tập: </h4>
-                            <span>{selectedJob.workplace}</span>
+                            <span>{selectedJob.address}</span>
                         </div>
                         <div className={cx('chosed-job-item')}>
                             <h4>Thông tin công ty: </h4>
-                            <span>{selectedJob.company}</span>
+                            <span>{selectedJob.industry_sector}</span>
                         </div>
                         <div className={cx('chosed-job-item')}>
                             <h4>Thời gian thực tập: </h4>
-                            <span>{selectedJob.internTime}</span>
+                            <span>{selectedJob.requirements}</span>
+                        </div>
+                        <div className={cx('chosed-job-item')}>
+                            <h4>CV: </h4>
+                            <input type="file"  name="img"  onChange={(e) => {
+                            const getbase64 = (file) => {
+                                let reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = () => {
+                                    setCv(reader.result);
+                                };
+                            };
+                            if (e.target.files && e.target.files[0]) {
+                                getbase64(e.target.files[0]);
+                            }
+                        }}/>
                         </div>
                         <div className={cx('options-btn')}>
-                            <button className={cx('btn-regist')} onClick={() => {}}>
+                            <button className={cx('btn-regist')} onClick={() => SendRequest(selectedJob)}>
                                 Gửi yêu cầu
                             </button>
                             <button className={cx('btn-cancel')} onClick={() => setSelectedJob(null)}>
