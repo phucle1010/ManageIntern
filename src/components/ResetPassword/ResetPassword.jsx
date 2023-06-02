@@ -16,35 +16,48 @@ const ResetPassword = () => {
     const [isEmptyFields, setIsEmptyFields] = useState(false);
     const [exactEmail, setExactEmail] = useState(false);
     const [exactPass, setExactPass] = useState(false);
+    const [errorCode, setErrorCode] = useState(false);
+    const [exactCode, setExactCode] = useState(false);
+    const [code, setCode] = useState('');
 
     const handleVerify = () => {
+        const sendCode = randomResetCode()
         if (!exactEmail) {
             axios
                 .post('/user/resetpassword/email', {email: email})
                 .then((res) => {
+                    console.log(email);
                     if(res.data.statusCode === 200){
                         setExactEmail(true);
+                        console.log(randomResetCode());// ma xac thuc
+                        /*axios
+                            .post('/user/resetpassword/verifycode', {sendCode: sendCode, email: email})
+                            .then((res) => alert(res.data.responseData))
+                            .catch((err) => { console.log({err: err})});*/
+                    }else{
+                        alert(res.data.responseData);
                     }
                 })
                 .catch((err) => { console.log({err: err})});
-
-            if (email === '') {
-                setIsEmptyFields(true);
-            } else if (email !== 'user') {
-                setErrorEmail(true);
-            } else {
-                setExactEmail(true);
+        }else if(!exactCode){
+            if(code === sendCode){
+                setExactCode(true);
             }
-        } else {
-            if (pass !== repass) {
-                setErrorPass(true);
-            } else if (pass === '' || repass === '') {
-                setIsEmptyFields(true);
-            } else {
-                setExactPass(true);
+        }else {
+            if(pass != repass){
+                alert('Mật khẩu xác nhận không đúng, vui lòng nhập lại');
+            }else{
+                axios
+                    .post('/user/resetpassword', {pass: pass, email: email})
+                    .then((res) => alert(res.data.responseData))
+                    .catch((err) => { console.log({err: err})});   
             }
         }
     };
+
+    const randomResetCode = () => {
+        return Math.floor(Math.random() * 99999) + 10000;
+    }
 
     return (
         <div className={cx('wrapper')}>
@@ -82,7 +95,23 @@ const ResetPassword = () => {
                             setIsEmptyFields(false);
                         }}
                     />
-                    <div className={cx('input-item', 'pass', `${exactEmail === true && 'show-reset-pass'}`)}>
+                    <input
+                        className={cx(
+                            'email',
+                            `${errorCode === true && 'notice-error-email'}`,
+                            `${exactCode === true && 'hide-email'}`,
+                        )}
+                        value={code}
+                        type="text"
+                        placeholder="Verify code"
+                        name="user"
+                        onChange={(e) => setCode(e.target.value)}
+                        onFocus={() => {
+                            setErrorCode(false);
+                            setIsEmptyFields(false);
+                        }}
+                    />
+                    <div className={cx('input-item', 'pass', `${exactEmail === true && exactCode === true && 'show-reset-pass'}`)}>
                         <span>Mật khẩu mới</span>
                         <input
                             value={pass}
@@ -97,7 +126,7 @@ const ResetPassword = () => {
                         />
                     </div>
 
-                    <div className={cx('input-item', 'pass', `${exactEmail === true && 'show-reset-pass'}`)}>
+                    <div className={cx('input-item', 'pass', `${exactEmail === true && exactCode === true && 'show-reset-pass'}`)}>
                         <span>Xác nhận mật khẩu</span>
                         <input
                             value={repass}
@@ -113,6 +142,7 @@ const ResetPassword = () => {
                     </div>
                     {errorEmail === true && <div className={cx('notice')}>Vui lòng kiểm tra lại Email</div>}
                     {errorPass === true && <div className={cx('notice')}>Vui lòng kiểm tra lại mật khẩu</div>}
+                    {errorCode === true && <div className={cx('notice')}>Vui lòng kiểm tra lại mã xác thực</div>}
                     {isEmptyFields === true && <div className={cx('notice')}>Vui lòng điền đầy đủ thông tin</div>}
                     {exactPass === true && <div className={cx('notice')}>Khôi phục tài khoản thành công</div>}
                 </div>

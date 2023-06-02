@@ -2,12 +2,14 @@ import React, { useRef, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './NewJob.module.scss';
 import { Close } from '@mui/icons-material';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
-const NewJob = ({ openScreen, editable, setNewJob, lastIndex }) => {
+const NewJob = ({ openScreen, editable, setNewJob, newJob, lastIndex }) => {
     const [skill, setSkill] = useState('');
     const [skills, setSkills] = useState([]);
+    const token = JSON.parse(localStorage.getItem('user_token'));
 
     const skillRef = useRef();
 
@@ -23,6 +25,13 @@ const NewJob = ({ openScreen, editable, setNewJob, lastIndex }) => {
         skillRef.current.scrollIntoView({ behavior: 'smooth' });
     };
 
+    const handleSaveNewJob = () => {
+        axios
+            .post(`/business/job`, {newJob, token})
+            .then((res) => window.alert(res.data.responseData))
+            .catch((err) => console.log(err));
+    };
+
     return (
         <div className={cx('wrapper')}>
             <Close className={cx('close-main-btn')} onClick={() => openScreen(false)} />
@@ -33,14 +42,30 @@ const NewJob = ({ openScreen, editable, setNewJob, lastIndex }) => {
                         <h4 className={cx('upload-heading')}>Hình ảnh</h4>
                         <div className={cx('upload-avatar')}>
                             <img
-                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU"
+                                src={ newJob.img ||"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU"}
                                 alt=""
                             />
                         </div>
                         <label className={cx('upload-btn')} htmlFor={cx('upload-input')}>
                             Chọn File
                         </label>
-                        <input type="file" id={cx('upload-input')} readOnly={!editable} />
+                        <input type="file" id={cx('upload-input')} name="img" readOnly={!editable} onChange={(e) => {
+                            const getbase64 = (file) => {
+                                let reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = () => {
+                                    setNewJob((prev) => {
+                                        return {
+                                            ...prev,
+                                            [e.target.name]: reader.result,
+                                        };
+                                    });
+                                };
+                            };
+                            if (e.target.files && e.target.files[0]) {
+                                getbase64(e.target.files[0]);
+                            }
+                        }} />
                     </React.Fragment>
                     <div className={cx('job-skills')}>
                         <h5 className={cx('input-title')}>Kỹ năng yêu cầu</h5>
@@ -174,12 +199,7 @@ const NewJob = ({ openScreen, editable, setNewJob, lastIndex }) => {
             <button
                 className={cx('save-btn')}
                 onClick={() => {
-                    setNewJob((prev) => {
-                        return {
-                            ...prev,
-                            id: lastIndex + 1,
-                        };
-                    });
+                    handleSaveNewJob();
                     openScreen(false);
                 }}
             >
