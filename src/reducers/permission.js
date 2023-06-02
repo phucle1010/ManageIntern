@@ -1,17 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
-    role: 0,
-};
+const initialState = 0;
 
 const roleSlice = createSlice({
     name: 'role',
     initialState,
     reducers: {
         setRole: (state, action) => {
-            // console.log('prev state: ', state);
-            // state = action.payload;
-            // console.log('next state: ', state);
             return action.payload;
         },
     },

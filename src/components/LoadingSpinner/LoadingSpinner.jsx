@@ -8,9 +8,7 @@ const cx = classNames.bind(styles);
 const LoadingSpinner = () => {
     return (
         <div className={cx('wrapper')}>
-            <Loading type="points" color="primary" textColor="primary">
-                Vui lòng đợi
-            </Loading>
+            <Loading type="points" color="primary" textColor="primary" />
         </div>
     );
 };

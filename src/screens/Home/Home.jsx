@@ -3,7 +3,8 @@ import React, { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { setRole } from '../../reducers/login';
+import { setRole } from '../../reducers/permission';
+import { setUserInfo } from '../../reducers/user';
 
 const Admin = React.lazy(() => import('./Admin'));
 const Teacher = React.lazy(() => import('./Teacher'));
@@ -14,13 +15,13 @@ const ADMIN_ROLE = 1;
 const TEACHER_ROLE = 2;
 const STUDENT_ROLE = 3;
 const BUSINESS_ROLE = 4;
-const ROLES = [ADMIN_ROLE, TEACHER_ROLE, STUDENT_ROLE, BUSINESS_ROLE];
 
 const MenuContext = createContext();
 
 const Home = () => {
     const roleState = useSelector((state) => state.role);
     const dispatch = useDispatch();
+
     const [minimizeMenu, setMinimizeMenu] = useState(false);
     const [selectedSectionItem, setSelectedSectionItem] = useState({});
 
@@ -32,29 +33,39 @@ const Home = () => {
         if (userToken === null) {
             localStorage.setItem('user_token', JSON.stringify(''));
         } else {
-            if (JSON.parse(userToken) === '') {
+            const token = JSON.parse(userToken);
+            if (token === '') {
                 navigate('/login');
             } else {
-                axios.get('/user/data', { params: { token: JSON.parse(userToken) } }).then((res) => {
+                axios.get('/user/account/data', { params: { token } }).then((res) => {
                     switch (res.data.responseData[0].permission_id) {
                         case ADMIN_ROLE:
-                            dispatch(setRole({ role: ADMIN_ROLE }));
+                            dispatch(setRole(ADMIN_ROLE));
                             break;
                         case TEACHER_ROLE:
-                            dispatch(setRole({ role: TEACHER_ROLE }));
+                            dispatch(setRole(TEACHER_ROLE));
                             break;
                         case STUDENT_ROLE:
-                            dispatch(setRole({ role: STUDENT_ROLE }));
+                            dispatch(setRole(STUDENT_ROLE));
                             break;
                         case BUSINESS_ROLE:
-                            dispatch(setRole({ role: BUSINESS_ROLE }));
+                            dispatch(setRole(BUSINESS_ROLE));
                             break;
                         default:
                             break;
                     }
+                    storeUserData(token);
                 });
             }
         }
+    };
+
+    const storeUserData = (token) => {
+        axios.get('/user/person/data', { params: { token } }).then((res) => {
+            if (res.data.statusCode === 200) {
+                dispatch(setUserInfo(res.data.responseData[0]));
+            }
+        });
     };
 
     useEffect(() => {
@@ -62,7 +73,7 @@ const Home = () => {
     }, [roleState.role]);
 
     (function () {
-        switch (roleState.role) {
+        switch (roleState) {
             case ADMIN_ROLE:
                 MainHome = Admin;
                 break;
@@ -81,7 +92,7 @@ const Home = () => {
     })();
 
     return (
-        roleState.role !== 0 &&
+        roleState !== 0 &&
         MainHome !== null && (
             <MenuContext.Provider value={{ minimizeMenu }}>
                 <MainHome

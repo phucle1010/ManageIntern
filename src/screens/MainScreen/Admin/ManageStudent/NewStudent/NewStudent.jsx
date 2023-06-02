@@ -6,6 +6,7 @@ import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
+
 const NewStudent = ({ close, editable, studentinfo }) => {
     const [departmentlist, setDepartmentList] = useState([]);
     const [classlist, setCLassList] = useState([]);
@@ -102,10 +103,10 @@ const NewStudent = ({ close, editable, studentinfo }) => {
             handleSave();
         }
     }
-
+    
     return (
         <div className={cx('wrapper')}>
-            <Close className={cx('close-main-btn')} onClick={() => close(false)} />
+            <Close className={cx('close-main-btn')} onClick={() => show(false)} />
             <h3 className={cx('main-heading')}>Thông tin sinh viên</h3>
             <div className={cx('user-info')}>
                 <div className={cx('user-upload')}>
