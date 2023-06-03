@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Requirement.module.scss';
 
 import SearchBox from '../../../../../components/SearchBox';
 import StudentItem from './StudentItem';
 import ViewStudent from '../Student/ViewStudent';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
@@ -49,6 +50,17 @@ const INTERNING_MENU = ['STT', 'Ảnh', 'Họ và tên', 'Trường đại học
 
 const Requirement = () => {
     const [chosedStudent, setChosedStudent] = useState({});
+    const [studentRequest, setStudentRequest] = useState([]);
+
+    const loadData = () => {
+        const token = JSON.parse(localStorage.getItem('user_token'));
+        axios  
+            .get(`/business/job/request`, {headers: {'Authorization': token}})
+            .then((res) => setStudentRequest(res.data))
+            .catch((err) => console.log(err));
+    }
+    useEffect(() => {loadData();
+         console.log(studentRequest)}, []);
 
     return (
         <div className={cx('wrapper')}>
@@ -63,9 +75,9 @@ const Requirement = () => {
                     ))}
                 </div>
                 <div className={cx('pending-list')}>
-                    {STUDENTS.map((student, index) => (
+                    {studentRequest?studentRequest.map((student, index) => (
                         <StudentItem key={index} student={student} order={index} setChosedStudent={setChosedStudent} />
-                    ))}
+                    )) : {}}
                 </div>
             </div>
             <div className={cx('requirement-category')}>
