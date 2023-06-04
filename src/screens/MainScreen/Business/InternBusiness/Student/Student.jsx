@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Student.module.scss';
 
 import SearchBox from '../../../../../components/SearchBox';
 import StudentItem from './StudentItem';
 import ViewStudent from './ViewStudent';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
@@ -47,6 +48,19 @@ const STUDENTS = [
 
 const Student = () => {
     const [chosedStudent, setChosedStudent] = useState({});
+    const [students, setStudents] = useState([]);
+    const loadData = () => {
+        const token = JSON.parse(localStorage.getItem('user_token'));
+        axios
+            .get(`/business/interns`, {headers: {'Authorization': token}})
+            .then((res) => {
+                setStudents(res.data);
+                console.log(students);
+            })
+            .catch((err) => console.log(err));
+    }
+
+    useEffect(() => loadData(),[]);
 
     return (
         <div className={cx('wrapper')}>
@@ -60,7 +74,7 @@ const Student = () => {
                 ))}
             </div>
             <div className={cx('student-list')}>
-                {STUDENTS.map((student, index) => (
+                {students.map((student, index) => (
                     <StudentItem key={index} student={student} order={index} setChosedStudent={setChosedStudent} />
                 ))}
             </div>

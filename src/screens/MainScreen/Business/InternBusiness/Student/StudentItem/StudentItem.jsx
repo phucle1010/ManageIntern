@@ -11,18 +11,18 @@ const StudentItem = ({ student, order, setChosedStudent }) => {
         <div className={cx('student-item')}>
             <span className={cx('student-info')}>{order + 1}</span>
             <div className={cx('student-info')}>
-                <Avatar className={cx('avt')} src={student.img} />
+                <Avatar className={cx('avt')} src={student.image} />
             </div>
-            <span className={cx('student-info')}>{student.name}</span>
-            <span className={cx('student-info')}>{student.position}</span>
-            <span className={cx('student-info')}>{student.entryDay}</span>
+            <span className={cx('student-info')}>{student.full_name}</span>
+            <span className={cx('student-info')}>{student.job_name}</span>
+            <span className={cx('student-info')}>{new Date(student.start_date).toISOString().slice(0, 10)}</span>
             <div className={cx('student-info')}>
                 <span
                     className={cx('status', {
-                        interning: student.internStatus === 'interning',
+                        interning: /*student.internStatus ===*/ 'interning',
                     })}
                 >
-                    {student.internStatus === 'interning' && 'Đang thực tập'}
+                    {/*student.internStatus === 'interning' &&*/ 'Đang thực tập'}
                 </span>
             </div>
             <div className={cx('student-info')}>

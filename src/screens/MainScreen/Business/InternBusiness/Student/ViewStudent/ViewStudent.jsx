@@ -18,8 +18,8 @@ const ViewStudent = ({ student, setChosedStudent }) => {
                             alt=""
                         />
                     </div>
-                    <h3 className={cx('job-position')}>{student.position}</h3>
-                    <h5 className={cx('name')}>{student.name}</h5>
+                    <h3 className={cx('job-position')}>{student.job_name}</h3>
+                    <h5 className={cx('name')}>{student.full_name}</h5>
                 </div>
                 <div className={cx('profile-detail')}>
                     <div className={cx('user-form')}>
@@ -31,6 +31,7 @@ const ViewStudent = ({ student, setChosedStudent }) => {
                                 name="university"
                                 placeholder="Tên trường"
                                 readOnly={true}
+                                value={student.school_name}
                             />
                         </div>
                         <div className={cx('user-data-item')}>
@@ -62,7 +63,7 @@ const ViewStudent = ({ student, setChosedStudent }) => {
                                 type="date"
                                 name="entryDate"
                                 // placeholder="Thành phố Hồ Chí Minh"
-                                value={student.entryDay}
+                                value={new Date(student.start_date).toISOString().slice(0, 10)}
                             />
                         </div>
                         <div className={cx('user-data-item', 'full-width')}>
