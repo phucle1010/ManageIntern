@@ -11,6 +11,23 @@ import Appreciation from './Appreciation';
 const cx = classNames.bind(styles);
 
 const TodoItem = ({ todo, setSelectedTodo }) => {
+    const [content, setContent] = useState('');
+
+    const handleSendAppreciation = async () => {
+        await axios
+            .post('/teacher/todo/appreciation/new', {
+                id: todo.id,
+                content,
+            })
+            .then((res) => {
+                alert(res.data.responseData);
+                if (res.data.statusCode === 200) {
+                    setContent('');
+                }
+            })
+            .catch((err) => alert(err));
+    };
+
     return (
         <div
             className={cx('todo-item', {
@@ -35,12 +52,11 @@ const TodoItem = ({ todo, setSelectedTodo }) => {
                     })}
                     placeholder="Nhập nội dung đánh giá..."
                     readOnly={todo.completed_status.data[0] === 1 ? true : false}
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
                 />
-                <Send className={cx('btn-send')} onClick={() => console.log(todo.id)} />
+                <Send className={cx('btn-send')} onClick={handleSendAppreciation} />
             </div>
-            {/* <div className={cx('todo-time-info')}>
-                <span>{`${formattedDate(todo.start_date)}   -   ${formattedDate(todo.end_date)}`}</span>
-            </div> */}
             <button className={cx('btn-add', 'view-appreciation')} onClick={() => setSelectedTodo(todo)}>
                 Xem đánh giá
             </button>
