@@ -19,10 +19,20 @@
 }
 
 .todo-item {
+    position: relative;
     margin: 20px 0;
     padding: 10px;
     border-radius: 8px;
     background-color: #fff;
+    border: 1px solid var(--working-color);
+
+    &.expired {
+        border-color: var(--fail-color);
+    }
+
+    &.active {
+        border-color: var(--primary-color);
+    }
 }
 
 .todo-name {
@@ -34,6 +44,24 @@
 .todo-deadline {
     margin: 20px 0 0 40%;
     display: flex;
+}
+
+.todo-status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: block;
+    padding: 4px 10px;
+    width: fit-content;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+
+    &.completed {
+        border-color: var(--working-color);
+        color: var(--working-color);
+    }
 }
 
 .deadline-info {

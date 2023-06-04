@@ -121,6 +121,11 @@
     cursor: pointer;
     user-select: none;
 
+    &.view-appreciation {
+        margin-top: 10px;
+        background-color: var(--primary-color);
+    }
+
     &:hover {
         opacity: 0.8;
     }
@@ -140,7 +145,7 @@
     border: 1px solid var(--second-color);
     border-radius: 8px;
 
-    &.active {
+    &.completed {
         border-color: var(--working-color);
     }
 }
@@ -163,7 +168,7 @@
     text-align: right;
     color: var(--stop-work-color);
 
-    &.active {
+    &.completed {
         color: var(--working-color);
     }
 }
@@ -196,11 +201,11 @@
         border: 1px solid var(--primary-color);
     }
 
-    &.active:focus {
+    &.completed:focus {
         border-color: transparent;
     }
 
-    &.active {
+    &.completed {
         cursor: default;
     }
 }
@@ -211,5 +216,13 @@
 
     &:hover {
         opacity: 0.8;
+    }
+}
+
+.todo-time-info {
+    margin-top: 10px;
+
+    & span {
+        font-size: 14px;
     }
 }

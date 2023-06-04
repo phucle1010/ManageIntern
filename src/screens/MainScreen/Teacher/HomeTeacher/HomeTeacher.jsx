@@ -1,49 +1,53 @@
-import React, { useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import classNames from 'classnames/bind';
 import styles from './HomeTeacher.module.scss';
 import { Avatar } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 import SearchBox from '../../../../components/SearchBox';
 import Follow from './Follow';
+import Loading from '../../../../components/LoadingSpinner';
 
 const cx = classNames.bind(styles);
-
-const STUDENTS = [
-    {
-        id: 20521764,
-        name: 'Lê Thế Phúc',
-        birth: '10-10-2002',
-        gender: 'Nam',
-        phone: '0368341595',
-        class: 'KTPM2020',
-        department: 'Công nghệ phần mềm',
-        status: 'Đang học',
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU',
-    },
-    {
-        id: 20521790,
-        name: 'Nguyễn Nhật Hoàng Quân',
-        birth: '10-10-2002',
-        gender: 'Nam',
-        phone: '0368341595',
-        class: 'KTPM2020',
-        department: 'Công nghệ phần mềm',
-        status: 'Đang học',
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkg-307JO6AHvZVx8999lW46CWnwCPcBqgMA&usqp=CAU',
-    },
-];
 
 const MENU_HEADINGS = ['Ảnh', 'Mã số sinh viên', 'Họ và tên', 'Lớp', 'Lựa chọn'];
 
 const HomeTeacher = () => {
+    const user = useSelector((state) => state.user);
     const [selectedStudent, setSelectedStudent] = useState(null);
+    const [students, setStudents] = useState([]);
+    const [loaded, setLoaded] = useState(false);
+
+    const getAllAssignedStudents = async () => {
+        await axios
+            .get('/teacher/assigned/list', {
+                params: {
+                    person_id: user.id,
+                },
+            })
+            .then((res) => {
+                res.data.statusCode === 200 && setStudents(res.data.responseData);
+                setLoaded(true);
+            })
+            .catch((err) => alert(err));
+    };
+
+    useEffect(() => {
+        getAllAssignedStudents();
+    }, [user]);
 
     return (
         <div className={cx('wrapper')}>
-            <h3 className={cx('title-heading')}>TRANG CHỦ</h3>
-            <SearchBox className={cx('search')} />
-            <h4 className={cx('main-heading')}>Danh sách sinh viên được phân công</h4>
-            <div className={cx('filters')}>
+            {loaded ? (
+                students.length > 0 ? (
+                    <React.Fragment>
+                        <h3 className={cx('title-heading')}>TRANG CHỦ</h3>
+
+                        <SearchBox className={cx('search')} />
+                        <h4 className={cx('main-heading')}>Danh sách sinh viên đang được phân công</h4>
+                        {/* <div className={cx('filters')}>
                 <select className={cx('filter-select-item')}>
                     <option value="">Năm học</option>
                     <option value="">2020</option>
@@ -55,40 +59,57 @@ const HomeTeacher = () => {
                     <option value="">Học kỳ 1</option>
                     <option value="">Học kỳ 2</option>
                 </select>
-            </div>
-            <div className={cx('student-container')}>
-                <div className={cx('menu-list')}>
-                    {MENU_HEADINGS.map((menu, index) => (
-                        <span className={cx('menu-item')} key={index}>
-                            {menu}
-                        </span>
-                    ))}
-                </div>
-                <div className={cx('student-list')}>
-                    {STUDENTS.map((student) => (
-                        <div key={student.id} className={cx('student-item')}>
-                            <div className={cx('student-item-detail')}>
-                                <Avatar src={student.img} />
+            </div> */}
+                        <div className={cx('student-container')}>
+                            <div className={cx('menu-list')}>
+                                {MENU_HEADINGS.map((menu, index) => (
+                                    <span className={cx('menu-item')} key={index}>
+                                        {menu}
+                                    </span>
+                                ))}
                             </div>
-                            <div className={cx('student-item-detail')}>
-                                <span>{student.id}</span>
-                            </div>
-                            <div className={cx('student-item-detail')}>
-                                <span>{student.name}</span>
-                            </div>
-                            <div className={cx('student-item-detail')}>
-                                <span>{student.class}</span>
-                            </div>
-                            <div className={cx('student-item-detail')}>
-                                <button className={cx('btn-follow')} onClick={() => setSelectedStudent(student)}>
-                                    Theo dõi
-                                </button>
+                            <div className={cx('student-list')}>
+                                {students.map((student) => (
+                                    <div key={student.id} className={cx('student-item')}>
+                                        <div className={cx('student-item-detail')}>
+                                            <Avatar src={student.image} />
+                                        </div>
+                                        <div className={cx('student-item-detail')}>
+                                            <span>{student.id}</span>
+                                        </div>
+                                        <div className={cx('student-item-detail')}>
+                                            <span>{student.full_name}</span>
+                                        </div>
+                                        <div className={cx('student-item-detail')}>
+                                            <span>{student.class_name}</span>
+                                        </div>
+                                        <div className={cx('student-item-detail')}>
+                                            <button
+                                                className={cx('btn-follow')}
+                                                onClick={() => setSelectedStudent(student)}
+                                            >
+                                                Theo dõi
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                    ))}
-                </div>
-            </div>
-            {selectedStudent !== null && <Follow openScreen={setSelectedStudent} />}
+
+                        {selectedStudent !== null && (
+                            <Follow
+                                setSelectedStudent={setSelectedStudent}
+                                student={selectedStudent}
+                                userId={user.id}
+                            />
+                        )}
+                    </React.Fragment>
+                ) : (
+                    <h4 className={cx('main-heading')}>Không có sinh viên nào đang được phân công</h4>
+                )
+            ) : (
+                <Loading />
+            )}
         </div>
     );
 };

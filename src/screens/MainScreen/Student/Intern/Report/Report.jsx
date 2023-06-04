@@ -12,6 +12,8 @@ const TODO_LIST = [
         startDay: '20-03-2023',
         endDay: '31-03-2023',
         isCompleted: true,
+        isExpired: true,
+        isActive: false,
     },
     {
         id: 2,
@@ -19,6 +21,17 @@ const TODO_LIST = [
         startDay: '01-04-2023',
         endDay: '12-04-2023',
         isCompleted: false,
+        isExpired: false,
+        isActive: true,
+    },
+    {
+        id: 2,
+        name: 'Tham gia xây dựng cơ sở dữ liệu',
+        startDay: '21-04-2023',
+        endDay: '30-04-2023',
+        isCompleted: true,
+        isExpired: false,
+        isActive: false,
     },
 ];
 
@@ -30,7 +43,13 @@ const Report = () => {
                 <h5 className={cx('sub-heading')}>Danh sách các công việc</h5>
                 <div className={cx('todo-list')}>
                     {TODO_LIST.map((todo, index) => (
-                        <div key={index} className={cx('todo-item')}>
+                        <div
+                            key={index}
+                            className={cx('todo-item', {
+                                expired: todo.isExpired,
+                                active: todo.isActive,
+                            })}
+                        >
                             <div className={cx('todo-name')}>
                                 <input type="checkbox" checked={todo.isCompleted} />
                                 <span>{todo.name}</span>
@@ -44,6 +63,13 @@ const Report = () => {
                                     <h5>Ngày kết thúc: </h5>
                                     <span>{todo.endDay}</span>
                                 </div>
+                            </div>
+                            <div
+                                className={cx('todo-status', {
+                                    completed: todo.isCompleted,
+                                })}
+                            >
+                                {todo.isCompleted ? 'Hoàn thành' : 'Đang thực hiện'}
                             </div>
                         </div>
                     ))}
