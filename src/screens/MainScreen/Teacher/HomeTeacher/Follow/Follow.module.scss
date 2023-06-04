@@ -122,8 +122,11 @@
     user-select: none;
 
     &.view-appreciation {
-        margin-top: 10px;
         background-color: var(--primary-color);
+    }
+
+    &.remove-todo {
+        background-color: var(--second-color);
     }
 
     &:hover {
@@ -142,7 +145,7 @@
 .todo-item {
     margin: 10px 20px;
     padding: 15px 20px;
-    border: 1px solid var(--second-color);
+    border: 1px solid var(--fail-color);
     border-radius: 8px;
 
     &.completed {
@@ -225,4 +228,10 @@
     & span {
         font-size: 14px;
     }
+}
+
+.btn-options {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
 }

@@ -1,79 +1,159 @@
-import React from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 import classNames from 'classnames/bind';
 import styles from './Report.module.scss';
 import { AttachFile } from '@mui/icons-material';
 
+import Loading from '../../../../../components/LoadingSpinner';
+
 const cx = classNames.bind(styles);
 
-const TODO_LIST = [
-    {
-        id: 1,
-        name: 'Tham gia thảo luận phát triển dự án',
-        startDay: '20-03-2023',
-        endDay: '31-03-2023',
-        isCompleted: true,
-        isExpired: true,
-        isActive: false,
-    },
-    {
-        id: 2,
-        name: 'Tham gia xây dựng UI cho ứng dụng',
-        startDay: '01-04-2023',
-        endDay: '12-04-2023',
-        isCompleted: false,
-        isExpired: false,
-        isActive: true,
-    },
-    {
-        id: 2,
-        name: 'Tham gia xây dựng cơ sở dữ liệu',
-        startDay: '21-04-2023',
-        endDay: '30-04-2023',
-        isCompleted: true,
-        isExpired: false,
-        isActive: false,
-    },
-];
+const TodoItem = ({ todo, getAllTodos }) => {
+    const [isCompleted, setIsCompleted] = useState(
+        todo.completed_status.data[0] === 1 && new Date() < new Date(Date.parse(todo.end_date)) ? true : false,
+    );
+    const [clickedCheck, setClickedCheck] = useState(false);
+
+    const formatedDate = (date) => {
+        const convertedDate = new Date(Date.parse(date));
+        return `${convertedDate.getDate()}/${convertedDate.getMonth() + 1}/${convertedDate.getUTCFullYear()}`;
+    };
+
+    const handleUpdateComplete = async () => {
+        await axios
+            .put('/student/todo/complete', {
+                id: todo.id,
+                end_date: todo.end_date,
+            })
+            .then((res) => {
+                alert(res.data.responseData);
+                if (res.data.statusCode === 200) {
+                    getAllTodos();
+                    setClickedCheck(false);
+                }
+            })
+            .catch((err) => alert(err));
+    };
+
+    const handleCompleteTodo = (e) => {
+        if (e.target.checked) {
+            setIsCompleted(e.target.checked);
+            setClickedCheck(true);
+        }
+    };
+
+    useEffect(() => {
+        if (clickedCheck) {
+            handleUpdateComplete();
+        }
+    }, [clickedCheck]);
+
+    return (
+        <div
+            className={cx('todo-item', {
+                expired:
+                    todo.out_of_expire.data[0] === 1 ||
+                    (todo.completed_status.data[0] === 0 && new Date() > new Date(Date.parse(todo.end_date))),
+                active: todo.completed_status.data[0] === 0 && new Date() < new Date(Date.parse(todo.end_date)),
+            })}
+        >
+            <div className={cx('todo-name')}>
+                <input
+                    type="checkbox"
+                    checked={isCompleted}
+                    value={isCompleted}
+                    onChange={handleCompleteTodo}
+                    disabled={isCompleted}
+                />
+                <span
+                    style={{
+                        textDecoration: isCompleted ? 'line-through' : 'none',
+                    }}
+                >
+                    {todo.todo_name}
+                </span>
+            </div>
+            <div className={cx('todo-deadline')}>
+                <div className={cx('deadline-info')}>
+                    <h5>Ngày bắt đầu: </h5>
+                    <span>{formatedDate(todo.start_date)}</span>
+                </div>
+                <div className={cx('deadline-info')}>
+                    <h5>Ngày kết thúc: </h5>
+                    <span>{formatedDate(todo.end_date)}</span>
+                </div>
+            </div>
+            <div
+                className={cx('todo-status', {
+                    completed: todo.completed_status.data[0] === 1 && new Date() < new Date(Date.parse(todo.end_date)),
+                })}
+            >
+                {todo.completed_status.data[0] === 1 && new Date() < new Date(Date.parse(todo.end_date))
+                    ? 'Hoàn thành'
+                    : 'Đang thực hiện'}
+            </div>
+        </div>
+    );
+};
 
 const Report = () => {
+    const user = useSelector((state) => state.user);
+    const [studentId, setStudentId] = useState(null);
+    const [todos, setTodos] = useState([]);
+    const [loaded, setLoaded] = useState(false);
+
+    const getStudentId = async () => {
+        await axios
+            .get('/student/id_data/user_id', {
+                params: {
+                    user_id: user.id,
+                },
+            })
+            .then((res) => res.data.statusCode === 200 && setStudentId(res.data.responseData))
+            .catch((err) => alert(err));
+    };
+
+    useEffect(() => {
+        if (Object.keys(user).length > 0) {
+            getStudentId();
+        }
+    }, [user]);
+
+    const getAllTodos = async () => {
+        await axios
+            .get('/student/todo/all', {
+                params: {
+                    student_id: studentId,
+                },
+            })
+            .then((res) => {
+                res.data.statusCode === 200 && setTodos(res.data.responseData);
+                setLoaded(true);
+            })
+            .catch((err) => alert(err));
+    };
+
+    useEffect(() => {
+        if (studentId !== null) {
+            getAllTodos();
+        }
+    }, [studentId]);
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('report-category')}>
                 <h4 className={cx('main-heading')}>Báo cáo tiến độ</h4>
                 <h5 className={cx('sub-heading')}>Danh sách các công việc</h5>
-                <div className={cx('todo-list')}>
-                    {TODO_LIST.map((todo, index) => (
-                        <div
-                            key={index}
-                            className={cx('todo-item', {
-                                expired: todo.isExpired,
-                                active: todo.isActive,
-                            })}
-                        >
-                            <div className={cx('todo-name')}>
-                                <input type="checkbox" checked={todo.isCompleted} />
-                                <span>{todo.name}</span>
-                            </div>
-                            <div className={cx('todo-deadline')}>
-                                <div className={cx('deadline-info')}>
-                                    <h5>Ngày bắt đầu: </h5>
-                                    <span>{todo.startDay}</span>
-                                </div>
-                                <div className={cx('deadline-info')}>
-                                    <h5>Ngày kết thúc: </h5>
-                                    <span>{todo.endDay}</span>
-                                </div>
-                            </div>
-                            <div
-                                className={cx('todo-status', {
-                                    completed: todo.isCompleted,
-                                })}
-                            >
-                                {todo.isCompleted ? 'Hoàn thành' : 'Đang thực hiện'}
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                {loaded ? (
+                    <div className={cx('todo-list')}>
+                        {todos.length > 0 &&
+                            todos.map((todo, index) => <TodoItem todo={todo} key={index} getAllTodos={getAllTodos} />)}
+                    </div>
+                ) : (
+                    <Loading />
+                )}
             </div>
             <div className={cx('report-category')}>
                 <h4 className={cx('main-heading')}>Báo cáo cuối kì</h4>

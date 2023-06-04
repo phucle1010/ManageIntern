@@ -37,7 +37,25 @@ const Appreciation = ({ setSelectedTodo, todo }) => {
     useEffect(() => {
         getAllApprications();
     }, []);
-    console.log(appreciations);
+
+    const handleRemoveAppreciation = async (id) => {
+        const notice = 'Bạn chắc chắn gỡ bỏ đánh giá này chứ ?';
+        if (window.confirm(notice)) {
+            await axios
+                .delete('/teacher/todo/appreciation/remove', {
+                    params: {
+                        id,
+                    },
+                })
+                .then((res) => {
+                    alert(res.data.responseData);
+                    if (res.data.statusCode === 200) {
+                        getAllApprications();
+                    }
+                })
+                .catch((err) => alert(err));
+        }
+    };
 
     return (
         <div className={cx('wrapper')}>
@@ -63,7 +81,21 @@ const Appreciation = ({ setSelectedTodo, todo }) => {
                         >
                             <h5 className={cx('title-heading', 'extra')}>Danh sách các đánh giá</h5>
                             {appreciations.map((appreciation, index) => (
-                                <span key={index}>{`- ${appreciation.content}`}</span>
+                                <div className={cx('appreciation-item')} key={index}>
+                                    <span className={cx('appreciation-content')}>{`${appreciation.content}`}</span>
+                                    <div className={cx('appreciation-created')}>
+                                        <i>
+                                            <b>Ngày tạo: </b>
+                                        </i>
+                                        <i>{formattedDate(appreciation.created_at)}</i>
+                                    </div>
+                                    <button
+                                        className={cx('btn-destroy')}
+                                        onClick={() => handleRemoveAppreciation(appreciation.id)}
+                                    >
+                                        Gỡ bỏ
+                                    </button>
+                                </div>
                             ))}
                         </div>
                     ) : (

@@ -10,7 +10,7 @@ import Appreciation from './Appreciation';
 
 const cx = classNames.bind(styles);
 
-const TodoItem = ({ todo, setSelectedTodo }) => {
+const TodoItem = ({ todo, setSelectedTodo, getTodoList }) => {
     const [content, setContent] = useState('');
 
     const handleSendAppreciation = async () => {
@@ -26,6 +26,25 @@ const TodoItem = ({ todo, setSelectedTodo }) => {
                 }
             })
             .catch((err) => alert(err));
+    };
+
+    const handleRemoveTodo = async () => {
+        const notice = 'Bạn chắc chắn gỡ công việc này chứ ?';
+        if (window.confirm(notice)) {
+            await axios
+                .delete('/teacher/todo/remove', {
+                    params: {
+                        id: todo.id,
+                    },
+                })
+                .then((res) => {
+                    alert(res.data.responseData);
+                    if (res.data.statusCode === 200) {
+                        getTodoList();
+                    }
+                })
+                .catch((err) => alert(err));
+        }
     };
 
     return (
@@ -57,9 +76,14 @@ const TodoItem = ({ todo, setSelectedTodo }) => {
                 />
                 <Send className={cx('btn-send')} onClick={handleSendAppreciation} />
             </div>
-            <button className={cx('btn-add', 'view-appreciation')} onClick={() => setSelectedTodo(todo)}>
-                Xem đánh giá
-            </button>
+            <div className={cx('btn-options')}>
+                <button className={cx('btn-add', 'view-appreciation')} onClick={() => setSelectedTodo(todo)}>
+                    Xem đánh giá
+                </button>
+                <button className={cx('btn-add', 'remove-todo')} onClick={handleRemoveTodo}>
+                    Gỡ công việc
+                </button>
+            </div>
         </div>
     );
 };
@@ -185,7 +209,12 @@ const Follow = ({ setSelectedStudent, student, userId }) => {
                         <div className={cx('todo-list')}>
                             {todos.length > 0 &&
                                 todos.map((todo, index) => (
-                                    <TodoItem todo={todo} key={index} setSelectedTodo={setSelectedTodo} />
+                                    <TodoItem
+                                        todo={todo}
+                                        key={index}
+                                        setSelectedTodo={setSelectedTodo}
+                                        getTodoList={getTodoList}
+                                    />
                                 ))}
                             <div ref={bottomRef}></div>
                         </div>

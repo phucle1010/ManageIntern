@@ -61,3 +61,36 @@
 .appreciation-list {
     overflow-y: scroll;
 }
+
+.appreciation-item {
+    padding: 10px 15px;
+    border: 1px solid var(--button-second-color);
+    border-radius: 10px;
+}
+
+.appreciation-content {
+    font-size: 15;
+    font-weight: 500;
+}
+
+.appreciation-created {
+    margin-top: 6px;
+    font-size: 13px;
+    // font-weight: 500;
+}
+
+.btn-destroy {
+    margin-top: 10px;
+    padding: 6px 20px;
+    color: #fff;
+    background-color: var(--second-color);
+    outline: none;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
