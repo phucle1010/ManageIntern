@@ -15,18 +15,6 @@ const cx = classNames.bind(styles);
 const LinkBusiness = () => {
     const [chosedBusiness, setChosedBusiness] = useState({});
     const [openNewBusinessScreen, setOpenNewBusinessScreen] = useState(false);
-    const [newBusiness, setNewBusiness] = useState({
-        id: 0,
-        company_name: '',
-        image: '',
-        phone: '',
-        email: '',
-        address: '',
-        establish_date: '',
-        sector: '',
-        representator: '',
-        short_desc: '',
-    });
     const [businesses, setBusinesses] = useState([]);
     const [loaded, setLoaded] = useState(false);
 
@@ -56,11 +44,11 @@ const LinkBusiness = () => {
             });
     }, [chosedBusiness]);
     console.log(businesses);
-    useEffect(() => {
-        if (newBusiness.id !== 0) {
-            setBusinesses((prev) => [...prev, newBusiness]);
-        }
-    }, [newBusiness]);
+    // useEffect(() => {
+    //     if (newBusiness.id !== 0) {
+    //         setBusinesses((prev) => [...prev, newBusiness]);
+    //     }
+    // }, [newBusiness]);
 
     return (
         <React.Fragment>
@@ -83,9 +71,9 @@ const LinkBusiness = () => {
                     {openNewBusinessScreen === true && (
                         <NewBusiness
                             openScreen={setOpenNewBusinessScreen}
-                            setNewBusiness={setNewBusiness}
+                            setBusinesses={setBusinesses}
                             editable={true}
-                            newBusiness={newBusiness}
+                            businesses={businesses}
                         />
                     )}
                 </div>

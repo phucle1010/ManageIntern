@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './ManageIntern.module.scss';
 
@@ -8,6 +8,7 @@ import InternItem from './InternItem';
 import ManageJob from './ManageJob';
 import OpenSubject from './OpenSubject';
 import InternMark from './InternMark';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
@@ -91,6 +92,21 @@ const ManageIntern = () => {
     const [manageJobScreen, setManageJobScreen] = useState(false);
     const [openSubjectScreen, setOpenSubjectScreen] = useState(false);
     const [internMarkScreen, setInternMarkScreen] = useState(false);
+    const [studentRequestIntern, setStudentRequestIntern] = useState([]);
+
+    const loadStudentConfirmRequestIntern = () => {
+        const token = JSON.parse(localStorage.getItem('user_token'));
+        axios
+            .get(`/admin/student/confirm`, {headers: {'Authorization': token}})
+            .then((res) => {
+                setStudentRequestIntern(res.data);
+                console.log(studentRequestIntern);
+            })
+            .catch((err) => console.log(err));
+    }
+
+    useEffect(() => loadStudentConfirmRequestIntern(),[]);
+
     // const [internInfoScreen, setInternInfoScreen] = useState(false);
     // const [internMarkScreen, setInternMarkScreen] = useState(false);
 

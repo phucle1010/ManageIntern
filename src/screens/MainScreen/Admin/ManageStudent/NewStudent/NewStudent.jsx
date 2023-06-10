@@ -24,7 +24,7 @@ const NewStudent = ({ open, editable, studentinfo }) => {
     });
 
     useEffect(() => {
-        if (studentinfo) {
+        if (studentinfo.full_name !== '' ) {
             const dateFromMySQL = studentinfo.dob;
             const dateOnly = dateFromMySQL.substr(0, 10); // Lấy ra phần ngày tháng (YYYY-MM-DD)
             const inputDate = new Date(dateOnly);
@@ -100,7 +100,7 @@ const NewStudent = ({ open, editable, studentinfo }) => {
 
     const handleClickSave = () => {
         if (editable) {
-            if (studentinfo) {
+            if (studentinfo.full_name !== '') {
                 handleUpdate();
             } else {
                 handleSave();
