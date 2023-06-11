@@ -3,28 +3,29 @@ import classNames from 'classnames/bind';
 import styles from './InternItem.module.scss';
 import { Visibility } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
-
 import InternInfo from '../InternInfo';
+import DetailSignUpInfo from '../DetailSignUpInfo';
 
 const cx = classNames.bind(styles);
 
 const InternItem = ({ student, interned, waiting }) => {
     const [internInfoScreen, setInternInfoScreen] = useState(false);
+    const [detailSignUpInternScreen, setDetailSignUpInternScreen] = useState(false);
 
     return (
         <div className={cx('wrapper')}>
             <div className={cx('detail-item', { interned })}>
                 <div className={cx('data-item', { interned })}>
-                    <Avatar src={student.img} />
+                    <Avatar src={student.studentImage} />
                 </div>
                 <div className={cx('data-item', { interned })}>
                     <span className={cx('title-heading')}>{student.id}</span>
                 </div>
                 <div className={cx('data-item', { interned })}>
-                    <span className={cx('title-heading')}>{student.name}</span>
+                    <span className={cx('title-heading')}>{student.studentName}</span>
                 </div>
                 <div className={cx('data-item', { interned })}>
-                    <span className={cx('title-heading')}>{student.position}</span>
+                    <span className={cx('title-heading')}>{student.teacherName}</span>
                 </div>
                 {interned === true && (
                     <div className={cx('data-item', { interned })}>
@@ -40,12 +41,12 @@ const InternItem = ({ student, interned, waiting }) => {
             {interned === false && waiting === true && (
                 <div className={cx('options')}>
                     <div className={cx('option-item')}>
-                        <Visibility className={cx('view-icon')} onClick={() => setInternInfoScreen(true)} />
+                        <Visibility className={cx('view-icon')} onClick={() => setDetailSignUpInternScreen(true)} />
                     </div>
                 </div>
             )}
 
-            {internInfoScreen === true && <InternInfo student={student} close={setInternInfoScreen} />}
+            {detailSignUpInternScreen === true && <DetailSignUpInfo student={student} close={setDetailSignUpInternScreen} />}
         </div>
     );
 };

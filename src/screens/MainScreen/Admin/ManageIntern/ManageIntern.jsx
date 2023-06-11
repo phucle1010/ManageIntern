@@ -12,6 +12,7 @@ import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
+const WAITING_CONFIRM = ['Ảnh', 'Mã số sinh viên', 'Họ và tên', 'giảng viên hướng dẫn'];
 const WAITING_HEADINGS = ['Ảnh', 'Mã số sinh viên', 'Họ và tên', 'Vị trí thực tập'];
 const INTERNED_HEADINGS = [...WAITING_HEADINGS, 'Điểm tổng kết'];
 const INTERNING_HEADINGS = [...WAITING_HEADINGS, 'Thời gian thực tập'];
@@ -88,27 +89,103 @@ const Filter = () => {
     );
 };
 
+const Filter_confrim = ({setAcademic, setSemester, setTeacher}) => {
+    const [academics, setAcademics] = useState([{}]);
+    const [semesters, setSemesters] = useState([{}]);
+    const [teachers, setTeachers] = useState([{}]);
+
+    const loadAcademics = () => {
+        axios
+            .get('/admin/academic-year')
+            .then((res) => setAcademics(res.data.responseData))
+            .catch((err) => console.log(err));
+
+    }
+
+    const loadSemester = () => {
+        axios
+            .get('/admin/semester')
+            .then((res) => setSemesters(res.data.responseData))
+            .catch((err) => console.log(err));
+    }
+
+    const loadTeacher = () => {
+        axios
+            .get('/admin/teacher')
+            .then((res) => setTeachers(res.data.responseData))
+            .catch((err) => console.log(err));
+    }
+
+    useEffect(() => {
+        loadAcademics();
+        loadSemester();
+        loadTeacher();
+    }, []);
+
+    return (
+        <div className={cx('filters')}>
+            <div className={cx('main-filter')}>
+                <select className={cx('filter-select-item')} onChange={(e) => setAcademic(e.target.value)}>
+                    <option value={0}>Năm học</option>
+                    {academics.map((academic) => (
+                        <option
+                            key={academic.current_year}
+                            value={academic.id}
+                            className={cx('option-value')}
+                        >
+                            {academic.current_year}
+                        </option>
+                    ))}
+                </select>
+                <select className={cx('filter-select-item')} onChange={(e) => setSemester(e.target.value)}>
+                    <option value={0}>Học kỳ</option>
+                    {semesters.map((semester) => (
+                        <option
+                            key={semester.semester_name}
+                            value={semester.id}
+                            className={cx('option-value')}
+                        >
+                            {semester.semester_name}
+                        </option>
+                    ))}
+                </select>
+                <select className={cx('filter-select-item')} onChange={(e) => setTeacher(e.target.value)}>
+                    <option value={0}>giảng viên</option>
+                    {teachers.map((teacher) => (
+                        <option
+                            key={teacher.full_name}
+                            value={teacher.id}
+                            className={cx('option-value')}
+                        >
+                            {teacher.full_name}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <SearchBox />
+        </div>
+    );
+};
+
 const ManageIntern = () => {
     const [manageJobScreen, setManageJobScreen] = useState(false);
     const [openSubjectScreen, setOpenSubjectScreen] = useState(false);
     const [internMarkScreen, setInternMarkScreen] = useState(false);
-    const [studentRequestIntern, setStudentRequestIntern] = useState([]);
 
-    const loadStudentConfirmRequestIntern = () => {
-        const token = JSON.parse(localStorage.getItem('user_token'));
+    const [studentSignUpIntern, setStudentSignUpIntern] = useState([{}]);
+
+    const [academic, setAcademic] = useState(0);
+    const [semester, setSemester] = useState(0);
+    const [teacher, setTeacher] =useState(0);
+
+    const loadStudentSignUpIntern = () => {
         axios
-            .get(`/admin/student/confirm`, {headers: {'Authorization': token}})
-            .then((res) => {
-                setStudentRequestIntern(res.data);
-                console.log(studentRequestIntern);
-            })
+            .get('/admin/student/signup_intern', {params: {academic, semester, teacher}})
+            .then((res) => setStudentSignUpIntern(res.data))
             .catch((err) => console.log(err));
     }
 
-    useEffect(() => loadStudentConfirmRequestIntern(),[]);
-
-    // const [internInfoScreen, setInternInfoScreen] = useState(false);
-    // const [internMarkScreen, setInternMarkScreen] = useState(false);
+    useEffect(() => loadStudentSignUpIntern(), [academic, semester, teacher]);
 
     return (
         <div className={cx('wrapper')}>
@@ -120,6 +197,31 @@ const ManageIntern = () => {
                 <button className={cx('btn-add', 'btn-export')} onClick={() => setManageJobScreen(true)}>
                     Quản lý công việc
                 </button>
+            </div>
+            <div className={cx('intern-category')}>
+                <h4 className={cx('list-heading')}>Danh sách đang chờ xử lý yêu cầu đăng ký tín chỉ thực tập</h4>
+                <Filter_confrim setAcademic={setAcademic} setSemester={setSemester} setTeacher={setTeacher} />
+                <div className={cx('intern-list')}>
+                    <div className={cx('intern-heading-list')}>
+                        <ul className={cx('main-heading-list')}>
+                            {WAITING_CONFIRM.map((heading, index) => (
+                                <li className={cx('main-heading')} key={index}>
+                                    {heading}
+                                </li>
+                            ))}
+                        </ul>
+                        <h5 className={cx('option-heading-list', 'option-heading')}>Lựa chọn</h5>
+                    </div>
+                    {studentSignUpIntern.length > 0 &&
+                        studentSignUpIntern.map((student) => (
+                            <InternItem
+                                key={student.id}
+                                student={student}
+                                interned={false}
+                                waiting={true}
+                            />
+                        ))}
+                </div>
             </div>
             <div className={cx('intern-category')}>
                 <h4 className={cx('list-heading')}>Danh sách đang chờ xử lý yêu cầu</h4>

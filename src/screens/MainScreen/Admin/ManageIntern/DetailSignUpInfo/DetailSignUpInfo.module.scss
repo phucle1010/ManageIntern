@@ -1,0 +1,166 @@
+.wrapper {
+    width: 700px;
+    position: fixed;
+    top: 20%;
+    left: calc(100% - 700px);
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    background-color: #fff;
+    border-radius: 6px;
+    border: 1px solid var(--primary-color);
+    animation: showOverlay 0.2s ease-in-out forwards;
+}
+
+@keyframes showOverlay {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.close-main-btn {
+    float: right;
+    padding: 3px;
+    color: #fff;
+    background-color: var(--button-second-color);
+    font-size: 24px;
+    border-radius: 6px;
+    user-select: none;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.title-heading {
+    margin-bottom: 30px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-text-color);
+}
+
+.list-heading {
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--second-text-color);
+}
+
+.list-info {
+    margin-bottom: 10px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--section-color);
+}
+
+.list-detail {
+    display: flex;
+    align-items: center;
+}
+
+.list-detail-item {
+    width: 100%;
+    font-size: 14px;
+    .status {
+        padding: 6px 20px;
+        background-color: var(--working-color);
+        font-size: 14px;
+        color: #fff;
+        text-align: center;
+        border-radius: 20px;
+        user-select: none;
+    }
+}
+
+.list-detail.student .list-detail-item:first-child,
+.list-detail.student .list-detail-item:last-child,
+.list-detail.teacher .list-detail-item:first-child {
+    width: 60%;
+}
+
+.intern-detail {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--section-color);
+}
+
+.intern-input {
+    width: 85%;
+    padding: 6px 10px;
+    border-radius: 6px;
+    color: var(--second-text-color);
+    font-size: 14px;
+    border: 1px solid var(--primary-text-color);
+    outline: none;
+    cursor: default;
+
+    &::placeholder {
+        color: var(--second-text-color);
+    }
+}
+
+.gif-label {
+    flex: 1;
+    display: block;
+    margin-left: 20px;
+    height: 100%;
+    background-color: #d59292;
+    text-align: center;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.gif-btn {
+    display: block;
+    padding: 6px 0;
+    margin: 0 auto;
+    color: #fff;
+    font-size: 14px;
+}
+
+#gif-input {
+    display: none;
+}
+
+.options-btn {
+    margin: 10px 0;
+    float: right;
+}
+
+.btn-submit {
+    padding: 6px 20px;
+    align-items: center;
+    border: 1px solid transparent;
+    outline: none;
+    border-radius: 6px;
+    user-select: none;
+    background-color: var(--button-primary-color);
+    color: #fff;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #8f7aec;
+    }
+
+    &.btn-cancel {
+        margin-left: 30px;
+        border-color: var(--button-primary-color);
+        background-color: #fff;
+        color: var(--button-primary-color);
+    }
+
+    &.btn-cancel:hover {
+        background-color: var(--button-second-color);
+        color: #fff;
+        border-color: transparent;
+    }
+}
