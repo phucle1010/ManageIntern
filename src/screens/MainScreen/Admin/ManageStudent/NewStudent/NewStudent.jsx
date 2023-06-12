@@ -4,56 +4,60 @@ import classNames from 'classnames/bind';
 import styles from './NewStudent.module.scss';
 import { Close } from '@mui/icons-material';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const cx = classNames.bind(styles);
 
 const NewStudent = ({ open, editable, studentinfo }) => {
+    const admin = useSelector((state) => state.user);
+    const [school, setSchool] = useState({});
     const [departmentlist, setDepartmentList] = useState([]);
     const [classlist, setCLassList] = useState([]);
     const [majorlist, setMajorList] = useState([]);
-
-    const [newStudent, setNewStudent] = useState({
-        image: '',
-        full_name: '',
-        dob: '',
-        email: '',
-        address: '',
-        department_id: '',
-        class_id: '',
-        major_id: '',
+    const [newStudent, setNewStudent] = useState(() => {
+        let dateFromMySQL = studentinfo.dob;
+        if (dateFromMySQL !== '') {
+            const date = new Date(Date.parse(dateFromMySQL));
+            const day = ('0' + date.getDate()).slice(-2);
+            const month = ('0' + (date.getMonth() + 1)).slice(-2);
+            dateFromMySQL = date.getFullYear() + '-' + month + '-' + day;
+        }
+        return {
+            ...studentinfo,
+            dob: dateFromMySQL,
+        };
     });
 
     useEffect(() => {
-        if (studentinfo) {
-            const dateFromMySQL = studentinfo.dob;
-            const dateOnly = dateFromMySQL.substr(0, 10); // Lấy ra phần ngày tháng (YYYY-MM-DD)
-            const inputDate = new Date(dateOnly);
-            const formattedDate = inputDate.toISOString().slice(0, 10);
-            setNewStudent((prevStudent) => {
-                return {
-                    ...newStudent,
-                    image: studentinfo.image,
-                    full_name: studentinfo.full_name,
-                    dob: formattedDate,
-                    email: studentinfo.email,
-                    address: studentinfo.address,
-                    department_id: studentinfo.id,
-                    class_id: studentinfo.class_id,
-                    major_id: studentinfo.major_id,
-                };
-            });
-        }
-    }, [studentinfo]);
-
-    useEffect(() => {
+        const email = admin.email;
         axios
-            .get('/department')
-            .then((res) => setDepartmentList(res.data))
-            .catch((err) => console.log({ err: err }));
-    }, []);
+            .get('/admin/school', {
+                params: {
+                    email,
+                },
+            })
+            .then((res) => {
+                setSchool(res.data.responseData);
+            });
+    }, [admin.email]);
 
     useEffect(() => {
-        if (newStudent.department_id !== '') {
+        if (Object.keys(school).length !== 0) {
+            axios
+                .get('/admin/department', {
+                    params: {
+                        schoolId: school.id,
+                    },
+                })
+                .then((res) => {
+                    setDepartmentList(res.data.responseData);
+                })
+                .catch((err) => console.log({ err: err }));
+        }
+    }, [school]);
+
+    useEffect(() => {
+        if (newStudent.department_id !== null) {
             axios
                 .get(`/class/department?department_id=${newStudent.department_id}`)
                 .then((res) => setCLassList(res.data))
@@ -62,7 +66,7 @@ const NewStudent = ({ open, editable, studentinfo }) => {
     }, [newStudent.department_id]);
 
     useEffect(() => {
-        if (newStudent.department_id !== '') {
+        if (newStudent.department_id !== null) {
             axios
                 .get(`/major/department?department_id=${newStudent.department_id}`)
                 .then((res) => setMajorList(res.data))
@@ -75,14 +79,16 @@ const NewStudent = ({ open, editable, studentinfo }) => {
             .post('/student/add', newStudent)
             .then((res) => {
                 alert(res.data.responseData);
-                window.location.reload();
+                if (res.data.statusCode === 200) {
+                    open(false);
+                }
             })
             .catch((err) => console.log(err));
     };
 
     const handleUpdate = () => {
         axios
-            .put('/student/update', { newStudent: newStudent, user_id: studentinfo.user_id })
+            .put('/student/update', { newStudent: newStudent, user_id: newStudent.user_id })
             .then((res) => {
                 if (res.statusCode === 400) {
                     window.alert(`Lỗi ${res.data.responseData}`);
@@ -90,7 +96,7 @@ const NewStudent = ({ open, editable, studentinfo }) => {
                     window.alert(`Lỗi ${res.data.responseData}`);
                 } else {
                     window.alert(res.data.responseData);
-                    window.location.reload();
+                    open(false);
                 }
             })
             .catch((err) => {
@@ -99,14 +105,14 @@ const NewStudent = ({ open, editable, studentinfo }) => {
     };
 
     const handleClickSave = () => {
-        if (editable) {
-            if (studentinfo) {
-                handleUpdate();
-            } else {
-                handleSave();
-            }
+        if (newStudent.student_id) {
+            handleUpdate();
+        } else {
+            handleSave();
         }
     };
+
+    console.log(newStudent);
 
     return (
         <div className={cx('wrapper')}>
@@ -132,6 +138,8 @@ const NewStudent = ({ open, editable, studentinfo }) => {
                         id={cx('upload-input')}
                         readOnly={!editable}
                         name="image"
+                        // value={newStudent.image}
+                        disabled={!editable}
                         onChange={(e) => {
                             const getbase64 = (file) => {
                                 let reader = new FileReader();
@@ -140,7 +148,7 @@ const NewStudent = ({ open, editable, studentinfo }) => {
                                     setNewStudent((prev) => {
                                         return {
                                             ...prev,
-                                            [e.target.name]: reader.result,
+                                            image: reader.result,
                                         };
                                     });
                                 };

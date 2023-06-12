@@ -15,6 +15,7 @@
         "@testing-library/user-event": "^13.5.0",
         "axios": "^1.4.0",
         "classnames": "^2.3.2",
+        "concurrently": "^8.1.0",
         "cross-env": "^7.0.3",
         "currently": "0.0.8",
         "electron": "^23.2.0",

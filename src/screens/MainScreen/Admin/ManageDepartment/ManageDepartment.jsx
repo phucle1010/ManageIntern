@@ -11,7 +11,7 @@ import LoadingSpinner from '../../../../components/LoadingSpinner';
 
 const cx = classNames.bind(styles);
 
-const HEADINGS = ['Mã khoa', 'Tên khoa', 'Trưởng khoa', 'Số ngành học'];
+const HEADINGS = ['Mã khoa', 'Tên khoa', 'Trưởng khoa'];
 
 const Department = () => {
     const admin = useSelector((state) => state.user);

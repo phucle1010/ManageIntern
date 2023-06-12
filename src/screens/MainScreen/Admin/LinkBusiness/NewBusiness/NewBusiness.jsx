@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './NewBusiness.module.scss';
 import { Close } from '@mui/icons-material';
@@ -6,38 +6,39 @@ import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
-const NewBusiness = ({ openScreen, setNewBusiness, editable, newBusiness }) => {
-    const saveBusiness = (newBusiness) => {
-        axios
-            .post('/user/business/add', newBusiness)
-            .then((res) => {
-                console.log(res.data);
-                if (res.statusCode === 400) {
-                    window.alert(`Lỗi ${res.data.responseData}`);
-                } else if (res.statusCode === 401) {
-                    window.alert(`Lỗi ${res.data.responseData}`);
-                } else {
-                    window.alert(res.data.responseData);
-                    window.location.reload();
-                }
-            })
-            .catch((err) => {
-                console.log({ err: err });
-            });
-
-        setNewBusiness({
-            id: 0,
-            company_name: '',
-            image: '',
-            phone: '',
-            email: '',
-            address: '',
-            establish_date: '',
-            sector: '',
-            representator: '',
-            short_desc: '',
-        });
+const NewBusiness = ({ openScreen, setBusinesses, editable, businesses }) => {
+    const initBusiness = {
+        userName: '',
+        image: '',
+        phone: '',
+        email: '',
+        address: '',
+        establishDate: '',
+        industrySector: '',
+        shortDesc: '',
+        representator: '',
     };
+    const [business, setBusiness] = useState(initBusiness);
+    const saveBusiness = () => {
+        axios
+            .post('/user/business', business)
+            .then((res) => {
+                setBusinesses([...businesses, res.data]);
+                alert('Liên kết doanh nghiệp thành công');
+                openScreen(false);
+                setBusiness(initBusiness);
+            })
+            .catch((error) => {
+                if (error.response.status === 400) {
+                    alert(error.response.data.details[0]);
+                } else if (error.response.status === 401) {
+                    alert(error.response.data);
+                } else {
+                    alert('Unknown error occurred');
+                }
+            });
+    };
+
     return (
         <div className={cx('wrapper')}>
             <Close className={cx('close-main-btn')} onClick={() => openScreen(false)} />
@@ -48,7 +49,7 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, newBusiness }) => {
                     <div className={cx('upload-avatar')}>
                         <img
                             src={
-                                newBusiness.img ||
+                                business.image ||
                                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU'
                             }
                             alt=""
@@ -67,7 +68,7 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, newBusiness }) => {
                                 let reader = new FileReader();
                                 reader.readAsDataURL(file);
                                 reader.onload = () => {
-                                    setNewBusiness((prev) => {
+                                    setBusiness((prev) => {
                                         return {
                                             ...prev,
                                             [e.target.name]: reader.result,
@@ -89,12 +90,12 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, newBusiness }) => {
                             <input
                                 className={cx('input-item')}
                                 type="text"
-                                name="company_name"
-                                value={newBusiness.company_name}
+                                name="userName"
+                                value={business.userName}
                                 placeholder="FPT"
                                 readOnly={!editable}
                                 onChange={(e) =>
-                                    setNewBusiness((prev) => {
+                                    setBusiness((prev) => {
                                         return {
                                             ...prev,
                                             [e.target.name]: e.target.value,
@@ -109,11 +110,10 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, newBusiness }) => {
                                 className={cx('input-item')}
                                 type="phone"
                                 name="phone"
-                                value={newBusiness.phone}
-                                placeholder="0368xxx"
+                                value={business.phone}
                                 readOnly={!editable}
                                 onChange={(e) =>
-                                    setNewBusiness((prev) => {
+                                    setBusiness((prev) => {
                                         return {
                                             ...prev,
                                             [e.target.name]: e.target.value,
@@ -128,30 +128,10 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, newBusiness }) => {
                                 className={cx('input-item')}
                                 type="email"
                                 name="email"
-                                value={newBusiness.email}
-                                placeholder="abc@gmail.com"
+                                value={business.email}
                                 readOnly={!editable}
                                 onChange={(e) =>
-                                    setNewBusiness((prev) => {
-                                        return {
-                                            ...prev,
-                                            [e.target.name]: e.target.value,
-                                        };
-                                    })
-                                }
-                            />
-                        </div>
-                        <div className={cx('business-data-item', 'full-width')}>
-                            <h5 className={cx('input-title')}>Địa chỉ</h5>
-                            <input
-                                className={cx('input-item')}
-                                type="text"
-                                name="address"
-                                value={newBusiness.address}
-                                // placeholder="Hồ Chí Minh"
-                                readOnly={!editable}
-                                onChange={(e) =>
-                                    setNewBusiness((prev) => {
+                                    setBusiness((prev) => {
                                         return {
                                             ...prev,
                                             [e.target.name]: e.target.value,
@@ -161,16 +141,14 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, newBusiness }) => {
                             />
                         </div>
                         <div className={cx('business-data-item')}>
-                            <h5 className={cx('input-title')}>Lĩnh vực hoạt động</h5>
+                            <h5 className={cx('input-title')}>Ngày thành lập</h5>
                             <input
                                 className={cx('input-item')}
-                                type="text"
-                                name="sector"
-                                value={newBusiness.sector}
-                                // placeholder="Hồ Chí Minh"
-                                readOnly={!editable}
+                                type="date"
+                                name="establishDate"
+                                value={business.establishDate}
                                 onChange={(e) =>
-                                    setNewBusiness((prev) => {
+                                    setBusiness((prev) => {
                                         return {
                                             ...prev,
                                             [e.target.name]: e.target.value,
@@ -185,11 +163,46 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, newBusiness }) => {
                                 className={cx('input-item')}
                                 type="text"
                                 name="representator"
-                                value={newBusiness.representator}
-                                // placeholder="Hồ Chí Minh"
+                                value={business.representator}
                                 readOnly={!editable}
                                 onChange={(e) =>
-                                    setNewBusiness((prev) => {
+                                    setBusiness((prev) => {
+                                        return {
+                                            ...prev,
+                                            [e.target.name]: e.target.value,
+                                        };
+                                    })
+                                }
+                            />
+                        </div>
+                        <div className={cx('business-data-item', 'full-width')}>
+                            <h5 className={cx('input-title')}>Địa chỉ</h5>
+                            <input
+                                className={cx('input-item')}
+                                type="text"
+                                name="address"
+                                value={business.address}
+                                readOnly={!editable}
+                                onChange={(e) =>
+                                    setBusiness((prev) => {
+                                        return {
+                                            ...prev,
+                                            [e.target.name]: e.target.value,
+                                        };
+                                    })
+                                }
+                            />
+                        </div>
+                        <div className={cx('business-data-item', 'full-width')}>
+                            <h5 className={cx('input-title')}>Lĩnh vực hoạt động</h5>
+                            <input
+                                className={cx('input-item')}
+                                type="text"
+                                name="industrySector"
+                                value={business.industrySector}
+                                readOnly={!editable}
+                                onChange={(e) =>
+                                    setBusiness((prev) => {
                                         return {
                                             ...prev,
                                             [e.target.name]: e.target.value,
@@ -203,12 +216,12 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, newBusiness }) => {
                             <textarea
                                 className={cx('input-item')}
                                 rows={3}
-                                name="short_desc"
-                                value={newBusiness.short_desc}
+                                name="shortDesc"
+                                value={business.shortDesc}
                                 placeholder="Mô tả"
                                 readOnly={!editable}
                                 onChange={(e) =>
-                                    setNewBusiness((prev) => {
+                                    setBusiness((prev) => {
                                         return {
                                             ...prev,
                                             [e.target.name]: e.target.value,
@@ -223,8 +236,7 @@ const NewBusiness = ({ openScreen, setNewBusiness, editable, newBusiness }) => {
             <button
                 className={cx('save-btn')}
                 onClick={() => {
-                    saveBusiness(newBusiness);
-                    openScreen(false);
+                    saveBusiness();
                 }}
             >
                 Lưu

@@ -52,7 +52,6 @@ const HomeAdmin = () => {
             ) : (
                 <React.Fragment>
                     <h3 className={cx('title-heading')}>TRANG CHỦ</h3>
-                    <SearchBox className={cx('search')} />
                     <h4 className={cx('list-heading')}>Danh sách chương trình học</h4>
 
                     <div className={cx('program-list')}>

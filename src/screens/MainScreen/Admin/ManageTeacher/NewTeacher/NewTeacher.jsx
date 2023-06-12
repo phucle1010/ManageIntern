@@ -10,10 +10,10 @@ const NewTeacher = ({ show, editable, teacher, departments }) => {
     const [teacherItem, setTeacherItem] = useState({ ...teacher, current_status: teacher.current_status.data[0] });
 
     const formmatedDate = (date) => {
-        const dateOnly = date.substr(0, 10);
-        const inputDate = new Date(dateOnly);
-        console.log('input date: ', dateOnly);
-        return inputDate.toISOString().slice(0, 10);
+        const convertedDate = new Date(Date.parse(date));
+        const day = ('0' + convertedDate.getDate()).slice(-2);
+        const month = ('0' + (convertedDate.getMonth() + 1)).slice(-2);
+        return convertedDate.getFullYear() + '-' + month + '-' + day;
     };
 
     const handleTeacherAccount = () => {

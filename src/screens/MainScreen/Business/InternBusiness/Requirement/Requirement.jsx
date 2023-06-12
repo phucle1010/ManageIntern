@@ -1,80 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import classNames from 'classnames/bind';
 import styles from './Requirement.module.scss';
 
 import SearchBox from '../../../../../components/SearchBox';
 import StudentItem from './StudentItem';
 import ViewStudent from '../Student/ViewStudent';
+import Loading from '../../../../../components/LoadingSpinner/LoadingSpinner';
 
 const cx = classNames.bind(styles);
-
-const STUDENTS = [
-    {
-        id: 20521764,
-        name: 'Lê Thế Phúc',
-        birth: '10-10-2002',
-        gender: 'Nam',
-        phone: '0368341595',
-        email: '20521764@gm.uit.edu.vn',
-        address: 'Hồ Chí Minh',
-        class: 'KTPM2020',
-        school: 'Đại học Công nghệ thông tin',
-        department: 'Công nghệ phần mềm',
-        status: 'Đang học',
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU',
-        position: 'Front End Developer',
-        entryDay: '01-02-2023',
-        internStatus: 'interning',
-    },
-    {
-        id: 20521790,
-        name: 'Nguyễn Nhật Hoàng Quân',
-        birth: '10-10-2002',
-        gender: 'Nam',
-        phone: '0368341595',
-        email: '20521764@gm.uit.edu.vn',
-        address: 'Hồ Chí Minh',
-        class: 'KTPM2020',
-        school: 'Đại học Công nghệ thông tin',
-        department: 'Công nghệ phần mềm',
-        status: 'Đang học',
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkg-307JO6AHvZVx8999lW46CWnwCPcBqgMA&usqp=CAU',
-        position: 'Back End Developer',
-        entryDay: '03-02-2023',
-        internStatus: 'interning',
-    },
-];
 
 const INTERNING_MENU = ['STT', 'Ảnh', 'Họ và tên', 'Trường đại học', 'Vị trí ứng tuyển', 'Lựa chọn'];
 
 const Requirement = () => {
     const [chosedStudent, setChosedStudent] = useState({});
+    const [studentRequest, setStudentRequest] = useState([]);
+    const [loaded, setLoaded] = useState(false);
+
+    const loadData = () => {
+        const token = JSON.parse(localStorage.getItem('user_token'));
+        axios
+            .get(`/business/job/request`, { headers: { Authorization: token } })
+            .then((res) => {
+                setStudentRequest(res.data);
+                setLoaded(true);
+            })
+            .catch((err) => console.log(err));
+    };
+    useEffect(() => {
+        loadData();
+    }, []);
 
     return (
-        <div className={cx('wrapper')}>
-            <div className={cx('requirement-category')}>
-                <h3 className={cx('main-heading')}>Danh sách chờ xác nhận</h3>
-                <SearchBox className={cx('search')} />
-                <div className={cx('menu-list')}>
-                    {INTERNING_MENU.map((item, index) => (
-                        <h3 key={index} className={cx('menu-item')}>
-                            {item}
-                        </h3>
-                    ))}
+        <React.Fragment>
+            {loaded ? (
+                <div className={cx('wrapper')}>
+                    <div className={cx('requirement-category')}>
+                        <h3 className={cx('main-heading')}>Danh sách chờ xác nhận</h3>
+                        <SearchBox className={cx('search')} />
+                        <div className={cx('menu-list')}>
+                            {INTERNING_MENU.map((item, index) => (
+                                <h3 key={index} className={cx('menu-item')}>
+                                    {item}
+                                </h3>
+                            ))}
+                        </div>
+                        <div className={cx('pending-list')}>
+                            {studentRequest.length > 0 &&
+                                studentRequest.map((student, index) => (
+                                    <StudentItem key={index} student={student} order={index} loadData={loadData} />
+                                ))}
+                        </div>
+                    </div>
+                    <div className={cx('requirement-category')}>
+                        <h3 className={cx('main-heading')}>Lịch sử xác nhận</h3>
+                    </div>
+                    {Object.keys(chosedStudent).length > 0 && (
+                        <ViewStudent student={chosedStudent} setChosedStudent={setChosedStudent} />
+                    )}
                 </div>
-                <div className={cx('pending-list')}>
-                    {STUDENTS.map((student, index) => (
-                        <StudentItem key={index} student={student} order={index} setChosedStudent={setChosedStudent} />
-                    ))}
-                </div>
-            </div>
-            <div className={cx('requirement-category')}>
-                <h3 className={cx('main-heading')}>Lịch sử xác nhận</h3>
-            </div>
-            {Object.keys(chosedStudent).length > 0 && (
-                <ViewStudent student={chosedStudent} setChosedStudent={setChosedStudent} />
+            ) : (
+                <Loading />
             )}
-        </div>
+        </React.Fragment>
     );
 };
 

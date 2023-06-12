@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './ManageIntern.module.scss';
 
 import SearchBox from '../../../../components/SearchBox';
 import InternItem from './InternItem';
 
-import ManageJob from './ManageJob';
 import OpenSubject from './OpenSubject';
 import InternMark from './InternMark';
 
@@ -88,7 +87,6 @@ const Filter = () => {
 };
 
 const ManageIntern = () => {
-    const [manageJobScreen, setManageJobScreen] = useState(false);
     const [openSubjectScreen, setOpenSubjectScreen] = useState(false);
     const [internMarkScreen, setInternMarkScreen] = useState(false);
     // const [internInfoScreen, setInternInfoScreen] = useState(false);
@@ -100,9 +98,6 @@ const ManageIntern = () => {
             <div className={cx('options')}>
                 <button className={cx('btn-add')} onClick={() => setOpenSubjectScreen(true)}>
                     Mở môn học
-                </button>
-                <button className={cx('btn-add', 'btn-export')} onClick={() => setManageJobScreen(true)}>
-                    Quản lý công việc
                 </button>
             </div>
             <div className={cx('intern-category')}>
@@ -182,7 +177,6 @@ const ManageIntern = () => {
                 </div>
             </div>
 
-            {manageJobScreen && <ManageJob close={setManageJobScreen} />}
             {openSubjectScreen && <OpenSubject close={setOpenSubjectScreen} />}
             {internMarkScreen && <InternMark close={setInternMarkScreen} />}
         </div>

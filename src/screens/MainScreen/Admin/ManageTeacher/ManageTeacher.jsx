@@ -51,12 +51,12 @@ const ManageTeacher = () => {
 
     useEffect(() => {
         axios
-            .get('/admin/teacher', {})
+            .get('/admin/teacher')
             .then((res) => {
                 setTeachers(res.data.responseData);
             })
             .then(() => setIsLoading(false));
-    }, []);
+    }, [chosedTeacher]);
 
     return (
         <div className={cx('wrapper')}>
@@ -67,7 +67,7 @@ const ManageTeacher = () => {
                     <h3 className={cx('list-heading')}>DANH SÁCH GIẢNG VIÊN</h3>
                     <SearchBox className={cx('search')} />
                     <div className={cx('filters')}>
-                        <select className={cx('filter-select-item')}>
+                        {/* <select className={cx('filter-select-item')}>
                             <option value="">Năm học</option>
                             <option value="">2020</option>
                             <option value="">2021</option>
@@ -77,7 +77,7 @@ const ManageTeacher = () => {
                             <option value="">Học kỳ</option>
                             <option value="">Học kỳ 1</option>
                             <option value="">Học kỳ 2</option>
-                        </select>
+                        </select> */}
                         <button
                             className={cx('btn-add')}
                             onClick={() => {

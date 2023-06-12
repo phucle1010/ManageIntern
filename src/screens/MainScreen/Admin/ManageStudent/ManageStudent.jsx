@@ -41,7 +41,7 @@ const ManageStudent = () => {
         getAcademicYear();
         getAllStudent();
         setLoaded(true);
-    }, []);
+    }, [showNewStudent]);
 
     const getSudentOfYear = async () => {
         await axios
@@ -76,35 +76,27 @@ const ManageStudent = () => {
                             }}
                         >
                             <option value=""> Tất cả </option>
-                            {academicYear.map((years) => (
-                                <option
-                                    key={years.academic_year}
-                                    value={years.academic_year}
-                                    className={cx('option-value')}
-                                >
-                                    {years.academic_year}
+                            {academicYear.map((year) => (
+                                <option key={year.id} value={year.current_year} className={cx('option-value')}>
+                                    {year.current_year}
                                 </option>
                             ))}
-                        </select>
-                        <select className={cx('filter-select-item')}>
-                            <option value="">Học kỳ</option>
-                            <option value="">Học kỳ 1</option>
-                            <option value="">Học kỳ 2</option>
                         </select>
                         <button
                             className={cx('btn-add')}
                             onClick={() => {
-                                setShowNewStudent(true);
                                 setChosedStudent({
+                                    student_id: null,
                                     image: '',
                                     full_name: '',
                                     dob: '',
                                     email: '',
                                     address: '',
-                                    department_id: '',
+                                    department_id: null,
                                     class_id: '',
                                     major_id: '',
                                 });
+                                setShowNewStudent(true);
                             }}
                         >
                             Thêm mới
