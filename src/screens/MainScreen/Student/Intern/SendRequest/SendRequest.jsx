@@ -89,24 +89,31 @@ const SendRequest = () => {
             .catch((err) => alert(err));
     };
 
-    const handleRemoveRequest = async (request_id) => {
-        const notice = 'Bạn chắc chắn gỡ yêu cầu thông tin công việc này chứ ?';
-        if (window.confirm(notice)) {
-            await axios
-                .delete('/student/intern/job/regist/id', {
-                    params: {
-                        request_id,
-                    },
-                })
-                .then((res) => {
-                    alert(res.data.responseData);
-                    if (res.data.statusCode === 200) {
-                        getRegistRequests();
-                    }
-                })
-                .catch((err) => alert(err));
+    const handleRemoveRequest = async (request_id, regist_submit_status) => {
+        const SUCCESS_STATUS = 1;
+        if (regist_submit_status === SUCCESS_STATUS) {
+            alert('Bạn không thể gỡ yêu cầu đã được xác nhận thành công');
+        } else {
+            const notice = 'Bạn chắc chắn gỡ yêu cầu thông tin công việc này chứ ?';
+            if (window.confirm(notice)) {
+                await axios
+                    .delete('/student/intern/job/regist/id', {
+                        params: {
+                            request_id,
+                        },
+                    })
+                    .then((res) => {
+                        alert(res.data.responseData);
+                        if (res.data.statusCode === 200) {
+                            getRegistRequests();
+                        }
+                    })
+                    .catch((err) => alert(err));
+            }
         }
     };
+
+    const handleSendRequestToBusiness = () => {};
 
     const formatDate = (date) => {
         const convertedDate = new Date(Date.parse(date));
@@ -178,12 +185,23 @@ const SendRequest = () => {
                                             </span>
                                         </span>
                                         <span>
-                                            <button
-                                                className={cx('btn-destroy')}
-                                                onClick={() => handleRemoveRequest(request.id)}
-                                            >
-                                                Gỡ yêu cầu
-                                            </button>
+                                            {request.regist_submit_status === 1 ? (
+                                                <button
+                                                    className={cx('btn-destroy')}
+                                                    onClick={handleSendRequestToBusiness}
+                                                >
+                                                    Gửi yêu cầu doanh nghiệp
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    className={cx('btn-destroy')}
+                                                    onClick={() =>
+                                                        handleRemoveRequest(request.id, request.regist_submit_status)
+                                                    }
+                                                >
+                                                    Gỡ yêu cầu
+                                                </button>
+                                            )}
                                         </span>
                                     </div>
                                 ))}

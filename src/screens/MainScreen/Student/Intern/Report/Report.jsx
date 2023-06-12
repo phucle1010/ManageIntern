@@ -7,10 +7,11 @@ import styles from './Report.module.scss';
 import { AttachFile } from '@mui/icons-material';
 
 import Loading from '../../../../../components/LoadingSpinner';
+import Appreciation from './Appreciation/Appreciation';
 
 const cx = classNames.bind(styles);
 
-const TodoItem = ({ todo, getAllTodos }) => {
+const TodoItem = ({ todo, getAllTodos, setSelectedJob }) => {
     const [isCompleted, setIsCompleted] = useState(
         todo.completed_status.data[0] === 1 && new Date() < new Date(Date.parse(todo.end_date)) ? true : false,
     );
@@ -85,6 +86,9 @@ const TodoItem = ({ todo, getAllTodos }) => {
                     <span>{formatedDate(todo.end_date)}</span>
                 </div>
             </div>
+            <button className={cx('btn-follow')} onClick={() => setSelectedJob(todo)}>
+                Theo dõi đánh giá
+            </button>
             <div
                 className={cx('todo-status', {
                     completed: todo.completed_status.data[0] === 1 && new Date() < new Date(Date.parse(todo.end_date)),
@@ -103,6 +107,7 @@ const Report = () => {
     const [studentId, setStudentId] = useState(null);
     const [todos, setTodos] = useState([]);
     const [loaded, setLoaded] = useState(false);
+    const [selectedJob, setSelectedJob] = useState(null);
 
     const getStudentId = async () => {
         await axios
@@ -149,7 +154,14 @@ const Report = () => {
                 {loaded ? (
                     <div className={cx('todo-list')}>
                         {todos.length > 0 &&
-                            todos.map((todo, index) => <TodoItem todo={todo} key={index} getAllTodos={getAllTodos} />)}
+                            todos.map((todo, index) => (
+                                <TodoItem
+                                    todo={todo}
+                                    key={index}
+                                    getAllTodos={getAllTodos}
+                                    setSelectedJob={setSelectedJob}
+                                />
+                            ))}
                     </div>
                 ) : (
                     <Loading />
@@ -193,6 +205,9 @@ const Report = () => {
             <div className={cx('option')}>
                 <button className={cx('btn-submit')}>Nộp bài</button>
             </div>
+            {selectedJob && Object.keys(selectedJob).length && (
+                <Appreciation todo={selectedJob} setSelectedTodo={setSelectedJob} />
+            )}
         </div>
     );
 };

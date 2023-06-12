@@ -116,7 +116,7 @@ const Follow = ({ setSelectedStudent, student, userId }) => {
                 },
             })
             .then((res) => {
-                if (res.data.statusCode) {
+                if (res.data.statusCode === 200) {
                     setTodos(res.data.responseData);
                     setRegularId(res.data.extraData);
                 }

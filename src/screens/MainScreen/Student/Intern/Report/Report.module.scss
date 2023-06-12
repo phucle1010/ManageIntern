@@ -75,6 +75,22 @@
     }
 }
 
+.btn-follow {
+    padding: 6px 20px;
+    background-color: var(--primary-color);
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
 .intern-detail {
     display: flex;
     align-items: center;
