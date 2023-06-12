@@ -152,7 +152,7 @@ const SendRequest = () => {
                     </div>
                     {registRequests.length > 0 && (
                         <div className={cx('job-category')}>
-                            <h4 className={cx('main-heading')}>Danh sách yêu cầu đã gửi</h4>
+                            <h4 className={cx('main-heading')}>Danh sách yêu cầu đã gửi đến Quản lý</h4>
                             <div className={cx('request-list')}>
                                 {registRequests.map((request, index) => (
                                     <div key={index} className={cx('request-item')}>
@@ -208,6 +208,58 @@ const SendRequest = () => {
                             </div>
                         </div>
                     )}
+
+                    {/* UI gửi yêu cầu tới doanh nghiệp */}
+
+                    {/* {registRequests.length > 0 && (
+                        <div className={cx('job-category')}>
+                            <h4 className={cx('main-heading')}>Danh sách yêu cầu đã gửi đến Doanh nghiệp</h4>
+                            <div className={cx('request-list')}>
+                                {registRequests.map((request, index) => (
+                                    <div key={index} className={cx('request-item')}>
+                                        <span>
+                                            <b>Vị trí công việc: </b>
+                                            {request.job_name}
+                                        </span>
+                                        <span>
+                                            <b>Công ty: </b>
+                                            {request.company_name}
+                                        </span>
+                                        <span>
+                                            <b>Ngày gửi yêu cầu: </b>
+                                            {formatDate(request.regist_date)}
+                                        </span>
+                                        <span
+                                            className={cx({
+                                                isActive: request.regist_submit_status === 1,
+                                                unActive: request.regist_submit_status === 0,
+                                                isPending: request.regist_submit_status === 2,
+                                            })}
+                                        >
+                                            <b>Trạng thái xác nhận:</b>
+                                            <span>
+                                                {request.regist_submit_status === 1
+                                                    ? 'Thành công'
+                                                    : request.regist_submit_status === 0
+                                                    ? 'Thất bại'
+                                                    : 'Đang chờ'}
+                                            </span>
+                                        </span>
+                                        <span>
+                                            <button
+                                                className={cx('btn-destroy')}
+                                                onClick={() =>
+                                                    handleRemoveRequest(request.id, request.regist_submit_status)
+                                                }
+                                            >
+                                                Gỡ yêu cầu
+                                            </button>
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )} */}
 
                     {selectedJob !== null && (
                         <div className={cx('job-category')}>
