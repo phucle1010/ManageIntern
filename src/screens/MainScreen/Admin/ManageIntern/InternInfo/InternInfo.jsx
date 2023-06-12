@@ -1,20 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './InternInfo.module.scss';
 import { Close } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
-const GUILDLINE_TEACHER = {
-    id: 1,
-    name: 'Đặng Minh Quang',
-    department: 'Mạng máy tính',
-    email: 'quangdm@gm.uit.edu.vn',
-    img: 'https://icons.veryicon.com/png/o/business/bitcoin-icon/anonymous-4.png',
-};
-
 const InternInfo = ({ close, student }) => {
+    const [file, setFile] = useState(null);
+    const [fileName, setFileName] = useState('');
+
+    const handleFileChange = (event) => {
+        const selectedFile = event.target.files[0];
+        setFile(selectedFile);
+        setFileName(selectedFile.name);
+    };
+
+    const handleConfirmInternJob = () => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('key', student.key);
+
+        axios
+            .put(`/admin/student/request_job/${student.studentId}`,  formData)
+            .then((res) => alert('thanh cong'))
+            .catch((err) => {
+                alert(err.response.data.detail);
+            })
+    }
     return (
         <div className={cx('wrapper')}>
             <Close className={cx('close-main-btn')} onClick={() => close('')} />
@@ -23,9 +37,9 @@ const InternInfo = ({ close, student }) => {
                 <h4 className={cx('list-heading')}>Thông tin sinh viên</h4>
                 <div className={cx('list-detail', 'student')}>
                     <div className={cx('list-detail-item')}>
-                        <Avatar src={student.img} />
+                        <Avatar src={student.studentImage} />
                     </div>
-                    <span className={cx('list-detail-item')}>{student.name}</span>
+                    <span className={cx('list-detail-item')}>{student.studentName}</span>
                     <span className={cx('list-detail-item')}>{student.position}</span>
                     <div className={cx('list-detail-item')}>
                         <div className={cx('status')}>Đang chờ</div>
@@ -36,11 +50,11 @@ const InternInfo = ({ close, student }) => {
                 <h4 className={cx('list-heading')}>Thông tin giảng viên hướng dẫn</h4>
                 <div className={cx('list-detail', 'student')}>
                     <div className={cx('list-detail-item')}>
-                        <Avatar src={GUILDLINE_TEACHER.img} />
+                        <Avatar src={student.teacherImage} />
                     </div>
-                    <span className={cx('list-detail-item')}>{GUILDLINE_TEACHER.name}</span>
-                    <span className={cx('list-detail-item')}>{GUILDLINE_TEACHER.department}</span>
-                    <span className={cx('list-detail-item')}>{GUILDLINE_TEACHER.email}</span>
+                    <span className={cx('list-detail-item')}>{student.teacherName}</span>
+                    <span className={cx('list-detail-item')}>{student.departmentName}</span>
+                    <span className={cx('list-detail-item')}>{student.teacherEmail}</span>
                 </div>
             </div>
             <div className={cx('intern-info')}>
@@ -50,16 +64,17 @@ const InternInfo = ({ close, student }) => {
                         className={cx('intern-input')}
                         type="text"
                         placeholder="File đính kèm thông tin giới thiệu thực tập"
+                        value={fileName}
                         readOnly={true}
                     />
                     <label htmlFor={cx('gif-input')} className={cx('gif-label')}>
                         <span className={cx('gif-btn')}>Đính kèm</span>
                     </label>
-                    <input type="file" id={cx('gif-input')} />
+                    <input type="file" id={cx('gif-input')} onChange={(e) => handleFileChange(e)}/>
                 </div>
             </div>
             <div className={cx('options-btn')}>
-                <button className={cx('btn-submit')} onClick={() => {}}>
+                <button className={cx('btn-submit')} onClick={() => handleConfirmInternJob()}>
                     Xác nhận
                 </button>
                 <button className={cx('btn-submit', 'btn-cancel')} onClick={() => {}}>

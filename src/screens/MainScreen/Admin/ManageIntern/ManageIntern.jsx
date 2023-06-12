@@ -4,6 +4,7 @@ import styles from './ManageIntern.module.scss';
 
 import SearchBox from '../../../../components/SearchBox';
 import InternItem from './InternItem';
+import InternshipItem from './InternshipItem';
 
 import ManageJob from './ManageJob';
 import OpenSubject from './OpenSubject';
@@ -17,22 +18,6 @@ const WAITING_HEADINGS = ['Ảnh', 'Mã số sinh viên', 'Họ và tên', 'Vị
 const INTERNED_HEADINGS = [...WAITING_HEADINGS, 'Điểm tổng kết'];
 const INTERNING_HEADINGS = [...WAITING_HEADINGS, 'Thời gian thực tập'];
 
-const WAITING_LIST = [
-    {
-        id: 1,
-        name: 'Nguyễn Hoàng Nam',
-        position: 'Project Manager',
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU',
-        internTime: '3 tháng',
-    },
-    {
-        id: 2,
-        name: 'Trần Nhật Tân',
-        position: 'Tester',
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU',
-        internTime: '4 tháng',
-    },
-];
 const INTERNED_LIST = [
     {
         id: 1,
@@ -171,7 +156,7 @@ const ManageIntern = () => {
     const [manageJobScreen, setManageJobScreen] = useState(false);
     const [openSubjectScreen, setOpenSubjectScreen] = useState(false);
     const [internMarkScreen, setInternMarkScreen] = useState(false);
-
+    // sign in intern job
     const [studentSignUpIntern, setStudentSignUpIntern] = useState([{}]);
 
     const [academic, setAcademic] = useState(0);
@@ -181,11 +166,24 @@ const ManageIntern = () => {
     const loadStudentSignUpIntern = () => {
         axios
             .get('/admin/student/signup_intern', {params: {academic, semester, teacher}})
-            .then((res) => setStudentSignUpIntern(res.data))
+            .then((res) => {setStudentSignUpIntern(res.data); console.log(res.data)})
             .catch((err) => console.log(err));
     }
 
     useEffect(() => loadStudentSignUpIntern(), [academic, semester, teacher]);
+
+    // request job intern
+
+    const [studentRequestJobIntern, setStudentRequestJobIntern] = useState([{}]);
+
+    const loadStudentRequestJobIntern = () => {
+        axios
+            .get('/admin/student/request_job')
+            .then((res) => setStudentRequestJobIntern(res.data))
+            .catch((err) => console.log(err));
+    }
+
+    useEffect(() => loadStudentRequestJobIntern(), []);
 
     return (
         <div className={cx('wrapper')}>
@@ -237,9 +235,9 @@ const ManageIntern = () => {
                         </ul>
                         <h5 className={cx('option-heading-list', 'option-heading')}>Lựa chọn</h5>
                     </div>
-                    {WAITING_LIST.length > 0 &&
-                        WAITING_LIST.map((student) => (
-                            <InternItem
+                    {studentRequestJobIntern.length > 0 &&
+                        studentRequestJobIntern.map((student) => (
+                            <InternshipItem
                                 key={student.id}
                                 student={student}
                                 interned={false}
