@@ -14,6 +14,7 @@ const SendRequest = () => {
     const [careJobs, setCareJobs] = useState([]);
     const [selectedJob, setSelectedJob] = useState(null);
     const [registRequests, setRegistRequests] = useState([]);
+    const [requestJob, setRequestJob] = useState([]);
     const [loaded, setLoaded] = useState(false);
 
     const getStudentId = async () => {
@@ -60,6 +61,23 @@ const SendRequest = () => {
             .then((res) => {
                 if (res.data.statusCode === 200) {
                     setRegistRequests(res.data.responseData);
+                    console.log(res.data.responseData);
+                }
+            })
+            .catch((err) => alert(err));
+    };
+
+    const getRequestsJob = async () => {
+        await axios
+            .get('/student/intern/job/request', {
+                params: {
+                    student_id: studentId,
+                },
+            })
+            .then((res) => {
+                if (res.data.statusCode === 200) {
+                    setRequestJob(res.data.responseData);
+                    console.log(res.data.responseData);
                 }
             })
             .catch((err) => alert(err));
@@ -70,6 +88,7 @@ const SendRequest = () => {
             getCareJobs();
             getRegistRequests();
             setLoaded(true);
+            getRequestsJob();
         }
     }, [studentId]);
 
@@ -145,7 +164,7 @@ const SendRequest = () => {
                     </div>
                     {registRequests.length > 0 && (
                         <div className={cx('job-category')}>
-                            <h4 className={cx('main-heading')}>Danh sách yêu cầu đã gửi</h4>
+                            <h4 className={cx('main-heading')}>Danh sách yêu cầu đã gửi đến Quản lý</h4>
                             <div className={cx('request-list')}>
                                 {registRequests.map((request, index) => (
                                     <div key={index} className={cx('request-item')}>
@@ -181,6 +200,53 @@ const SendRequest = () => {
                                             <button
                                                 className={cx('btn-destroy')}
                                                 onClick={() => handleRemoveRequest(request.id)}
+                                            >
+                                                Gỡ yêu cầu
+                                            </button>
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                     {/* UI gửi yêu cầu tới doanh nghiệp */}
+
+                    {requestJob.length > 0 && (
+                        <div className={cx('job-category')}>
+                            <h4 className={cx('main-heading')}>Danh sách yêu cầu đã gửi đến Doanh nghiệp</h4>
+                            <div className={cx('request-list')}>
+                                {requestJob.map((request, index) => (
+                                    <div key={index} className={cx('request-item')}>
+                                        <span>
+                                            <b>Vị trí công việc: </b>
+                                            {request.job_name}
+                                        </span>
+                                        <span>
+                                            <b>Công ty: </b>
+                                            {request.company_name}
+                                        </span>
+                                        <span>
+                                            <b>Ngày gửi yêu cầu: </b>
+                                            {formatDate(request.sent_require_time)}
+                                        </span>
+                                        <span
+                                            className={cx({
+                                                isActive: request.submit_status.data[0] === 1,
+                                                isPending: request.submit_status.data[0] === 0,
+                                            })}
+                                        >
+                                            <b>Trạng thái xác nhận:</b>
+                                            <span>
+                                                {request.submit_status.data[0] === 1 ? 'Thành công' : 'Đang chờ'}
+                                            </span>
+                                        </span>
+                                        <span>
+                                            <button
+                                                className={cx('btn-destroy')}
+                                                onClick={() =>
+                                                    handleRemoveRequest(request.id, request.regist_submit_status)
+                                                }
                                             >
                                                 Gỡ yêu cầu
                                             </button>
