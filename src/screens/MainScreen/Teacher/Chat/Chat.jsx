@@ -3,127 +3,32 @@ import classNames from 'classnames/bind';
 import styles from './Chat.module.scss';
 import { Avatar } from '@mui/material';
 import { Send } from '@mui/icons-material';
+import socketIOClient from 'socket.io-client';
+import axios from 'axios';
+
+const host = 'http://localhost:8080';
 
 const cx = classNames.bind(styles);
 
-const messages = [
-    [
-        {
-            id: 1,
-            img: 'https://i.pinimg.com/originals/96/6c/e1/966ce14ec7fad178425e68bd333fbf99.jpg',
-            content: 'Từ khi gặp em, anh mới biết những ngôi sao trên trời đều là giả',
-            opponent: true,
-            time: '09:00',
-        },
-        {
-            id: 2,
-            img: 'https://i.pinimg.com/originals/96/6c/e1/966ce14ec7fad178425e68bd333fbf99.jpg',
-            content: 'Sao dị ạ',
-            opponent: false,
-            time: '09:05',
-        },
-        {
-            id: 3,
-            img: 'https://i.pinimg.com/originals/96/6c/e1/966ce14ec7fad178425e68bd333fbf99.jpg',
-            content: 'Vì lực hút của Trái đất đã kéo ánh sáng đó vào trong đôi mắt của em !!',
-            opponent: true,
-            time: '09:07',
-        },
-        {
-            id: 4,
-            img: 'https://i.pinimg.com/originals/96/6c/e1/966ce14ec7fad178425e68bd333fbf99.jpg',
-            content: 'Em biết còn tại sao nữa không ??',
-            opponent: true,
-            time: '09:08',
-        },
-        {
-            id: 5,
-            img: 'https://i.pinimg.com/originals/96/6c/e1/966ce14ec7fad178425e68bd333fbf99.jpg',
-            content: 'Dạ khum',
-            opponent: false,
-            time: '09:10',
-        },
-        {
-            id: 6,
-            img: 'https://i.pinimg.com/originals/96/6c/e1/966ce14ec7fad178425e68bd333fbf99.jpg',
-            content: 'Vì cả thế giới bỗng chốc thu bé lại vừa bằng một cô gái <3',
-            opponent: true,
-            time: '09:12',
-        },
-        {
-            id: 7,
-            img: 'https://i.pinimg.com/originals/96/6c/e1/966ce14ec7fad178425e68bd333fbf99.jpg',
-            content: 'Eo gục ngã hic :(((',
-            opponent: false,
-            time: '09:15',
-        },
-        {
-            id: 8,
-            img: 'https://i.pinimg.com/originals/96/6c/e1/966ce14ec7fad178425e68bd333fbf99.jpg',
-            content: 'Anh có một bờ vai đủ rộng :V',
-            opponent: true,
-            time: '9:18',
-        },
-    ],
-    [
-        {
-            id: 1,
-            img: 'https://i.pinimg.com/originals/96/6c/e1/966ce14ec7fad178425e68bd333fbf99.jpg',
-            content: 'Từ khi gặp em, anh mới biết những ngôi sao trên trời đều là giả',
-            opponent: true,
-            time: '09:00',
-        },
-        {
-            id: 2,
-            img: 'https://i.pinimg.com/originals/96/6c/e1/966ce14ec7fad178425e68bd333fbf99.jpg',
-            content: 'Sao dị ạ',
-            opponent: false,
-            time: '09:05',
-        },
-        {
-            id: 3,
-            img: 'https://i.pinimg.com/originals/96/6c/e1/966ce14ec7fad178425e68bd333fbf99.jpg',
-            content: 'Vì lực hút của Trái đất đã kéo ánh sáng đó vào trong đôi mắt của em !!',
-            opponent: true,
-            time: '09:07',
-        },
-    ],
-];
-
-const STUDENTS = [
-    {
-        id: 1,
-        name: 'Lê Bảo Dương',
-        img: 'https://i.pinimg.com/originals/96/6c/e1/966ce14ec7fad178425e68bd333fbf99.jpg',
-    },
-    {
-        id: 2,
-        name: 'Nguyễn Trọng Nhân',
-        img: 'https://animalslook.com/media/very-cute-and-funny-dog-selfies/very-cute-and-funny-dog-selfies-1.jpg?ezimgfmt=rs:700x933/rscb1/ngcb1/notWebP',
-    },
-];
-
-var date = new Date();
-
-const Message = ({ message }) => {
+const Message = ({ message, user }) => {
     return (
         <div
             className={cx('chat-message', {
-                me: message.opponent === false,
+                me: message.userId === user.userIdTeacher,
             })}
         >
-            {message.opponent === true ? (
+            {message.userId === user.userIdStudent ? (
                 <React.Fragment>
-                    <Avatar className={cx('chat-object-avatar', 'message')} src={message.img} />
+                    <Avatar className={cx('chat-object-avatar', 'message')} src={user.image} />
                     <span>
-                        <h6 className={cx('chat-time')}>{message.time}</h6>
+                        <h6 className={cx('chat-time')}>{message.sentTime}</h6>
                         {message.content}
                     </span>
                 </React.Fragment>
             ) : (
                 <React.Fragment>
                     <span>
-                        <h6 className={cx('chat-time')}>{message.time}</h6>
+                        <h6 className={cx('chat-time')}>{message.sentTime}</h6>
                         {message.content}
                     </span>
                 </React.Fragment>
@@ -133,9 +38,73 @@ const Message = ({ message }) => {
 };
 
 const Chat = () => {
-    const [messageList, setMessageList] = useState(messages[0]);
-    const [messageContent, setMessageContent] = useState('');
+    const [students, setStudents] = useState([]);
+    const [mess, setMess] = useState([]);
     const [chatContentIndex, setChatContentIndex] = useState(0);
+    const [message, setMessage] = useState(null);
+    const [attachFile, setAttachFile] = useState(null);
+
+    const loadStudent = () => {
+        const token = JSON.parse(localStorage.getItem('user_token'));
+        axios
+            .get('/chat/student', { headers: { authentication: token } })
+            .then((res) => setStudents(res.data))
+            .catch((err) => console.log(err));
+    };
+    useEffect(() => {
+        loadStudent();
+    }, []);
+    useEffect(() => {
+        loadMessage();
+    }, [chatContentIndex, students]);
+
+    const loadMessage = () => {
+        const token = JSON.parse(localStorage.getItem('user_token'));
+        if (students.length > 0) {
+            axios
+                .get(`/chat/message/${students[chatContentIndex].studentId}`, { headers: { authentication: token } })
+                .then((res) => setMess(res.data))
+                .catch((err) => console.log(err));
+        }
+    };
+
+    const socketRef = useRef();
+
+    useEffect(() => {
+        socketRef.current = socketIOClient.connect(host);
+    }, []);
+
+    useEffect(() => {
+        socketRef.current = socketIOClient.connect(host);
+
+        socketRef.current.on('sendDataServer', (dataGot) => {
+            setMess((oldMsgs) => [...oldMsgs, dataGot.data]);
+            console.log(dataGot);
+        });
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+    }, []);
+
+    const sendMessage = () => {
+        const now = new Date();
+        const vietnamTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+        const sentTime = vietnamTime.toISOString().replace(/T/, ' ').substr(0, 19);
+        if (message !== null) {
+            const msg = {
+                content: message,
+                userId: students[chatContentIndex].userIdTeacher,
+                studentId: students[chatContentIndex].studentId,
+                attachFile: attachFile,
+                teacherId: students[chatContentIndex].teacherId,
+                sentTime: sentTime,
+            };
+            socketRef.current.emit('sendDataClient', msg);
+
+            setMessage('');
+        }
+    };
 
     const messageBody = useRef();
 
@@ -144,33 +113,13 @@ const Chat = () => {
     };
 
     useEffect(() => {
-        setMessageList(messages[chatContentIndex]);
-    }, [chatContentIndex]);
-
-    useEffect(() => {
         scrollToBottom();
-    }, [messageList]);
-
-    const handleSendMessage = () => {
-        const lastMessageID = messageList[messageList.length - 1].id;
-        const message = {
-            id: lastMessageID + 1,
-            img: 'https://i.pinimg.com/originals/96/6c/e1/966ce14ec7fad178425e68bd333fbf99.jpg',
-            content: messageContent,
-            opponent: false,
-            time: `${date.getHours() >= 0 ? date.getHours() : `0${date.getHours()}`}:${
-                date.getMinutes() >= 0 ? date.getMinutes() : `0${date.getMinutes()}`
-            }`,
-        };
-
-        setMessageList((prevList) => [...prevList, message]);
-        setMessageContent('');
-    };
+    }, [mess]);
 
     return (
         <div className={cx('wrapper')}>
             <div className={cx('user-list')}>
-                {STUDENTS.map((student, index) => (
+                {students.map((student, index) => (
                     <div
                         key={index}
                         className={cx('user-item', {
@@ -178,20 +127,28 @@ const Chat = () => {
                         })}
                         onClick={() => setChatContentIndex(index)}
                     >
-                        <Avatar src={student.img} className={cx('user-avt')} />
-                        <span>{student.name}</span>
+                        <Avatar src={student.image} className={cx('user-avt')} />
+                        <span>{student.fullName}</span>
                     </div>
                 ))}
             </div>
             <div className={cx('main-chat')}>
                 <div className={cx('chat-container')}>
                     <div className={cx('chat-object')}>
-                        <Avatar className={cx('chat-object-avatar')} src={STUDENTS[chatContentIndex].img} />
-                        <span className={cx('chat-object-name')}>{STUDENTS[chatContentIndex].name}</span>
+                        <Avatar
+                            className={cx('chat-object-avatar')}
+                            src={
+                                students[chatContentIndex]?.image ||
+                                'https://kenh14cdn.com/thumb_w/660/2020/6/6/583808735902613047891358253770177506705408n-15592399250171833547164-1591434336975414105459-crop-1591434346991904928321.jpg'
+                            }
+                        />
+                        <span className={cx('chat-object-name')}>{students[chatContentIndex]?.fullName}</span>
                     </div>
                     <div className={cx('chat-content')}>
-                        {messageList.length > 0 &&
-                            messageList.map((message) => <Message key={message.id} message={message} />)}
+                        {mess.length > 0 &&
+                            mess.map((message) => (
+                                <Message key={message.id} message={message} user={students[chatContentIndex]} />
+                            ))}
                         <div ref={messageBody}></div>
                     </div>
                     <div className={cx('chat-area-text')}>
@@ -199,13 +156,13 @@ const Chat = () => {
                             type="text"
                             className={cx('chat-input')}
                             placeholder="Nhập nội dung tin nhắn..."
-                            value={messageContent}
+                            value={message}
                             onChange={(e) => {
-                                setMessageContent(e.target.value);
+                                setMessage(e.target.value);
                             }}
-                            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                            onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                         />
-                        <Send className={cx('btn-send')} onClick={handleSendMessage} />
+                        <Send className={cx('btn-send')} onClick={sendMessage} />
                     </div>
                 </div>
             </div>
