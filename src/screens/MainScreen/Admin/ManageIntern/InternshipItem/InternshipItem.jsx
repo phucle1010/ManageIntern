@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import classNames from 'classnames/bind';
-import styles from './InternItem.module.scss';
+import styles from './InternshipItem.module.scss';
 import { Visibility } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
-import DetailSignUpInfo from '../DetailSignUpInfo';
+import InternInfo from '../InternInfo';
 
 const cx = classNames.bind(styles);
 
-const InternItem = ({ student, interned, waiting }) => {
-    const [detailSignUpInternScreen, setDetailSignUpInternScreen] = useState(false);
+const InternshipItem = ({ student, interned, waiting }) => {
+    const [internInfoScreen, setInternInfoScreen] = useState(false);
 
     return (
         <div className={cx('wrapper')}>
@@ -17,13 +17,13 @@ const InternItem = ({ student, interned, waiting }) => {
                     <Avatar src={student.studentImage} />
                 </div>
                 <div className={cx('data-item', { interned })}>
-                    <span className={cx('title-heading')}>{student.id}</span>
+                    <span className={cx('title-heading')}>{student.studentId}</span>
                 </div>
                 <div className={cx('data-item', { interned })}>
                     <span className={cx('title-heading')}>{student.studentName}</span>
                 </div>
                 <div className={cx('data-item', { interned })}>
-                    <span className={cx('title-heading')}>{student.teacherName}</span>
+                    <span className={cx('title-heading')}>{student.position}</span>
                 </div>
                 {interned === true && (
                     <div className={cx('data-item', { interned })}>
@@ -39,16 +39,14 @@ const InternItem = ({ student, interned, waiting }) => {
             {interned === false && waiting === true && (
                 <div className={cx('options')}>
                     <div className={cx('option-item')}>
-                        <Visibility className={cx('view-icon')} onClick={() => setDetailSignUpInternScreen(true)} />
+                        <Visibility className={cx('view-icon')} onClick={() => setInternInfoScreen(true)} />
                     </div>
                 </div>
             )}
 
-            {detailSignUpInternScreen === true && (
-                <DetailSignUpInfo student={student} close={setDetailSignUpInternScreen} />
-            )}
+            {internInfoScreen === true && <InternInfo student={student} close={setInternInfoScreen} />}
         </div>
     );
 };
 
-export default InternItem;
+export default InternshipItem;

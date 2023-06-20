@@ -14,6 +14,7 @@ const SendRequest = () => {
     const [careJobs, setCareJobs] = useState([]);
     const [selectedJob, setSelectedJob] = useState(null);
     const [registRequests, setRegistRequests] = useState([]);
+    const [requestJob, setRequestJob] = useState([]);
     const [loaded, setLoaded] = useState(false);
 
     const getStudentId = async () => {
@@ -65,10 +66,27 @@ const SendRequest = () => {
             .catch((err) => alert(err));
     };
 
+    const getRequestsJob = async () => {
+        await axios
+            .get('/student/intern/job/request', {
+                params: {
+                    student_id: studentId,
+                },
+            })
+            .then((res) => {
+                if (res.data.statusCode === 200) {
+                    setRequestJob(res.data.responseData);
+                    console.log(res.data.responseData);
+                }
+            })
+            .catch((err) => alert(err));
+    };
+
     useEffect(() => {
         if (studentId !== null) {
             getCareJobs();
             getRegistRequests();
+            getRequestsJob();
             setLoaded(true);
         }
     }, [studentId]);
