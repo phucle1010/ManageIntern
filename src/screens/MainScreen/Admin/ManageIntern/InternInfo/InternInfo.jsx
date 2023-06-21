@@ -15,6 +15,7 @@ const InternInfo = ({ close, student }) => {
         const selectedFile = event.target.files[0];
         setFile(selectedFile);
         setFileName(selectedFile.name);
+        console.log(event.target.files[0]);
     };
 
     const handleConfirmInternJob = () => {
