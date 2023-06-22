@@ -1,99 +1,188 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './ScoreTable.module.scss';
 import { Avatar } from '@mui/material';
 import { Save, Restore, Edit } from '@mui/icons-material';
 
 import SearchBox from '../../../../components/SearchBox';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
-
-const STUDENTS = [
-    {
-        id: 20521764,
-        name: 'Lê Thế Phúc',
-        birth: '10-10-2002',
-        gender: 'Nam',
-        phone: '0368341595',
-        class: 'KTPM2020',
-        department: 'Công nghệ phần mềm',
-        status: 'Đang học',
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU',
-    },
-    {
-        id: 20521790,
-        name: 'Nguyễn Nhật Hoàng Quân',
-        birth: '10-10-2002',
-        gender: 'Nam',
-        phone: '0368341595',
-        class: 'KTPM2020',
-        department: 'Công nghệ phần mềm',
-        status: 'Đang học',
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkg-307JO6AHvZVx8999lW46CWnwCPcBqgMA&usqp=CAU',
-    },
-];
 
 const MENU_HEADINGS = ['Ảnh', 'Mã số sinh viên', 'Họ và tên', 'Lớp', 'Điểm', 'Lựa chọn'];
 
 const ScoreTable = () => {
-    return (
-        <div className={cx('wrapper')}>
-            <h3 className={cx('title-heading')}>BẢNG ĐIỂM</h3>
-            <SearchBox className={cx('search')} />
-            <h4 className={cx('main-heading')}>Danh sách sinh viên</h4>
-            <div className={cx('filters')}>
-                <select className={cx('filter-select-item')}>
-                    <option value="">Năm học</option>
-                    <option value="">2020</option>
-                    <option value="">2021</option>
-                    <option value="">2022</option>
-                </select>
-                <select className={cx('filter-select-item')}>
-                    <option value="">Học kỳ</option>
-                    <option value="">Học kỳ 1</option>
-                    <option value="">Học kỳ 2</option>
-                </select>
-            </div>
-            <div className={cx('student-container')}>
-                <div className={cx('menu-list')}>
-                    {MENU_HEADINGS.map((menu, index) => (
-                        <span className={cx('menu-item')} key={index}>
-                            {menu}
-                        </span>
-                    ))}
-                </div>
-                <div className={cx('student-list')}>
-                    {STUDENTS.map((student) => (
-                        <div key={student.id} className={cx('student-item')}>
-                            <div className={cx('student-item-detail')}>
-                                <Avatar src={student.img} />
-                            </div>
-                            <div className={cx('student-item-detail')}>
-                                <span>{student.id}</span>
-                            </div>
-                            <div className={cx('student-item-detail')}>
-                                <span>{student.name}</span>
-                            </div>
-                            <div className={cx('student-item-detail')}>
-                                <span>{student.class}</span>
-                            </div>
-                            <div className={cx('student-item-detail')}>
-                                <input type="text" className={cx('score-input')} placeholder="Nhập điểm" />
-                            </div>
-                            <div className={cx('student-item-detail')}>
-                                <Save className={cx('btn-save')} />
-                                <Restore className={cx('btn-restore')} />
-                                <Edit className={cx('btn-edit')} />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-            <div className={cx('option')}>
-                <button className={cx('btn-save-all')}>Lưu bảng điểm</button>
-            </div>
+  const [students, setStudents] = useState([]);
+  const [semesters, setSemesters] = useState([]);
+  const [academics, setAcademics] =useState([]);
+
+  const [academic, setAcademic] = useState();
+  const [semester, setSemester] = useState();
+  const [editedScores, setEditedScores] = useState({});
+
+  const loadData = () => {
+    const token = JSON.parse(localStorage.getItem('user_token'));
+    axios
+      .get('/teacher/student', {params: {academic, semester}, headers: {'Authorization' : token}})
+      .then((res) => {
+        setStudents(res.data);
+        setStudents(res.data.map(student => ({...student, editable: false})));
+        console.log(res.data);
+      })
+      .catch((err) => console.log(err));
+  }
+
+  const loadSemester = () => {
+    axios
+      .get('/admin/semester')
+      .then((res) => setSemesters(res.data.responseData))
+      .catch((err) => console.log(err));
+  }
+
+  const loadAcademics = () => {
+    axios
+      .get('/admin/academic-year')
+      .then((res) => setAcademics(res.data.responseData))
+      .catch((err) => console.log(err));
+  }
+
+  useEffect(() => {
+    loadAcademics();
+    loadSemester();
+  }, []);
+
+  useEffect(() => loadData(), [academic, semester]);
+
+  const handleSave = (studentId, score, id) => {
+    setEditedScores({
+      ...editedScores,
+      [studentId]: score,
+    });
+    const token = JSON.parse(localStorage.getItem('user_token'));
+    axios.put(`/teacher/save_score/${studentId}`, [{studentId ,score, id}], {headers: {'Authorization' : token}})
+      .then((res) => {
+        setStudents(res.data);
+      })
+      .catch((err) => console.log(err));
+  }
+    
+  const handleRestore = (studentId) => {
+    setEditedScores({
+      ...editedScores,
+      [studentId]: undefined,
+    });
+  }
+  const handleSaveAll = () => {
+    const editedStudents = students.filter((student) => editedScores[student.studentId] !== undefined);
+    const editedStudentScores = editedStudents.map((student) => ({
+      studentId: student.studentId,
+      score: editedScores[student.studentId],
+      id: student.studentLearnInternId
+    }));
+    const token = JSON.parse(localStorage.getItem('user_token'));
+    axios
+      .put('/teacher/save_score', editedStudentScores, {headers: {'Authorization' : token}})
+      .then((res) => {
+        setStudents(res.data);
+        setEditedScores({});
+      })
+      .catch((err) => console.log(err));
+  }
+    
+  const handleScoreChange = (event, studentId) => {
+    const score = event.target.value;
+    setEditedScores({
+      ...editedScores,
+      [studentId]: score,
+    });
+  }
+
+  return (
+    <div className={cx('wrapper')}>
+      <h3 className={cx('title-heading')}>BẢNG ĐIỂM</h3>
+      <SearchBox className={cx('search')} />
+      <h4 className={cx('main-heading')}>Danh sách sinh viên</h4>
+      <div className={cx('filters')}>
+        <select className={cx('filter-select-item')} onChange={(e) => setAcademic(e.target.value)}>
+          <option value={0}>Năm học</option>
+            {academics.map((academic) => (
+              <option
+                key={academic.current_year}
+                value={academic.id}
+                className={cx('option-value')}
+              >
+                {academic.current_year}
+              </option>
+            ))}
+        </select>
+        <select className={cx('filter-select-item')} onChange={(e) => setSemester(e.target.value)}>
+          <option value={0}>Học kỳ</option>
+            {semesters.map((semester) => (
+              <option
+                key={semester.semester_name}
+                value={semester.id}
+                className={cx('option-value')}
+              >
+                {semester.semester_name}
+              </option>
+            ))}
+        </select>
+      </div>
+      <div className={cx('student-container')}>
+        <div className={cx('menu-list')}>
+          {MENU_HEADINGS.map((menu, index) => (
+            <span className={cx('menu-item')} key={index}>
+              {menu}
+            </span>
+          ))}
         </div>
-    );
+        <div className={cx('student-list')}>
+          {students?.map((student) => (
+            <div key={student.studentId} className={cx('student-item')}>
+              <div className={cx('student-item-detail')}>
+                  <Avatar src={student.image} />
+              </div>
+              <div className={cx('student-item-detail')}>
+                <span>{student.studentId}</span>
+              </div>
+              <div className={cx('student-item-detail')}>
+                <span>{student.full_name}</span>
+              </div>
+              <div className={cx('student-item-detail')}>
+                <span>{student.class_name}</span>
+              </div>
+              <div className={cx('student-item-detail')}>
+                {/* <input type="text" className={cx('score-input')} placeholder="Nhập điểm" value={student.score} /> */}
+                {editedScores[student.studentId] !== undefined ? (
+                  <input
+                    type="number"
+                    min="0"
+                    max="10"
+                    value={editedScores[student.studentId]}
+                    onChange={(event) => handleScoreChange(event, student.studentId)}
+                  />
+                  ) : (
+                    student.score
+                  )}
+              </div>
+              <div className={cx('student-item-detail')}>
+                <Save className={cx('btn-save')}  onClick={() => handleSave(student.studentId, editedScores[student.studentId], student.studentLearnInternId)} disabled={!editedScores[student.studentId]}/>
+                <Restore className={cx('btn-restore')} onClick={() => handleRestore(student.studentId)} />
+                <Edit className={cx('btn-edit')} onClick={() => handleSave(student.studentId, student.score)} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className={cx('option')}>
+        <button className={cx('btn-save-all')} 
+          disabled={Object.keys(editedScores).length === 0}
+          onClick={handleSaveAll}>
+            Lưu bảng điểm
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default ScoreTable;

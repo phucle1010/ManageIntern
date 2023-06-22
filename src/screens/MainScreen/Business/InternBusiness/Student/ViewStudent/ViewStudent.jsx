@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import classNames from 'classnames/bind';
 import styles from './ViewStudent.module.scss';
 import { Close } from '@mui/icons-material';
@@ -6,6 +6,16 @@ import { Close } from '@mui/icons-material';
 const cx = classNames.bind(styles);
 
 const ViewStudent = ({ student, setChosedStudent }) => {
+
+    const [file, setFile] = useState(null);
+    const [fileName, setFileName] = useState('');
+
+    const handleFileChange = (event) => {
+        const selectedFile = event.target.files[0];
+        setFile(selectedFile);
+        setFileName(selectedFile.name);
+        console.log(event.target.files[0]);
+    };
     return (
         <div className={cx('wrapper')}>
             <Close className={cx('close-main-btn')} onClick={() => setChosedStudent({})} />
@@ -66,7 +76,7 @@ const ViewStudent = ({ student, setChosedStudent }) => {
                                 value={new Date(student.start_date).toISOString().slice(0, 10)}
                             />
                         </div>
-                        <div className={cx('user-data-item', 'full-width')}>
+                        <div className={cx('user-data-item')}>
                             <h5 className={cx('input-title')}>Địa chỉ</h5>
                             <input
                                 className={cx('input-item')}
@@ -77,7 +87,7 @@ const ViewStudent = ({ student, setChosedStudent }) => {
                                 value={student.address}
                             />
                         </div>
-                        <div className={cx('user-data-item', 'full-width')}>
+                        <div className={cx('user-data-item')}>
                             <h5 className={cx('input-title')}>Trạng thái thực tập</h5>
                             <select
                                 className={cx('input-item')}
@@ -88,6 +98,20 @@ const ViewStudent = ({ student, setChosedStudent }) => {
                                 <option>Đang thực tập</option>
                                 <option>Đã thực tập</option>
                             </select>
+                        </div>
+                        <div className={cx('user-data-item')}>
+                            <h5 className={cx('input-title')}>File đánh giá</h5>
+                            <input
+                                className={cx('input-item')}
+                                type="text"
+                                placeholder="File đính kèm thông tin giới thiệu thực tập"
+                                value={''}
+                                readOnly={true}
+                            />
+                            <label htmlFor={cx('gif-input')} className={cx('gif-label')}>
+                                <span className={cx('gif-btn')}>Đính kèm</span>
+                            </label>
+                            <input type="file" id={cx('gif-input')} onChange={(e) => handleFileChange(e)} />
                         </div>
                     </div>
                 </div>
