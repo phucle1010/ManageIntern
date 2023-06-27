@@ -2,19 +2,47 @@ import React, {useState} from 'react';
 import classNames from 'classnames/bind';
 import styles from './ViewStudent.module.scss';
 import { Close } from '@mui/icons-material';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
 const ViewStudent = ({ student, setChosedStudent }) => {
 
-    const [file, setFile] = useState(null);
-    const [fileName, setFileName] = useState('');
+    const [docx, setDocx] = useState(student?.appreciation_file);
+    const [startDate, setStartDate] = useState((new Date(student?.start_date)  || new Date()).toISOString().slice(0, 10));
 
-    const handleFileChange = (event) => {
-        const selectedFile = event.target.files[0];
-        setFile(selectedFile);
-        setFileName(selectedFile.name);
-        console.log(event.target.files[0]);
+    const updateStudent = () => {
+        const token = JSON.parse(localStorage.getItem('user_token'));
+        axios
+            .put(`/business/interns/${student.studentId}`, {appreciation_file :docx, key: student.key, start_date: startDate}, {headers: {'authorization': token}})
+            .then((res) => alert('Cập nhật thành công'))
+            .catch((err) => console.log(err));
+    }
+  
+    const handleDocxFileChange = async (event) => {
+        const file = event.target.files[0];
+        const base64 = await convertBase64(file);
+        console.log(base64);
+        setDocx(base64);
+    };
+
+    const convertBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file);
+            fileReader.onload = () => {
+                resolve(fileReader.result);
+            };
+            fileReader.onerror = (error) => {
+                reject(error);
+            };
+        });
+    };
+
+    const handleStartDateChange = (event) => {
+        const selectedDate = new Date(event.target.value);
+        const formattedDate = selectedDate.toISOString().slice(0, 10);
+        setStartDate(formattedDate);
     };
     return (
         <div className={cx('wrapper')}>
@@ -73,7 +101,8 @@ const ViewStudent = ({ student, setChosedStudent }) => {
                                 type="date"
                                 name="entryDate"
                                 // placeholder="Thành phố Hồ Chí Minh"
-                                value={new Date(student.start_date).toISOString().slice(0, 10)}
+                                value={startDate}
+                                onChange={handleStartDateChange}
                             />
                         </div>
                         <div className={cx('user-data-item')}>
@@ -105,19 +134,21 @@ const ViewStudent = ({ student, setChosedStudent }) => {
                                 className={cx('input-item')}
                                 type="text"
                                 placeholder="File đính kèm thông tin giới thiệu thực tập"
-                                value={''}
+                                value={docx}
                                 readOnly={true}
                             />
+                        </div>
+                        <div className={cx('user-data-item')}>
                             <label htmlFor={cx('gif-input')} className={cx('gif-label')}>
                                 <span className={cx('gif-btn')}>Đính kèm</span>
                             </label>
-                            <input type="file" id={cx('gif-input')} onChange={(e) => handleFileChange(e)} />
+                            <input type="file" id={cx('gif-input')}  accept=".docx" onChange={(e) => handleDocxFileChange(e)} />
                         </div>
                     </div>
                 </div>
             </div>
             <div className={cx('option-btn')}>
-                <button className={cx('save-btn')}>Lưu thay đổi</button>
+                <button className={cx('save-btn')} onClick={() => updateStudent()}>Lưu thay đổi</button>
             </div>
         </div>
     );

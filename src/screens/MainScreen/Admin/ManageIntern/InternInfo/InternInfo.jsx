@@ -8,23 +8,33 @@ import axios from 'axios';
 const cx = classNames.bind(styles);
 
 const InternInfo = ({ close, student }) => {
-    const [file, setFile] = useState(null);
+    const [docx, setDocx] = useState(null);
     const [fileName, setFileName] = useState('');
 
-    const handleFileChange = (event) => {
-        const selectedFile = event.target.files[0];
-        setFile(selectedFile);
-        setFileName(selectedFile.name);
-        console.log(event.target.files[0]);
+     const handleDocxFileChange = async (event) => {
+        const file = event.target.files[0];
+        setFileName(file.name);
+        const base64 = await convertBase64(file);
+        console.log(base64);
+        setDocx(base64);
+    };
+
+    const convertBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file);
+            fileReader.onload = () => {
+                resolve(fileReader.result);
+            };
+            fileReader.onerror = (error) => {
+                reject(error);
+            };
+        });
     };
 
     const handleConfirmInternJob = () => {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('key', student.key);
-
         axios
-            .put(`/admin/student/request_job/${student.studentId}`,  formData)
+            .put(`/admin/student/request_job/${student.studentId}`,  {docx, key: student.key})
             .then((res) => alert('thanh cong'))
             .catch((err) => {
                 alert(err.response.data.detail);
@@ -71,7 +81,7 @@ const InternInfo = ({ close, student }) => {
                     <label htmlFor={cx('gif-input')} className={cx('gif-label')}>
                         <span className={cx('gif-btn')}>Đính kèm</span>
                     </label>
-                    <input type="file" id={cx('gif-input')} onChange={(e) => handleFileChange(e)}/>
+                    <input type="file" id={cx('gif-input')} onChange={(e) => handleDocxFileChange(e)}/>
                 </div>
             </div>
             <div className={cx('options-btn')}>
