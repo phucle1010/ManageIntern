@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames/bind';
 import styles from './AccountStudent.module.scss';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setRole } from '../../../../reducers/permission';
 import { setUserInfo } from '../../../../reducers/user';
 import { useNavigate } from 'react-router-dom';
@@ -28,7 +28,7 @@ const INPUTS = [
     },
     {
         title: 'Email',
-        name: 'danhnc@gm.uit.edu.vn',
+        name: '20521764@gm.uit.edu.vn',
     },
     {
         title: 'Số điện thoại',
@@ -66,8 +66,11 @@ const InputField = ({ title, value }) => {
 };
 
 const AccountStudent = () => {
+    const user = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    // console.log('user: ', user);
 
     const handleLogout = () => {
         axios.put('/user/logout').then((res) => {
@@ -86,12 +89,9 @@ const AccountStudent = () => {
             <h4 className={cx('main-heading')}>Thông tin cá nhân</h4>
             <div className={cx('profile')}>
                 <div className={cx('profile-options')}>
-                    <h5 className={cx('avt-name')}>Nguyễn Công Danh</h5>
+                    <h5 className={cx('avt-name')}>{user.full_name}</h5>
                     <div className={cx('profile-avt')}>
-                        <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU"
-                            alt=""
-                        />
+                        <img src={user.image} alt="" />
                     </div>
                     <label className={cx('upload-btn')} htmlFor={cx('upload-input')}>
                         Thay ảnh đại diện

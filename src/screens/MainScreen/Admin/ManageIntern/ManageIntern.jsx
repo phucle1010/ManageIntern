@@ -12,8 +12,8 @@ import Loading from '../../../../components/LoadingSpinner';
 
 const cx = classNames.bind(styles);
 
-const WAITING_CONFIRM = ['Ảnh', 'Mã số sinh viên', 'Họ và tên', 'Giảng viên hướng dẫn'];
-const WAITING_HEADINGS = ['Ảnh', 'Mã số sinh viên', 'Họ và tên', 'Vị trí thực tập'];
+const WAITING_CONFIRM = ['Ảnh', 'Mã sinh viên', 'Họ và tên', 'Giảng viên hướng dẫn'];
+const WAITING_HEADINGS = ['Ảnh', 'Mã sinh viên', 'Họ và tên', 'Vị trí thực tập'];
 const INTERNED_HEADINGS = [...WAITING_HEADINGS, 'Điểm tổng kết'];
 const INTERNING_HEADINGS = [...WAITING_HEADINGS, 'Thời gian thực tập'];
 

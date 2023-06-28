@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Student.module.scss';
 import Menu from '../../../components/Menu';
@@ -9,6 +9,7 @@ import Library from '../../MainScreen/Student/Library';
 import Intern from '../../MainScreen/Student/Intern';
 import Chat from '../../MainScreen/Student/Chat';
 import AccountStudent from '../../MainScreen/Student/AccountStudent';
+import ChatBot from '../../../components/ChatBot';
 
 const cx = classNames.bind(styles);
 
@@ -19,6 +20,7 @@ const CHAT = 'Trao đổi';
 const ACCOUNT_STUDENT = 'Tài khoản';
 
 const Student = ({ ...props }) => {
+    const [clickedChatbot, setClickedChatbot] = useState(false);
     const { minimizeMenu } = useContext(MenuContext);
     const { setMinimizeMenu, selectedSectionItem, setSelectedSectionItem } = props;
 
@@ -58,7 +60,19 @@ const Student = ({ ...props }) => {
                     maximizeSection: minimizeMenu,
                 })}
             >
-                {MainSection !== null && <MainSection />}
+                {MainSection !== null && (
+                    <React.Fragment>
+                        <MainSection />
+                        <div className={cx('chatbot')} onClick={() => setClickedChatbot(true)}>
+                            <img
+                                src="https://freepngimg.com/save/97427-logo-chat-png-file-hd/640x492"
+                                alt=""
+                                className={cx('chatbot-icon')}
+                            />
+                        </div>
+                        {clickedChatbot && <ChatBot open={setClickedChatbot} />}
+                    </React.Fragment>
+                )}
             </div>
         </div>
     );

@@ -42,6 +42,7 @@ const Chat = () => {
     const [message, setMessage] = useState(null);
     const [attachFile, setAttachFile] = useState(null);
     const [chatPerson, setChatPerson] = useState({});
+
     const loadData = () => {
         const token = JSON.parse(localStorage.getItem('user_token'));
         axios

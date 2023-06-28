@@ -11,17 +11,6 @@ const NOTICE_SYSTEM = [
     },
 ];
 
-const NOTICE_TEACHER = [
-    {
-        id: 1,
-        content: 'Cần tham gia tích cực công việc thảo luận',
-    },
-    {
-        id: 2,
-        content: 'Cải thiện kỹ năng làm việc nhóm',
-    },
-];
-
 const Following = () => {
     return (
         <div className={cx('wrapper')}>
@@ -30,16 +19,6 @@ const Following = () => {
                 <div className={cx('notice-list')}>
                     {NOTICE_SYSTEM.map((notice, index) => (
                         <span key={index} className={cx('notice-item', 'system')}>
-                            {notice.content}
-                        </span>
-                    ))}
-                </div>
-            </div>
-            <div className={cx('following-category')}>
-                <h4 className={cx('main-heading')}>Đánh giá từ giảng viên</h4>
-                <div className={cx('notice-list')}>
-                    {NOTICE_TEACHER.map((notice, index) => (
-                        <span key={index} className={cx('notice-item', 'teacher')}>
                             {notice.content}
                         </span>
                     ))}
