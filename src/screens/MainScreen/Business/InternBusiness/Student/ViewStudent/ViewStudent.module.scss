@@ -11,6 +11,34 @@
     animation: showOverlay 0.2s ease-in-out forwards;
 }
 
+.gif-label {
+    flex: 1;
+    display: block;
+    margin-left: 20px;
+    height: 100%;
+    background-color: #d59292;
+    text-align: center;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.gif-btn {
+    display: block;
+    padding: 6px 0;
+    margin: 0 auto;
+    color: #fff;
+    font-size: 14px;
+}
+
+#gif-input {
+    display: none;
+}
+
 @keyframes showOverlay {
     from {
         opacity: 0;
