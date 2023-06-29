@@ -51,22 +51,23 @@ const INTERNING_MENU = ['STT', 'Ảnh', 'Họ và tên', 'Trường đại học
 const Requirement = () => {
     const [chosedStudent, setChosedStudent] = useState({});
     const [studentRequest, setStudentRequest] = useState([]);
+    const [searchRequest, setSearchRequest] = useState(null);
 
     const loadData = () => {
         const token = JSON.parse(localStorage.getItem('user_token'));
         axios  
-            .get(`/business/job/request`, {headers: {'Authorization': token}})
+            .get(`/business/job/request`, { params: {searchRequest}, headers: {'Authorization': token}})
             .then((res) => setStudentRequest(res.data))
             .catch((err) => console.log(err));
     }
     useEffect(() => {loadData();
-         console.log(studentRequest)}, []);
+         console.log(studentRequest)}, [searchRequest]);
 
     return (
         <div className={cx('wrapper')}>
             <div className={cx('requirement-category')}>
                 <h3 className={cx('main-heading')}>Danh sách chờ xác nhận</h3>
-                <SearchBox className={cx('search')} />
+                <SearchBox className={cx('search')} search={searchRequest} setSearch={setSearchRequest} />
                 <div className={cx('menu-list')}>
                     {INTERNING_MENU.map((item, index) => (
                         <h3 key={index} className={cx('menu-item')}>

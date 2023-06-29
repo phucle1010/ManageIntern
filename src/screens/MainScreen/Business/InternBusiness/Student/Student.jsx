@@ -49,10 +49,11 @@ const STUDENTS = [
 const Student = () => {
     const [chosedStudent, setChosedStudent] = useState({});
     const [students, setStudents] = useState([]);
+    const [searchIntern, setSearchIntern] = useState(null);
     const loadData = () => {
         const token = JSON.parse(localStorage.getItem('user_token'));
         axios
-            .get(`/business/interns`, {headers: {'Authorization': token}})
+            .get(`/business/interns`, {params: {searchIntern}, headers: {'Authorization': token}})
             .then((res) => {
                 setStudents(res.data);
                 console.log(students);
@@ -60,12 +61,12 @@ const Student = () => {
             .catch((err) => console.log(err));
     }
 
-    useEffect(() => loadData(),[]);
+    useEffect(() => loadData(),[searchIntern]);
 
     return (
         <div className={cx('wrapper')}>
             <h3 className={cx('main-heading')}>Danh sách sinh viên thực tập</h3>
-            <SearchBox className={cx('search')} />
+            <SearchBox className={cx('search')} search={searchIntern} setSearch={setSearchIntern}/>
             <div className={cx('menu-list')}>
                 {INTERNING_MENU.map((item, index) => (
                     <h3 key={index} className={cx('menu-item')}>
