@@ -7,6 +7,8 @@ import { setRole } from '../../../../reducers/permission';
 import { setUserInfo } from '../../../../reducers/user';
 import { useNavigate } from 'react-router-dom';
 
+import Loading from '../../../../components/LoadingSpinner';
+
 const cx = classNames.bind(styles);
 
 const INPUTS = (user, setUser) => [
@@ -134,16 +136,18 @@ const InputDate = ({ title, dob, onChange }) => {
 };
 
 const AccountStudent = () => {
-    const currentUser = useSelector((state) => state.user);
+    // const currentUser = useSelector((state) => state.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [user, setUser] = useState({});
+    const [loaded, setLoaded] = useState(false);
 
     const loadData = () => {
         const token = JSON.parse(localStorage.getItem('user_token'));
         axios
             .get('/user/student', { headers: { Authorization: token } })
             .then((res) => setUser(res.data))
+            .then(() => setLoaded(true))
             .catch((err) => console.log(err));
     };
 
@@ -169,85 +173,91 @@ const AccountStudent = () => {
     };
 
     return (
-        <div className={cx('wrapper')}>
-            <h3 className={cx('title-heading')}>TÀI KHOẢN</h3>
-            <h4 className={cx('main-heading')}>Thông tin cá nhân</h4>
-            <div className={cx('profile')}>
-                <div className={cx('profile-options')}>
-                    <h5 className={cx('avt-name')}>{currentUser.full_name}</h5>
-                    <div className={cx('profile-avt')}>
-                        <img
-                            src={
-                                user?.image ||
-                                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU'
-                            }
-                            alt=""
-                        />
-                    </div>
-                    <label className={cx('upload-btn')} htmlFor={cx('upload-input')}>
-                        Thay ảnh đại diện
-                    </label>
-                    <input
-                        type="file"
-                        id={cx('upload-input')}
-                        name="image"
-                        onChange={(e) => {
-                            const getbase64 = (file) => {
-                                let reader = new FileReader();
-                                reader.readAsDataURL(file);
-                                reader.onload = () => {
-                                    setUser((prev) => {
-                                        return {
-                                            ...prev,
-                                            [e.target.name]: reader.result,
+        <React.Fragment>
+            {loaded ? (
+                <div className={cx('wrapper')}>
+                    <h3 className={cx('title-heading')}>TÀI KHOẢN</h3>
+                    <h4 className={cx('main-heading')}>Thông tin cá nhân</h4>
+                    <div className={cx('profile')}>
+                        <div className={cx('profile-options')}>
+                            <h5 className={cx('avt-name')}>{user.full_name}</h5>
+                            <div className={cx('profile-avt')}>
+                                <img
+                                    src={
+                                        user?.image ||
+                                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU'
+                                    }
+                                    alt=""
+                                />
+                            </div>
+                            <label className={cx('upload-btn')} htmlFor={cx('upload-input')}>
+                                Thay ảnh đại diện
+                            </label>
+                            <input
+                                type="file"
+                                id={cx('upload-input')}
+                                name="image"
+                                onChange={(e) => {
+                                    const getbase64 = (file) => {
+                                        let reader = new FileReader();
+                                        reader.readAsDataURL(file);
+                                        reader.onload = () => {
+                                            setUser((prev) => {
+                                                return {
+                                                    ...prev,
+                                                    [e.target.name]: reader.result,
+                                                };
+                                            });
                                         };
-                                    });
-                                };
-                            };
-                            if (e.target.files && e.target.files[0]) {
-                                getbase64(e.target.files[0]);
-                            }
-                        }}
-                    />
-                    <div className={cx('options')}>
-                        <button className={cx('option-btn', 'edit-info-btn')} onClick={() => updateUser()}>
-                            Sửa thông tin
-                        </button>
-                        <button className={cx('option-btn', 'setting-pass-btn')}>Cài đặt mật khẩu</button>
+                                    };
+                                    if (e.target.files && e.target.files[0]) {
+                                        getbase64(e.target.files[0]);
+                                    }
+                                }}
+                            />
+                            <div className={cx('options')}>
+                                <button className={cx('option-btn', 'edit-info-btn')} onClick={() => updateUser()}>
+                                    Sửa thông tin
+                                </button>
+                                <button className={cx('option-btn', 'setting-pass-btn')}>Cài đặt mật khẩu</button>
+                            </div>
+                        </div>
+                        <div className={cx('profile-detail')}>
+                            {INPUTS(user, setUser).map((inputItem, index) =>
+                                inputItem.options ? (
+                                    <InputOption
+                                        key={index}
+                                        title={inputItem.title}
+                                        value={inputItem.name}
+                                        onChange={inputItem.onChange}
+                                        options={inputItem.options}
+                                    />
+                                ) : inputItem.dob ? (
+                                    <InputDate
+                                        key={index}
+                                        title={inputItem.title}
+                                        dob={inputItem.dob}
+                                        onChange={inputItem.onChange}
+                                    />
+                                ) : (
+                                    <InputField
+                                        key={index}
+                                        title={inputItem.title}
+                                        value={inputItem.name}
+                                        onChange={inputItem.onChange}
+                                    />
+                                ),
+                            )}
+                        </div>
                     </div>
+                    <button className={cx('option-btn', 'signout-btn')} onClick={handleLogout}>
+                        Đăng xuất
+                    </button>
                 </div>
-                <div className={cx('profile-detail')}>
-                    {INPUTS(user, setUser).map((inputItem, index) =>
-                        inputItem.options ? (
-                            <InputOption
-                                key={index}
-                                title={inputItem.title}
-                                value={inputItem.name}
-                                onChange={inputItem.onChange}
-                                options={inputItem.options}
-                            />
-                        ) : inputItem.dob ? (
-                            <InputDate
-                                key={index}
-                                title={inputItem.title}
-                                dob={inputItem.dob}
-                                onChange={inputItem.onChange}
-                            />
-                        ) : (
-                            <InputField
-                                key={index}
-                                title={inputItem.title}
-                                value={inputItem.name}
-                                onChange={inputItem.onChange}
-                            />
-                        ),
-                    )}
-                </div>
-            </div>
-            <button className={cx('option-btn', 'signout-btn')} onClick={handleLogout}>
-                Đăng xuất
-            </button>
-        </div>
+            ) : (
+                <Loading />
+            )}
+        </React.Fragment>
     );
 };
 

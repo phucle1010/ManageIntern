@@ -39,7 +39,6 @@ const Intern = () => {
     return (
         <div className={cx('wrapper')}>
             <h3 className={cx('title-heading')}>THỰC TẬP</h3>
-            <SearchBox className={cx('search')} />
             <div className={cx('menu-list')}>
                 {MENUS.map((menu, index) => (
                     <span

@@ -35,7 +35,7 @@ const InternInfo = ({ close, student }) => {
     const handleConfirmInternJob = () => {
         axios
             .put(`/admin/student/request_job/${student.studentId}`, { docx, key: student.key })
-            .then((res) => alert('thanh cong'))
+            .then((res) => alert('Xác nhận thành công'))
             .catch((err) => {
                 alert(err.response.data.detail);
             });

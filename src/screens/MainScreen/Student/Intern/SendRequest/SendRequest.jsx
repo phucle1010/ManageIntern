@@ -299,10 +299,6 @@ const SendRequest = () => {
                                     <h4>Thông tin công ty: </h4>
                                     <span>{selectedJob.company_name}</span>
                                 </div>
-                                {/* <div className={cx('chosed-job-item')}>
-                                    <h4>Thời gian thực tập: </h4>
-                                    <span>{selectedJob.internTime}</span>
-                                </div> */}
                                 <div className={cx('options-btn')}>
                                     <button className={cx('btn-regist')} onClick={handleSendJobInformation}>
                                         Gửi yêu cầu

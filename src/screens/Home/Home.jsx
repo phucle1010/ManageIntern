@@ -34,6 +34,7 @@ const Home = () => {
             localStorage.setItem('user_token', JSON.stringify(''));
         } else {
             const token = JSON.parse(userToken);
+            console.log(token);
             if (token === '') {
                 navigate('/login');
             } else {
