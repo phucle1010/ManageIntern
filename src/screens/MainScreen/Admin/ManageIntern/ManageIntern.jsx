@@ -53,10 +53,32 @@ const INTERNING_LIST = [
     },
 ];
 
-const Filter = () => {
+const Filter = ({setAcademic, setSemester, setSearchStudentInternRequestJob, searchStudentInternRequestJob}) => {
+    const [academics, setAcademics] = useState([{}]);
+    const [semesters, setSemesters] = useState([{}]);
+
+    const loadAcademics = () => {
+        axios
+            .get('/admin/academic-year')
+            .then((res) => setAcademics(res.data.responseData))
+            .catch((err) => console.log(err));
+
+    }
+
+    const loadSemester = () => {
+        axios
+            .get('/admin/semester')
+            .then((res) => setSemesters(res.data.responseData))
+            .catch((err) => console.log(err));
+    }
+
+    useEffect(() => {
+        loadAcademics();
+        loadSemester();
+    }, []);
     return (
         <div className={cx('filters')}>
-            <div className={cx('main-filter')}>
+            {/* <div className={cx('main-filter')}>
                 <select className={cx('filter-select-item')}>
                     <option value="">Năm học</option>
                     <option value="">2020</option>
@@ -69,12 +91,39 @@ const Filter = () => {
                     <option value="">Học kỳ 2</option>
                 </select>
             </div>
-            <SearchBox />
+            <SearchBox /> */}
+            <div className={cx('main-filter')}>
+                <select className={cx('filter-select-item')} onChange={(e) => setAcademic(e.target.value)}>
+                    <option value={0}>Năm học</option>
+                    {academics.map((academic) => (
+                        <option
+                            key={academic.current_year}
+                            value={academic.id}
+                            className={cx('option-value')}
+                        >
+                            {academic.current_year}
+                        </option>
+                    ))}
+                </select>
+                <select className={cx('filter-select-item')} onChange={(e) => setSemester(e.target.value)}>
+                    <option value={0}>Học kỳ</option>
+                    {semesters.map((semester) => (
+                        <option
+                            key={semester.semester_name}
+                            value={semester.id}
+                            className={cx('option-value')}
+                        >
+                            {semester.semester_name}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <SearchBox search={searchStudentInternRequestJob} setSearch={setSearchStudentInternRequestJob}/>
         </div>
     );
 };
 
-const Filter_confrim = ({setAcademic, setSemester, setTeacher}) => {
+const Filter_confrim = ({setAcademic, setSemester, setTeacher, setSearchStudentIntern, searchStudentIntern}) => {
     const [academics, setAcademics] = useState([{}]);
     const [semesters, setSemesters] = useState([{}]);
     const [teachers, setTeachers] = useState([{}]);
@@ -147,7 +196,7 @@ const Filter_confrim = ({setAcademic, setSemester, setTeacher}) => {
                     ))}
                 </select>
             </div>
-            <SearchBox />
+            <SearchBox search={searchStudentIntern} setSearch={setSearchStudentIntern}/>
         </div>
     );
 };
@@ -162,28 +211,38 @@ const ManageIntern = () => {
     const [academic, setAcademic] = useState(0);
     const [semester, setSemester] = useState(0);
     const [teacher, setTeacher] =useState(0);
+    const [searchStudentIntern, setSearchStudentIntern] = useState(null);
 
     const loadStudentSignUpIntern = () => {
         axios
-            .get('/admin/student/signup_intern', {params: {academic, semester, teacher}})
+            .get('/admin/student/signup_intern', {params: {academic, semester, teacher, searchStudentIntern: searchStudentIntern || null}})
             .then((res) => {setStudentSignUpIntern(res.data); console.log(res.data)})
             .catch((err) => console.log(err));
     }
 
-    useEffect(() => loadStudentSignUpIntern(), [academic, semester, teacher]);
+    useEffect(() => loadStudentSignUpIntern(), [academic, semester, teacher, searchStudentIntern]);
 
     // request job intern
 
     const [studentRequestJobIntern, setStudentRequestJobIntern] = useState([{}]);
+    const [academicRequestJob, setAcademicRequestJob] = useState(0);
+    const [semesterRequestJob, setSemesterRequestJob] = useState(0);
+    const [searchStudentInternRequestJob, setSearchStudentInternRequestJob] = useState(null);
 
     const loadStudentRequestJobIntern = () => {
         axios
-            .get('/admin/student/request_job')
+            .get('/admin/student/request_job', {
+                params: {
+                    academic: academicRequestJob, 
+                    semester: semesterRequestJob, 
+                    search: searchStudentInternRequestJob || null
+                }
+            })
             .then((res) => setStudentRequestJobIntern(res.data))
             .catch((err) => console.log(err));
     }
 
-    useEffect(() => loadStudentRequestJobIntern(), []);
+    useEffect(() => loadStudentRequestJobIntern(), [academicRequestJob, semesterRequestJob, searchStudentInternRequestJob]);
 
     return (
         <div className={cx('wrapper')}>
@@ -198,7 +257,7 @@ const ManageIntern = () => {
             </div>
             <div className={cx('intern-category')}>
                 <h4 className={cx('list-heading')}>Danh sách đang chờ xử lý yêu cầu đăng ký tín chỉ thực tập</h4>
-                <Filter_confrim setAcademic={setAcademic} setSemester={setSemester} setTeacher={setTeacher} />
+                <Filter_confrim setAcademic={setAcademic} setSemester={setSemester} setTeacher={setTeacher} setSearchStudentIntern={setSearchStudentIntern} searchStudentIntern={searchStudentIntern}/>
                 <div className={cx('intern-list')}>
                     <div className={cx('intern-heading-list')}>
                         <ul className={cx('main-heading-list')}>
@@ -223,7 +282,7 @@ const ManageIntern = () => {
             </div>
             <div className={cx('intern-category')}>
                 <h4 className={cx('list-heading')}>Danh sách đang chờ xử lý yêu cầu</h4>
-                <Filter />
+                <Filter setAcademic={setAcademicRequestJob} setSemester={setSemesterRequestJob} setSearchStudentInternRequestJob={setSearchStudentInternRequestJob} searchStudentInternRequestJob={searchStudentInternRequestJob}/>
                 <div className={cx('intern-list')}>
                     <div className={cx('intern-heading-list')}>
                         <ul className={cx('main-heading-list')}>

@@ -5,10 +5,10 @@ import { Search } from '@mui/icons-material';
 
 const cx = classNames.bind(styles);
 
-const SearchBox = () => {
+const SearchBox = ({search, setSearch}) => {
     return (
         <div className={cx('wrapper')}>
-            <input className={cx('search-input')} type="text" placeholder="Tìm kiếm..." name="search" />
+            <input className={cx('search-input')} type="text" placeholder="Tìm kiếm..." name="search" value={search} onChange={(e) => setSearch(e.target.value)} />
             <Search className={cx('icon-search')} />
         </div>
     );
