@@ -17,6 +17,7 @@ const ManageClass = () => {
     const [classList, setClassList] = useState([{}]);
     const [academicYear, setAcademicYear] = useState([]);
     const [year, setYear] = useState(null);
+    const [search, setSearch] = useState(null);
 
     useEffect(() => {
         axios
@@ -27,11 +28,11 @@ const ManageClass = () => {
 
     useEffect(() => {
         getClassAll();
-    }, []);
+    }, [search]);
 
     const getClassAll = () => {
         axios
-            .get('/class')
+            .get('/class', {params: {search}})
             .then((res) => setClassList(res.data))
             .catch((err) => console.log({ err: err }));
     };
@@ -54,7 +55,7 @@ const ManageClass = () => {
     return (
         <div className={cx('wrapper')}>
             <h3 className={cx('list-heading')}>DANH SÁCH LỚP</h3>
-            <SearchBox className={cx('search')} />
+            <SearchBox className={cx('search')} search={search} setSearch={setSearch}/>
             <div className={cx('filters')}>
                 <select
                     value={year}
