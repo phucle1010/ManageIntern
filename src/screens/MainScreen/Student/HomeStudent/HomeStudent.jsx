@@ -20,6 +20,7 @@ const HomeStudent = () => {
     const [jobs, setJobs] = useState([]);
     const [chosedJob, setChosedJob] = useState({});
     const [loaded, setLoaded] = useState(false);
+    const [searchJob, setSearchJob] = useState(null);
 
     const getNumberOfPages = useCallback((list) => {
         if (list.length % MAXIMUM_JOBS_EACH_PAGE === 0) {
@@ -30,7 +31,7 @@ const HomeStudent = () => {
 
     useEffect(() => {
         axios
-            .get('/student/job/all')
+            .get('/student/job/all', {params: {searchJob}})
             .then((res) => {
                 if (res.data.statusCode === 200) {
                     setJobs(res.data.responseData);
@@ -38,7 +39,7 @@ const HomeStudent = () => {
                 }
             })
             .catch((err) => alert(err));
-    }, []);
+    }, [searchJob]);
 
     useEffect(() => {
         if (jobs.length > 0) {
@@ -54,7 +55,7 @@ const HomeStudent = () => {
             {loaded ? (
                 <div className={cx('wrapper')}>
                     <h3 className={cx('title-heading')}>TRANG CHỦ</h3>
-                    <SearchBox className={cx('search')} />
+                    <SearchBox className={cx('search')} search={searchJob} setSearch={setSearchJob} />
                     <div className={cx('job-category')}>
                         <h4 className={cx('list-heading')}>Danh sách công việc</h4>
                         <div className={cx('job-list')}>
