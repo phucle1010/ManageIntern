@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import classNames from 'classnames/bind';
 import styles from './Student.module.scss';
 
@@ -10,59 +11,42 @@ const cx = classNames.bind(styles);
 
 const INTERNING_MENU = ['STT', 'Ảnh', 'Họ và tên', 'Vị trí', 'Ngày vào làm', 'Trạng thái', 'Lựa chọn'];
 
-const STUDENTS = [
-    {
-        id: 20521764,
-        name: 'Lê Thế Phúc',
-        birth: '10-10-2002',
-        gender: 'Nam',
-        phone: '0368341595',
-        email: '20521764@gm.uit.edu.vn',
-        address: 'Hồ Chí Minh',
-        class: 'KTPM2020',
-        department: 'Công nghệ phần mềm',
-        status: 'Đang học',
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU',
-        position: 'Front End Developer',
-        entryDay: '01-02-2023',
-        internStatus: 'interning',
-    },
-    {
-        id: 20521790,
-        name: 'Nguyễn Nhật Hoàng Quân',
-        birth: '10-10-2002',
-        gender: 'Nam',
-        phone: '0368341595',
-        email: '20521764@gm.uit.edu.vn',
-        address: 'Hồ Chí Minh',
-        class: 'KTPM2020',
-        department: 'Công nghệ phần mềm',
-        status: 'Đang học',
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkg-307JO6AHvZVx8999lW46CWnwCPcBqgMA&usqp=CAU',
-        position: 'Back End Developer',
-        entryDay: '03-02-2023',
-        internStatus: 'interning',
-    },
-];
-
 const Student = () => {
     const [chosedStudent, setChosedStudent] = useState({});
+    const [students, setStudents] = useState([]);
+
+    const getInterningStudent = async () => {
+        await axios
+            .get('/business/interns/student')
+            .then((res) => res.data.statusCode === 200 && setStudents(res.data.responseData))
+            .catch((err) => alert(err));
+    };
+
+    useEffect(() => {
+        getInterningStudent();
+    }, []);
 
     return (
         <div className={cx('wrapper')}>
             <h3 className={cx('main-heading')}>Danh sách sinh viên thực tập</h3>
             <SearchBox className={cx('search')} />
-            <div className={cx('menu-list')}>
-                {INTERNING_MENU.map((item, index) => (
-                    <h3 key={index} className={cx('menu-item')}>
-                        {item}
-                    </h3>
-                ))}
-            </div>
+            {students.length > 0 ? (
+                <div className={cx('menu-list')}>
+                    {INTERNING_MENU.map((item, index) => (
+                        <h3 key={index} className={cx('menu-item')}>
+                            {item}
+                        </h3>
+                    ))}
+                </div>
+            ) : (
+                <span>Không có sinh viên nào đang thực tập tại công ty</span>
+            )}
+
             <div className={cx('student-list')}>
-                {STUDENTS.map((student, index) => (
-                    <StudentItem key={index} student={student} order={index} setChosedStudent={setChosedStudent} />
-                ))}
+                {students.length > 0 &&
+                    students.map((student, index) => (
+                        <StudentItem key={index} student={student} order={index} setChosedStudent={setChosedStudent} />
+                    ))}
             </div>
             {Object.keys(chosedStudent).length > 0 && (
                 <ViewStudent student={chosedStudent} setChosedStudent={setChosedStudent} />

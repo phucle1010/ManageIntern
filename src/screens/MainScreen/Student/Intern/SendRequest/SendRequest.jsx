@@ -17,6 +17,8 @@ const SendRequest = () => {
     const [requestJob, setRequestJob] = useState([]);
     const [loaded, setLoaded] = useState(false);
 
+    console.log(registRequests);
+
     const getStudentId = async () => {
         await axios
             .get('/student/id_data/user_id', {
@@ -131,8 +133,6 @@ const SendRequest = () => {
         }
     };
 
-    const handleSendRequestToBusiness = () => {};
-
     const formatDate = (date) => {
         const convertedDate = new Date(Date.parse(date));
         return `${convertedDate.getDate()}/${convertedDate.getMonth() + 1}/${convertedDate.getUTCFullYear()}`;
@@ -203,14 +203,7 @@ const SendRequest = () => {
                                             </span>
                                         </span>
                                         <span>
-                                            {request.regist_submit_status === 1 ? (
-                                                <button
-                                                    className={cx('btn-destroy')}
-                                                    onClick={handleSendRequestToBusiness}
-                                                >
-                                                    Gửi yêu cầu doanh nghiệp
-                                                </button>
-                                            ) : (
+                                            {request.regist_submit_status === 0 && (
                                                 <button
                                                     className={cx('btn-destroy')}
                                                     onClick={() =>

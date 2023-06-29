@@ -56,10 +56,7 @@ const ViewStudent = ({ student, setChosedStudent }) => {
             <div className={cx('profile')}>
                 <div className={cx('profile-options')}>
                     <div className={cx('profile-avt')}>
-                        <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU"
-                            alt=""
-                        />
+                        <img src={student.image} alt="" />
                     </div>
                     <h3 className={cx('job-position')}>{student.job_name}</h3>
                     <h5 className={cx('name')}>{student.full_name}</h5>
@@ -126,14 +123,14 @@ const ViewStudent = ({ student, setChosedStudent }) => {
                             <select
                                 className={cx('input-item')}
                                 name="major"
-                                value={student.internStatus === 'interning' ? 'Đang thực tập' : 'Đã thực tập'}
+                                value={student.is_interning.data[0] === 1 ? 'Đang thực tập' : 'Đã thực tập'}
                             >
                                 <option>Chọn</option>
                                 <option>Đang thực tập</option>
                                 <option>Đã thực tập</option>
                             </select>
                         </div>
-                        <div className={cx('user-data-item')}>
+                        <div className={cx('user-data-item', 'full-width')}>
                             <h5 className={cx('input-title')}>File đánh giá</h5>
                             <input
                                 className={cx('input-item')}
@@ -143,7 +140,7 @@ const ViewStudent = ({ student, setChosedStudent }) => {
                                 readOnly={true}
                             />
                         </div>
-                        <div className={cx('user-data-item')}>
+                        <div className={cx('user-data-item', 'full-width')}>
                             <label htmlFor={cx('gif-input')} className={cx('gif-label')}>
                                 <span className={cx('gif-btn')}>Đính kèm</span>
                             </label>

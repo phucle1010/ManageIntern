@@ -7,16 +7,18 @@ import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
-const DetailSignUpInfo = ({ close, student }) => {
+const DetailSignUpInfo = ({ show, student }) => {
     const confirmSignUpLearnIntern = () => {
         axios
             .put(`/admin/student/${student.id}/confirm_learn_intern`, { key: student.key })
             .then((res) => alert(res.data))
+            .then(() => show(false))
             .catch((err) => console.log(err));
     };
+
     return (
         <div className={cx('wrapper')}>
-            <Close className={cx('close-main-btn')} onClick={() => close('')} />
+            <Close className={cx('close-main-btn')} onClick={() => show(false)} />
             <h3 className={cx('title-heading')}>THÔNG TIN THỰC TẬP</h3>
             <div className={cx('list-info')}>
                 <h4 className={cx('list-heading')}>Thông tin sinh viên</h4>

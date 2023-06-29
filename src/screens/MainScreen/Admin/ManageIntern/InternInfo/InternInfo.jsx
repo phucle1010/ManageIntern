@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
-const InternInfo = ({ close, student }) => {
+const InternInfo = ({ show, student }) => {
     const [docx, setDocx] = useState(null);
     const [fileName, setFileName] = useState('');
 
@@ -36,13 +36,14 @@ const InternInfo = ({ close, student }) => {
         axios
             .put(`/admin/student/request_job/${student.studentId}`, { docx, key: student.key })
             .then((res) => alert('Xác nhận thành công'))
+            .then(() => show(false))
             .catch((err) => {
                 alert(err.response.data.detail);
             });
     };
     return (
         <div className={cx('wrapper')}>
-            <Close className={cx('close-main-btn')} onClick={() => close('')} />
+            <Close className={cx('close-main-btn')} onClick={() => show(false)} />
             <h3 className={cx('title-heading')}>THÔNG TIN THỰC TẬP</h3>
             <div className={cx('list-info')}>
                 <h4 className={cx('list-heading')}>Thông tin sinh viên</h4>

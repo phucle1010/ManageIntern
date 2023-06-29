@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './InternItem.module.scss';
 import { Visibility } from '@mui/icons-material';
@@ -7,8 +7,12 @@ import DetailSignUpInfo from '../DetailSignUpInfo';
 
 const cx = classNames.bind(styles);
 
-const InternItem = ({ student, interned, waiting }) => {
+const InternItem = ({ student, interned, waiting, loadStudentSignUpIntern }) => {
     const [detailSignUpInternScreen, setDetailSignUpInternScreen] = useState(false);
+
+    useEffect(() => {
+        loadStudentSignUpIntern();
+    }, [detailSignUpInternScreen]);
 
     return (
         <div className={cx('wrapper')}>
@@ -45,7 +49,7 @@ const InternItem = ({ student, interned, waiting }) => {
             )}
 
             {detailSignUpInternScreen === true && (
-                <DetailSignUpInfo student={student} close={setDetailSignUpInternScreen} />
+                <DetailSignUpInfo student={student} show={setDetailSignUpInternScreen} />
             )}
         </div>
     );

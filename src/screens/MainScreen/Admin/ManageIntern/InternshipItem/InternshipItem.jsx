@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './InternshipItem.module.scss';
 import { Visibility } from '@mui/icons-material';
@@ -7,8 +7,12 @@ import InternInfo from '../InternInfo';
 
 const cx = classNames.bind(styles);
 
-const InternshipItem = ({ student, interned, waiting }) => {
+const InternshipItem = ({ student, interned, waiting, loadStudentRequestJobIntern }) => {
     const [internInfoScreen, setInternInfoScreen] = useState(false);
+
+    useEffect(() => {
+        loadStudentRequestJobIntern();
+    }, [internInfoScreen]);
 
     return (
         <div className={cx('wrapper')}>
@@ -44,7 +48,7 @@ const InternshipItem = ({ student, interned, waiting }) => {
                 </div>
             )}
 
-            {internInfoScreen === true && <InternInfo student={student} close={setInternInfoScreen} />}
+            {internInfoScreen === true && <InternInfo student={student} show={setInternInfoScreen} />}
         </div>
     );
 };

@@ -64,6 +64,15 @@
     &:hover {
         opacity: 0.8;
     }
+
+    &.notice {
+        user-select: none;
+        cursor: default;
+    }
+
+    &.notice:hover {
+        opacity: 1;
+    }
 }
 
 .btn-destroy {
