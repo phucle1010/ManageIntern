@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Intern.module.scss';
 
-import SearchBox from '../../../../components/SearchBox';
 import ChooseSubject from './ChooseSubject';
 import SendRequest from './SendRequest';
 import Report from './Report';

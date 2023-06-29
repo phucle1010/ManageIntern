@@ -72,7 +72,6 @@ const Department = () => {
                         >
                             Thêm mới
                         </button>
-                        <button className={cx('btn-add', 'btn-export')}>Xuất File</button>
                     </div>
 
                     <div className={cx('department-list')}>

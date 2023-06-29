@@ -3,6 +3,8 @@ import classNames from 'classnames/bind';
 import styles from './ManageTeacher.module.scss';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 
 import SearchBox from '../../../../components/SearchBox';
 import TeacherItem from './TeacherItem';
@@ -12,6 +14,7 @@ import LoadingSpinner from '../../../../components/LoadingSpinner';
 const cx = classNames.bind(styles);
 
 const HEADINGS = ['Ảnh', 'Mã giảng viên', 'Họ và tên', 'Khoa', 'Tình trạng'];
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const ManageTeacher = () => {
     const admin = useSelector((state) => state.user);
@@ -58,6 +61,71 @@ const ManageTeacher = () => {
             .then(() => setIsLoading(false));
     }, [chosedTeacher]);
 
+    const generatePDF = () => {
+        const newData = teachers.map((teacher) => {
+            return [
+                {
+                    image: teacher.image,
+                    width: 40,
+                    height: 40,
+                    marginTop: 10,
+                    marginBottom: 10,
+                },
+                {
+                    text: teacher.full_name,
+                    marginTop: 25,
+                    marginBottom: 25,
+                    fontSize: 10,
+                },
+                {
+                    text: teacher.email,
+                    marginTop: 25,
+                    marginBottom: 25,
+                    fontSize: 10,
+                },
+                {
+                    text: departments.filter((department) => department.id === teacher.department_id)[0]
+                        .department_name,
+                    marginTop: 25,
+                    marginBottom: 25,
+                    fontSize: 10,
+                },
+                {
+                    text: teacher.current_status.data[0] === 1 ? 'Đang dạy' : 'Hết dạy',
+                    marginTop: 25,
+                    marginBottom: 25,
+                    fontSize: 10,
+                    bold: true,
+                    fontStyle: 'italic',
+                },
+            ];
+        });
+
+        const headers = ['Ảnh', 'Họ và tên', 'Email', 'Khoa', 'Tình trạng'];
+
+        const mergedBody = () => {
+            const initBody = [];
+            initBody.push(headers.map((heading) => ({ text: heading, bold: true })));
+            newData.filter((data) => initBody.push(data));
+            return initBody;
+        };
+
+        const docDefinition = {
+            content: [
+                {
+                    layout: 'lightHorizontalLines', // optional
+                    table: {
+                        headerRows: 1,
+                        widths: [50, 90, '*', 'auto', '*'],
+                        body: mergedBody(),
+                    },
+                },
+            ],
+        };
+
+        pdfMake.createPdf(docDefinition).download('Danh sách giảng viên');
+    };
+
     return (
         <div className={cx('wrapper')}>
             {isLoading === true ? (
@@ -67,17 +135,6 @@ const ManageTeacher = () => {
                     <h3 className={cx('list-heading')}>DANH SÁCH GIẢNG VIÊN</h3>
                     <SearchBox className={cx('search')} />
                     <div className={cx('filters')}>
-                        {/* <select className={cx('filter-select-item')}>
-                            <option value="">Năm học</option>
-                            <option value="">2020</option>
-                            <option value="">2021</option>
-                            <option value="">2022</option>
-                        </select>
-                        <select className={cx('filter-select-item')}>
-                            <option value="">Học kỳ</option>
-                            <option value="">Học kỳ 1</option>
-                            <option value="">Học kỳ 2</option>
-                        </select> */}
                         <button
                             className={cx('btn-add')}
                             onClick={() => {
@@ -102,7 +159,9 @@ const ManageTeacher = () => {
                         >
                             Thêm mới
                         </button>
-                        <button className={cx('btn-add', 'btn-export')}>Xuất File</button>
+                        <button className={cx('btn-add', 'btn-export')} onClick={generatePDF}>
+                            Xuất File
+                        </button>
                     </div>
 
                     <div className={cx('teacher-list')}>

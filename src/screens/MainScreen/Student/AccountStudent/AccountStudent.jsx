@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './AccountStudent.module.scss';
 import axios from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setRole } from '../../../../reducers/permission';
 import { setUserInfo } from '../../../../reducers/user';
 import { useNavigate } from 'react-router-dom';

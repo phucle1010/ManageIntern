@@ -14,6 +14,7 @@ const NewStudent = ({ open, editable, studentinfo }) => {
     const [departmentlist, setDepartmentList] = useState([]);
     const [classlist, setCLassList] = useState([]);
     const [majorlist, setMajorList] = useState([]);
+
     const [newStudent, setNewStudent] = useState(() => {
         let dateFromMySQL = studentinfo.dob;
         if (dateFromMySQL !== '') {
@@ -111,8 +112,6 @@ const NewStudent = ({ open, editable, studentinfo }) => {
             handleSave();
         }
     };
-
-    console.log(newStudent);
 
     return (
         <div className={cx('wrapper')}>

@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import classNames from 'classnames/bind';
 import styles from './ManageStudent.module.scss';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 
 import SearchBox from '../../../../components/SearchBox';
 import StudentItem from './StudentItem';
@@ -11,6 +13,7 @@ import LoadingSpinner from '../../../../components/LoadingSpinner';
 
 const cx = classNames.bind(styles);
 const HEADINGS = ['Ảnh', 'Mã số sinh viên', 'Họ và tên', 'Lớp', 'Tình trạng'];
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const ManageStudent = () => {
     const [showNewStudent, setShowNewStudent] = useState(false);
@@ -48,7 +51,6 @@ const ManageStudent = () => {
             .get(`/student/year?year='${year}'`)
             .then((res) => {
                 setStudentList(res.data);
-                console.log(studentlist);
             })
             .catch((err) => console.log({ err: err }));
     };
@@ -60,6 +62,82 @@ const ManageStudent = () => {
             getSudentOfYear();
         }
     }, [year]);
+
+    const generatePDF = () => {
+        const newData = studentlist.map((student) => {
+            const date = new Date(Date.parse(student.dob));
+            const day = ('0' + date.getDate()).slice(-2);
+            const month = ('0' + (date.getMonth() + 1)).slice(-2);
+            const birth = day + '-' + month + '-' + date.getFullYear();
+
+            return [
+                {
+                    image: student.image,
+                    width: 40,
+                    height: 40,
+                    marginTop: 10,
+                    marginBottom: 10,
+                },
+                {
+                    text: student.full_name,
+                    marginTop: 25,
+                    marginBottom: 25,
+                    fontSize: 10,
+                    textAlign: 'center',
+                },
+                {
+                    text: student.email,
+                    marginTop: 25,
+                    marginBottom: 25,
+                    fontSize: 10,
+                },
+                {
+                    text: birth,
+                    marginTop: 25,
+                    marginBottom: 25,
+                    fontSize: 10,
+                },
+                {
+                    text: student.class_name,
+                    marginTop: 25,
+                    marginBottom: 25,
+                    fontSize: 10,
+                },
+                {
+                    text: student.current_status.data[0] === 1 ? 'Đang học' : 'Tốt nghiệp',
+                    marginTop: 25,
+                    marginBottom: 25,
+                    fontSize: 10,
+                    bold: true,
+                    fontStyle: 'italic',
+                },
+            ];
+        });
+
+        const headers = ['Ảnh', 'Họ và tên', 'Email', 'Ngày sinh', 'Lớp', 'Tình trạng'];
+
+        const mergedBody = () => {
+            const initBody = [];
+            initBody.push(headers.map((heading) => ({ text: heading, bold: true })));
+            newData.filter((data) => initBody.push(data));
+            return initBody;
+        };
+
+        const docDefinition = {
+            content: [
+                {
+                    layout: 'lightHorizontalLines', // optional
+                    table: {
+                        headerRows: 1,
+                        widths: [50, 90, '*', 70, 'auto', '*'],
+                        body: mergedBody(),
+                    },
+                },
+            ],
+        };
+
+        pdfMake.createPdf(docDefinition).download('Danh sách sinh viên');
+    };
 
     return (
         <React.Fragment>
@@ -101,10 +179,12 @@ const ManageStudent = () => {
                         >
                             Thêm mới
                         </button>
-                        <button className={cx('btn-add', 'btn-export')}>Xuất File</button>
+                        <button className={cx('btn-add', 'btn-export')} onClick={generatePDF}>
+                            Xuất File
+                        </button>
                     </div>
 
-                    <div className={cx('student-list')}>
+                    <div id="#my-table" className={cx('student-list')}>
                         <div className={cx('student-heading-list')}>
                             <ul className={cx('main-heading-list')}>
                                 {HEADINGS.map((heading, index) => (
