@@ -87,10 +87,12 @@ const ChatBot = ({ open }) => {
         const [clickedSubmit, setClickedSubmit] = useState(false);
         const [subCaredField, setSubCaredField] = useState([]);
         const [stopService, setStopService] = useState(false);
+        const [showSoftSkill, setShowSoftSkill] = useState(false);
+        const [showPromotion, setShowPromotion] = useState(false);
 
         useEffect(() => {
             scrollToBottom();
-        }, [indexOfQuestion, score, clickedSubmit, stopService, continued]);
+        }, [indexOfQuestion, score, clickedSubmit, stopService, continued, showSoftSkill, showPromotion]);
 
         const handleChoseSubCaredField = (field) => {
             if (!stopService) {
@@ -173,61 +175,109 @@ const ChatBot = ({ open }) => {
                                         ))}
                                     </span>
                                 </div>
-                                <div className={cx('chat-message', 'me')}>
-                                    <span>Bạn có muốn tiếp tục không?</span>
+                                <div className={cx('chat-message', 'choice')}>
+                                    <span onClick={() => setShowSoftSkill(true)}>Yêu cầu về kĩ năng mềm?</span>
                                 </div>
-
-                                <div className={cx('field-list')}>
-                                    <div className={cx('chat-message', 'choice')}>
-                                        <span
-                                            onClick={() => {
-                                                if (!stopService) {
-                                                    setContinued(true);
-                                                    setClickedSubmit(true);
-                                                }
-                                            }}
-                                        >
-                                            Có
-                                        </span>
-                                    </div>
-                                    <div className={cx('chat-message', 'choice')}>
-                                        <span
-                                            onClick={() => {
-                                                if (!stopService) {
-                                                    setContinued(false);
-                                                    setClickedSubmit(true);
-                                                    setStopService(true);
-                                                }
-                                            }}
-                                        >
-                                            Không
-                                        </span>
-                                    </div>
-                                </div>
-
-                                {clickedSubmit && continued && (
+                                {showSoftSkill && (
                                     <React.Fragment>
                                         <div className={cx('chat-message', 'me')}>
-                                            <span>{jobs.category_question.content}</span>
+                                            <span>
+                                                Các kỹ năng mềm bạn cần quan tâm đối với công việc này:
+                                                <br />
+                                                {jobs.soft_skill.map((skill, index) => (
+                                                    <React.Fragment key={index}>
+                                                        {skill}
+                                                        <br />
+                                                    </React.Fragment>
+                                                ))}
+                                            </span>
                                         </div>
-                                        <div className={cx('field-list')}>
-                                            {jobs.category_question.answers.map((choice) => (
-                                                <div className={cx('chat-message', 'choice')} key={choice.id}>
-                                                    <span onClick={() => handleChoseSubCaredField(choice)}>
-                                                        {choice.choice_content}
+                                        <div className={cx('chat-message', 'choice')}>
+                                            <span onClick={() => setShowPromotion(true)}>Cơ hội thăng tiến?</span>
+                                        </div>
+                                        {showPromotion && (
+                                            <React.Fragment>
+                                                <div className={cx('chat-message', 'me')}>
+                                                    <span>
+                                                        Lĩnh vực công nghệ thông tin là một trong những lĩnh vực đang
+                                                        phát triển mạnh mẽ và có nhiều cơ hội thăng tiến cho những người
+                                                        làm việc trong ngành này. Dưới đây là một số cơ hội thăng tiến
+                                                        phổ biến trong lĩnh vực này:
+                                                        <br />
+                                                        {jobs.promotion.map((promotion, index) => (
+                                                            <React.Fragment key={index}>
+                                                                {promotion}
+                                                                <br />
+                                                            </React.Fragment>
+                                                        ))}
                                                     </span>
                                                 </div>
-                                            ))}
-                                        </div>
-                                        {subCaredField.length > 0 && (
-                                            <MainField field={subCaredField[subCaredField.length - 1]} />
+                                                <div className={cx('chat-message', 'me')}>
+                                                    <span>Bạn có muốn tiếp tục không?</span>
+                                                </div>
+
+                                                <div className={cx('field-list')}>
+                                                    <div className={cx('chat-message', 'choice')}>
+                                                        <span
+                                                            onClick={() => {
+                                                                if (!stopService) {
+                                                                    setContinued(true);
+                                                                    setClickedSubmit(true);
+                                                                }
+                                                            }}
+                                                        >
+                                                            Có
+                                                        </span>
+                                                    </div>
+                                                    <div className={cx('chat-message', 'choice')}>
+                                                        <span
+                                                            onClick={() => {
+                                                                if (!stopService) {
+                                                                    setContinued(false);
+                                                                    setClickedSubmit(true);
+                                                                    setStopService(true);
+                                                                }
+                                                            }}
+                                                        >
+                                                            Không
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                {clickedSubmit && continued && (
+                                                    <React.Fragment>
+                                                        <div className={cx('chat-message', 'me')}>
+                                                            <span>{jobs.category_question.content}</span>
+                                                        </div>
+                                                        <div className={cx('field-list')}>
+                                                            {jobs.category_question.answers.map((choice) => (
+                                                                <div
+                                                                    className={cx('chat-message', 'choice')}
+                                                                    key={choice.id}
+                                                                >
+                                                                    <span
+                                                                        onClick={() => handleChoseSubCaredField(choice)}
+                                                                    >
+                                                                        {choice.choice_content}
+                                                                    </span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                        {subCaredField.length > 0 && (
+                                                            <MainField
+                                                                field={subCaredField[subCaredField.length - 1]}
+                                                            />
+                                                        )}
+                                                    </React.Fragment>
+                                                )}
+                                                {clickedSubmit && !continued && (
+                                                    <div className={cx('chat-message', 'me')}>
+                                                        <span>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi</span>
+                                                    </div>
+                                                )}
+                                            </React.Fragment>
                                         )}
                                     </React.Fragment>
-                                )}
-                                {clickedSubmit && !continued && (
-                                    <div className={cx('chat-message', 'me')}>
-                                        <span>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi</span>
-                                    </div>
                                 )}
                             </React.Fragment>
                         ))}

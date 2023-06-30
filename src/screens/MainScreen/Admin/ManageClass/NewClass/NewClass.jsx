@@ -97,7 +97,6 @@ const NewClass = ({ close, editable, classInfo }) => {
         }
     };
 
-    console.log(editable);
     return (
         <div className={cx('wrapper')}>
             <Close className={cx('close-main-btn')} onClick={() => close(false)} />

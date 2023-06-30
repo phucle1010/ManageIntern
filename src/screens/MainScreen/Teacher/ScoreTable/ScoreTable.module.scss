@@ -46,6 +46,7 @@
     margin: 0 calc((100% - 15% * 6) / 12);
     font-weight: 600;
     font-size: 15px;
+    color: var(--second-text-color);
 }
 
 .student-list {
@@ -110,7 +111,18 @@
 }
 
 .btn-edit {
+    margin-right: 10px;
     color: var(--second-color);
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.btn-gif {
+    color: var(--leave-work-color);
+    transform: rotate(45deg);
     cursor: pointer;
 
     &:hover {

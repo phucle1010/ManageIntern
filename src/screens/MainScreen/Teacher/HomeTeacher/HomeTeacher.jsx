@@ -47,19 +47,6 @@ const HomeTeacher = () => {
 
                         <SearchBox className={cx('search')} />
                         <h4 className={cx('main-heading')}>Danh sách sinh viên đang được phân công</h4>
-                        {/* <div className={cx('filters')}>
-                <select className={cx('filter-select-item')}>
-                    <option value="">Năm học</option>
-                    <option value="">2020</option>
-                    <option value="">2021</option>
-                    <option value="">2022</option>
-                </select>
-                <select className={cx('filter-select-item')}>
-                    <option value="">Học kỳ</option>
-                    <option value="">Học kỳ 1</option>
-                    <option value="">Học kỳ 2</option>
-                </select>
-            </div> */}
                         <div className={cx('student-container')}>
                             <div className={cx('menu-list')}>
                                 {MENU_HEADINGS.map((menu, index) => (

@@ -101,7 +101,7 @@ const AccountAdmin = () => {
                             <div className={cx('profile-avt')}>
                                 <img
                                     src={
-                                        user?.image ||
+                                        user.image ||
                                         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU'
                                     }
                                     alt=""

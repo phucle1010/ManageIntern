@@ -1858,6 +1858,22 @@ const recommendations = {
             },
         ],
     },
+    soft_skill: [
+        '- Kỹ năng giải quyết vấn đề: Kỹ năng này là rất quan trọng trong lĩnh vực công nghệ phần mềm, vì bạn phải tìm ra giải pháp cho các vấn đề kỹ thuật phức tạp. Kỹ năng giải quyết vấn đề bao gồm khả năng phân tích, tìm kiếm và đưa ra giải pháp.',
+        '- Kỹ năng lập trình: Với lĩnh vực công nghệ phần mềm, kỹ năng lập trình là một trong những kỹ năng cơ bản nhất. Bạn cần có kiến thức về cú pháp, cấu trúc dữ liệu, giải thuật và ngôn ngữ lập trình.',
+        '- Kỹ năng quản lý dự án: Kỹ năng quản lý dự án giúp bạn xây dựng kế hoạch, phân tích rủi ro và quản lý thời gian. Điều này giúp bạn đảm bảo rằng các dự án của bạn được hoàn thành đúng hạn, đúng chất lượng và đúng ngân sách.',
+        '- Kỹ năng giao tiếp: Kỹ năng giao tiếp là rất quan trọng trong lĩnh vực công nghệ phần mềm, vì bạn phải làm việc với đồng nghiệp, khách hàng và các bên liên quan khác. Kỹ năng giao tiếp bao gồm khả năng lắng nghe, truyền đạt thông tin và thuyết phục người khác.',
+        '- Kỹ năng học tập liên tục: Lĩnh vực công nghệ phần mềm thường thay đổi nhanh chóng, vì vậy bạn cần phải cập nhật kiến thức liên tục. Kỹ năng học tập liên tục bao gồm khả năng tìm kiếm thông tin, đọc tài liệu, tham gia các khóa học và thực hành.',
+        '- Kỹ năng tư duy logic: Kỹ năng tư duy logic giúp bạn phân tích và giải quyết các vấn đề kỹ thuật phức tạp. Điều này bao gồm khả năng suy luận, phân tích và đưa ra các giải pháp logic.',
+        '- Kỹ năng đội nhóm: Kỹ năng đội nhóm giúp bạn làm việc hiệu quả với các đồng nghiệp khác. Điều này bao gồm khả năng hợp tác, chia sẻ kiến thức và giải quyết xung đột.',
+    ],
+    promotion: [
+        '- Chuyên gia về một lĩnh vực cụ thể: Một chuyên gia về một lĩnh vực cụ thể như an ninh mạng, trí tuệ nhân tạo, đám mây, phát triển phần mềm, quản trị hệ thống, ... có thể trở thành lãnh đạo hoặc quản lý dự án trong lĩnh vực của mình.',
+        '- Quản lý dự án: Với kinh nghiệm và kiến thức về quản lý dự án, bạn có thể trở thành một quản lý dự án trong lĩnh vực công nghệ thông tin. Quản lý dự án là một vị trí quan trọng, phụ trách xây dựng kế hoạch, điều phối các nhân viên và đảm bảo dự án được hoàn thành đúng hạn và đúng chất lượng.',
+        '- Kiểm thử phần mềm: Kiểm thử phần mềm là một vị trí quan trọng trong lĩnh vực công nghệ thông tin. Nếu bạn có kinh nghiệm và kiến thức về kiểm thử phần mềm, bạn có thể trở thành một chuyên gia kiểm thử hoặc quản lý kiểm thử.',
+        '- Giám đốc công nghệ thông tin: Nếu bạn có kinh nghiệm lâu dài và kiến thức sâu rộng về công nghệ thông tin, bạn có thể trở thành giám đốc công nghệ thông tin của một công ty. Vị trí này phụ trách toàn bộ hoạt động công nghệ thông tin của công ty và có trách nhiệm cao.',
+        '- Khởi nghiệp: Nếu bạn có ý tưởng và kinh nghiệm trong lĩnh vực công nghệ thông tin, bạn có thể bắt đầu một công ty khởi nghiệp của riêng mình. Đây là một cơ hội để trở thành một doanh nhân thành công và kiếm được nhiều tiền.',
+    ],
 };
 
 export default recommendations;
