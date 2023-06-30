@@ -88,7 +88,7 @@ const InternJob = () => {
             {loaded ? (
                 <div className={cx('wrapper')}>
                     <h3 className={cx('main-heading')}>Danh sách các công việc đang tuyển dụng</h3>
-                    <SearchBox className={cx('search')} />
+                    {/* <SearchBox className={cx('search')} /> */}
                     <div className={cx('job-list')}>
                         {jobs.length > 0 &&
                             jobs.map((job, index) => (

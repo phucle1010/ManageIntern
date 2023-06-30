@@ -52,13 +52,9 @@ const Requirement = () => {
                 <div className={cx('wrapper')}>
                     <div className={cx('requirement-category')}>
                         <h3 className={cx('main-heading')}>Danh sách chờ xác nhận</h3>
+                        <SearchBox className={cx('search')} search={searchRequest} setSearch={setSearchRequest} />
                         {studentRequest.length > 0 ? (
                             <React.Fragment>
-                                <SearchBox
-                                    className={cx('search')}
-                                    search={searchRequest}
-                                    setSearch={setSearchRequest}
-                                />
                                 <div className={cx('menu-list')}>
                                     {INTERNING_MENU.map((item, index) => (
                                         <h3 key={index} className={cx('menu-item')}>
