@@ -19,11 +19,15 @@ const ScoreTable = () => {
     const [academic, setAcademic] = useState();
     const [semester, setSemester] = useState();
     const [editedScores, setEditedScores] = useState({});
+    const [searchStudent, setSearchStudent] = useState(null);
 
     const loadData = () => {
         const token = JSON.parse(localStorage.getItem('user_token'));
         axios
-            .get('/teacher/student', { params: { academic, semester }, headers: { Authorization: token } })
+            .get('/teacher/student', {
+                params: { academic, semester, searchStudent: searchStudent || null },
+                headers: { Authorization: token },
+            })
             .then((res) => {
                 setStudents(res.data);
                 setStudents(res.data.map((student) => ({ ...student, editable: false })));
@@ -51,7 +55,9 @@ const ScoreTable = () => {
         loadSemester();
     }, []);
 
-    useEffect(() => loadData(), [academic, semester]);
+    useEffect(() => {
+        loadData();
+    }, [academic, semester, searchStudent]);
 
     const handleSave = (studentId, score, id) => {
         setEditedScores({
@@ -101,7 +107,7 @@ const ScoreTable = () => {
     return (
         <div className={cx('wrapper')}>
             <h3 className={cx('title-heading')}>BẢNG ĐIỂM</h3>
-            <SearchBox className={cx('search')} />
+            <SearchBox className={cx('search')} search={searchStudent} setSearch={setSearchStudent} />
             <h4 className={cx('main-heading')}>Danh sách sinh viên</h4>
             <div className={cx('filters')}>
                 <select className={cx('filter-select-item')} onChange={(e) => setAcademic(e.target.value)}>

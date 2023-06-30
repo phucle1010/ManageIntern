@@ -24,6 +24,7 @@ const Library = () => {
     const [loaded, setLoaded] = useState(false);
     const [chosedJob, setChosedJob] = useState({});
     const [removeClicked, setRemoveClicked] = useState(false);
+    const [search, setSearch] = useState(null);
 
     const getStudentId = async () => {
         await axios
@@ -49,6 +50,7 @@ const Library = () => {
             .get('/student/job/library/all', {
                 params: {
                     student_id: studentId,
+                    search,
                 },
             })
             .then((res) => {
@@ -64,7 +66,7 @@ const Library = () => {
         if (studentId !== null) {
             getAllJobInLibrary();
         }
-    }, [studentId]);
+    }, [studentId, search]);
 
     useEffect(() => {
         if (removeClicked) {
@@ -94,7 +96,7 @@ const Library = () => {
             {loaded ? (
                 <div className={cx('wrapper')}>
                     <h3 className={cx('title-heading')}>THƯ VIỆN</h3>
-                    <SearchBox className={cx('search')} />
+                    <SearchBox className={cx('search')} search={search} setSearch={setSearch} />
                     <div className={cx('job-category')}>
                         <h4 className={cx('list-heading')}>Danh sách công việc đã lưu</h4>
                         <div className={cx('job-list')}>

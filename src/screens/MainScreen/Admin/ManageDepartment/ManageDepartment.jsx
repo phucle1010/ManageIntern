@@ -20,6 +20,7 @@ const Department = () => {
     const [chosedDepartment, setChosedDepartment] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [editable, setEditable] = useState(false);
+    const [search, setSearch] = useState(null);
 
     useEffect(() => {
         const email = admin.email;
@@ -40,6 +41,7 @@ const Department = () => {
                 .get('/admin/department', {
                     params: {
                         schoolId: school.id,
+                        search: search,
                     },
                 })
                 .then((res) => {
@@ -47,7 +49,7 @@ const Department = () => {
                 })
                 .then(() => setIsLoading(false));
         }
-    }, [chosedDepartment, school]);
+    }, [chosedDepartment, school, search]);
 
     return (
         <div className={cx('wrapper')}>
@@ -56,7 +58,7 @@ const Department = () => {
             ) : (
                 <React.Fragment>
                     <h3 className={cx('list-heading')}>DANH SÁCH KHOA</h3>
-                    <SearchBox className={cx('search')} />
+                    <SearchBox className={cx('search')} search={search} setSearch={setSearch} />
                     <div className={cx('btn-options')}>
                         <button
                             className={cx('btn-add')}

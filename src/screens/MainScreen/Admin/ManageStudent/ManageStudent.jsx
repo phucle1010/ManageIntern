@@ -23,6 +23,7 @@ const ManageStudent = () => {
     const [chosedStudent, setChosedStudent] = useState({});
     const [editable, setEditable] = useState(true);
     const [loaded, setLoaded] = useState(false);
+    const [search, setSearch] = useState(null);
 
     const getAcademicYear = async () => {
         await axios
@@ -33,18 +34,18 @@ const ManageStudent = () => {
 
     const getAllStudent = async () => {
         await axios
-            .get('/student')
+            .get('/student', { params: { search } })
             .then((res) => {
                 setStudentList(res.data);
             })
+            .then(() => setLoaded(true))
             .catch((err) => console.log({ err: err }));
     };
 
     useEffect(() => {
         getAcademicYear();
         getAllStudent();
-        setLoaded(true);
-    }, [showNewStudent]);
+    }, [showNewStudent, search]);
 
     const getSudentOfYear = async () => {
         await axios
@@ -144,7 +145,7 @@ const ManageStudent = () => {
             {loaded === true ? (
                 <div className={cx('wrapper')}>
                     <h3 className={cx('list-heading')}>DANH SÁCH SINH VIÊN</h3>
-                    <SearchBox className={cx('search')} />
+                    <SearchBox className={cx('search')} search={search} setSearch={setSearch} />
                     <div className={cx('filters')}>
                         <select
                             value={year}

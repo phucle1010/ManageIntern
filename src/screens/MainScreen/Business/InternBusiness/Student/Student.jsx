@@ -16,10 +16,12 @@ const Student = () => {
     const [chosedStudent, setChosedStudent] = useState({});
     const [students, setStudents] = useState([]);
     const [loaded, setLoaded] = useState(false);
+    const [searchIntern, setSearchIntern] = useState(null);
 
     const getInterningStudent = async () => {
+        const token = JSON.parse(localStorage.getItem('user_token'));
         await axios
-            .get('/business/interns/student')
+            .get('/business/interns/student', { params: { searchIntern }, headers: { Authorization: token } })
             .then((res) => res.data.statusCode === 200 && setStudents(res.data.responseData))
             .then(() => setLoaded(true))
             .catch((err) => alert(err));
@@ -27,14 +29,14 @@ const Student = () => {
 
     useEffect(() => {
         getInterningStudent();
-    }, []);
+    }, [searchIntern]);
 
     return (
         <React.Fragment>
             {loaded ? (
                 <div className={cx('wrapper')}>
                     <h3 className={cx('main-heading')}>Danh sách sinh viên thực tập</h3>
-                    <SearchBox className={cx('search')} />
+                    <SearchBox className={cx('search')} search={searchIntern} setSearch={setSearchIntern} />
                     {students.length > 0 ? (
                         <div className={cx('menu-list')}>
                             {INTERNING_MENU.map((item, index) => (

@@ -17,10 +17,11 @@ const LinkBusiness = () => {
     const [openNewBusinessScreen, setOpenNewBusinessScreen] = useState(false);
     const [businesses, setBusinesses] = useState([]);
     const [loaded, setLoaded] = useState(false);
+    const [nameBusiness, setNameBusiness] = useState(null);
 
     const getAllBusinesses = async () => {
         await axios
-            .get(`/user/business/all`)
+            .get(`/user/business/all`, { params: { nameBusiness: nameBusiness || null } })
             .then((res) => {
                 setBusinesses(
                     res.data.map((business) => ({
@@ -46,21 +47,14 @@ const LinkBusiness = () => {
 
     useEffect(() => {
         getAllBusinesses();
-    }, [chosedBusiness, openNewBusinessScreen]);
-
-    console.log(businesses);
-    // useEffect(() => {
-    //     if (newBusiness.id !== 0) {
-    //         setBusinesses((prev) => [...prev, newBusiness]);
-    //     }
-    // }, [newBusiness]);
+    }, [chosedBusiness, openNewBusinessScreen, nameBusiness]);
 
     return (
         <React.Fragment>
             {loaded ? (
                 <div className={cx('wrapper')}>
                     <h4 className={cx('title-heading')}>DOANH NGHIỆP</h4>
-                    <SearchBox className={cx('search')} />
+                    <SearchBox className={cx('search')} search={nameBusiness} setSearch={setNameBusiness} />
                     <div className={cx('business-list')}>
                         {businesses.length > 0 &&
                             businesses.map((job, index) => (

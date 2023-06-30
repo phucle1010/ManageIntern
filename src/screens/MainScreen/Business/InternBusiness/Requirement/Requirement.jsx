@@ -18,11 +18,12 @@ const Requirement = () => {
     const [studentRequest, setStudentRequest] = useState([]);
     const [submitHistory, setSubmitHistory] = useState([]);
     const [loaded, setLoaded] = useState(false);
+    const [searchRequest, setSearchRequest] = useState(null);
 
     const loadRequestData = () => {
         const token = JSON.parse(localStorage.getItem('user_token'));
         axios
-            .get(`/business/job/request`, { headers: { Authorization: token } })
+            .get(`/business/job/request`, { params: { searchRequest }, headers: { Authorization: token } })
             .then((res) => {
                 setStudentRequest(res.data);
             })
@@ -43,7 +44,7 @@ const Requirement = () => {
     useEffect(() => {
         loadRequestData();
         getSubmitHistory();
-    }, []);
+    }, [searchRequest]);
 
     return (
         <React.Fragment>
@@ -53,7 +54,11 @@ const Requirement = () => {
                         <h3 className={cx('main-heading')}>Danh sách chờ xác nhận</h3>
                         {studentRequest.length > 0 ? (
                             <React.Fragment>
-                                <SearchBox className={cx('search')} />
+                                <SearchBox
+                                    className={cx('search')}
+                                    search={searchRequest}
+                                    setSearch={setSearchRequest}
+                                />
                                 <div className={cx('menu-list')}>
                                     {INTERNING_MENU.map((item, index) => (
                                         <h3 key={index} className={cx('menu-item')}>

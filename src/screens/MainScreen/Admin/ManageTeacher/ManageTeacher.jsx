@@ -24,6 +24,7 @@ const ManageTeacher = () => {
     const [chosedTeacher, setChosedTeacher] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [editable, setEditable] = useState(false);
+    const [search, setSearch] = useState(null);
 
     useEffect(() => {
         const email = admin.email;
@@ -54,12 +55,12 @@ const ManageTeacher = () => {
 
     useEffect(() => {
         axios
-            .get('/admin/teacher')
+            .get('/admin/teacher', { params: { search } })
             .then((res) => {
                 setTeachers(res.data.responseData);
             })
             .then(() => setIsLoading(false));
-    }, [chosedTeacher]);
+    }, [chosedTeacher, search]);
 
     const generatePDF = () => {
         const newData = teachers.map((teacher) => {
@@ -133,7 +134,7 @@ const ManageTeacher = () => {
             ) : (
                 <React.Fragment>
                     <h3 className={cx('list-heading')}>DANH SÁCH GIẢNG VIÊN</h3>
-                    <SearchBox className={cx('search')} />
+                    <SearchBox className={cx('search')} search={search} setSearch={setSearch} />
                     <div className={cx('filters')}>
                         <button
                             className={cx('btn-add')}
