@@ -22,7 +22,7 @@ const Student = () => {
         const token = JSON.parse(localStorage.getItem('user_token'));
         await axios
             .get('/business/interns/student', { params: { searchIntern }, headers: { Authorization: token } })
-            .then((res) => res.data.statusCode === 200 && setStudents(res.data.responseData))
+            .then((res) => setStudents(res.data))
             .then(() => setLoaded(true))
             .catch((err) => alert(err));
     };
