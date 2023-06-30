@@ -50,3 +50,21 @@
         opacity: 0.7;
     }
 }
+
+.btn-submit {
+    margin: 4px 0;
+    padding: 6px 20px;
+    // width: 60%;
+    color: #fff;
+    line-height: 20px;
+    background-color: var(--working-color);
+    font-size: 14px;
+    border-radius: 6px;
+    border: none;
+    user-select: none;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}

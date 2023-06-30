@@ -15,42 +15,7 @@ const cx = classNames.bind(styles);
 const WAITING_CONFIRM = ['Ảnh', 'Mã sinh viên', 'Họ và tên', 'Giảng viên hướng dẫn'];
 const WAITING_HEADINGS = ['Ảnh', 'Mã sinh viên', 'Họ và tên', 'Vị trí thực tập'];
 const INTERNED_HEADINGS = [...WAITING_HEADINGS, 'Điểm tổng kết'];
-const INTERNING_HEADINGS = [...WAITING_HEADINGS, 'Thời gian thực tập'];
-
-const INTERNED_LIST = [
-    {
-        id: 1,
-        name: 'Đỗ Nguyên Triết',
-        position: 'Tester',
-        img: 'https://i.pinimg.com/originals/96/6c/e1/966ce14ec7fad178425e68bd333fbf99.jpg',
-        score: 9,
-        internTime: '3 tháng',
-    },
-    {
-        id: 2,
-        name: 'Đặng Hồng Phong',
-        position: 'Design',
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU',
-        score: 8,
-        internTime: '4 tháng',
-    },
-];
-const INTERNING_LIST = [
-    {
-        id: 1,
-        name: 'Lê Hoài Thương',
-        position: 'Back End Dev',
-        img: 'https://i.pinimg.com/originals/96/6c/e1/966ce14ec7fad178425e68bd333fbf99.jpg',
-        internTime: '3 tháng',
-    },
-    {
-        id: 2,
-        name: 'Nguyễn Minh Trí',
-        position: 'Front End Dev',
-        img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZaC8D-jIIEjybXk20m1WRizMVjShsdMYPXw&usqp=CAU',
-        internTime: '4 tháng',
-    },
-];
+const INTERNING_HEADINGS = [...WAITING_HEADINGS, 'Lựa chọn'];
 
 const Filter = ({ setAcademic, setSemester, setSearchStudentInternRequestJob, searchStudentInternRequestJob }) => {
     const [academics, setAcademics] = useState([{}]);
@@ -159,8 +124,8 @@ const FilterComfirm = ({ setAcademic, setSemester, setTeacher, setSearchStudentI
                         </option>
                     ))}
                 </select>
-                <SearchBox search={searchStudentIntern} setSearch={setSearchStudentIntern} />
             </div>
+            <SearchBox search={searchStudentIntern} setSearch={setSearchStudentIntern} />
         </div>
     );
 };
@@ -168,16 +133,20 @@ const FilterComfirm = ({ setAcademic, setSemester, setTeacher, setSearchStudentI
 const ManageIntern = () => {
     const [openSubjectScreen, setOpenSubjectScreen] = useState(false);
     const [internMarkScreen, setInternMarkScreen] = useState(false);
-    const [studentSignUpIntern, setStudentSignUpIntern] = useState([{}]);
     const [academic, setAcademic] = useState(0);
     const [semester, setSemester] = useState(0);
     const [teacher, setTeacher] = useState(0);
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [studentSignUpIntern, setStudentSignUpIntern] = useState([{}]);
     const [studentRequestJobIntern, setStudentRequestJobIntern] = useState([]);
-    const [searchStudentIntern, setSearchStudentIntern] = useState(null);
+    const [interningStudents, setInterningStudents] = useState([]);
+    const [internedStudents, setInternedStudents] = useState([]);
     const [academicRequestJob, setAcademicRequestJob] = useState(0);
     const [semesterRequestJob, setSemesterRequestJob] = useState(0);
+    const [searchStudentIntern, setSearchStudentIntern] = useState(null);
     const [searchStudentInternRequestJob, setSearchStudentInternRequestJob] = useState(null);
+    const [isLoaded, setIsLoaded] = useState(false);
+
+    console.log(interningStudents);
 
     const loadStudentSignUpIntern = async () => {
         await axios
@@ -210,6 +179,29 @@ const ManageIntern = () => {
         loadStudentRequestJobIntern();
     }, [academicRequestJob, semesterRequestJob, searchStudentInternRequestJob]);
 
+    const loadInterningStudents = async () => {
+        await axios
+            .get('/admin/intern/students', {
+                params: {
+                    searchIntern: '',
+                },
+            })
+            .then((res) => res.data.statusCode === 200 && setInterningStudents(res.data.responseData))
+            .catch((err) => alert(err));
+    };
+
+    const loadInternedStudents = async () => {
+        await axios
+            .get('/admin/intern/students/completed')
+            .then((res) => res.data.statusCode === 200 && setInternedStudents(res.data.responseData))
+            .catch((err) => alert(err));
+    };
+
+    useEffect(() => {
+        loadInterningStudents();
+        loadInternedStudents();
+    }, []);
+
     return (
         <React.Fragment>
             {isLoaded ? (
@@ -224,123 +216,121 @@ const ManageIntern = () => {
                         <h4 className={cx('list-heading')}>
                             Danh sách đang chờ xử lý yêu cầu đăng ký tín chỉ thực tập
                         </h4>
+                        <FilterComfirm
+                            setAcademic={setAcademic}
+                            setSemester={setSemester}
+                            setTeacher={setTeacher}
+                            setSearchStudentIntern={setSearchStudentIntern}
+                            searchStudentIntern={searchStudentIntern}
+                        />
                         {studentSignUpIntern.length > 0 ? (
-                            <React.Fragment>
-                                <FilterComfirm
-                                    setAcademic={setAcademic}
-                                    setSemester={setSemester}
-                                    setTeacher={setTeacher}
-                                    setSearchStudentIntern={setSearchStudentIntern}
-                                    searchStudentIntern={searchStudentIntern}
-                                />
-                                <div className={cx('intern-list')}>
-                                    <div className={cx('intern-heading-list')}>
-                                        <ul className={cx('main-heading-list')}>
-                                            {WAITING_CONFIRM.map((heading, index) => (
-                                                <li className={cx('main-heading')} key={index}>
-                                                    {heading}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                        <h5 className={cx('option-heading-list', 'option-heading')}>Lựa chọn</h5>
-                                    </div>
-                                    {studentSignUpIntern.length > 0 &&
-                                        studentSignUpIntern.map((student) => (
-                                            <InternItem
-                                                key={student.id}
-                                                student={student}
-                                                interned={false}
-                                                waiting={true}
-                                                loadStudentSignUpIntern={loadStudentSignUpIntern}
-                                            />
+                            <div className={cx('intern-list')}>
+                                <div className={cx('intern-heading-list')}>
+                                    <ul className={cx('main-heading-list')}>
+                                        {WAITING_CONFIRM.map((heading, index) => (
+                                            <li className={cx('main-heading')} key={index}>
+                                                {heading}
+                                            </li>
                                         ))}
+                                    </ul>
+                                    <h5 className={cx('option-heading-list', 'option-heading')}>Lựa chọn</h5>
                                 </div>
-                            </React.Fragment>
+                                {studentSignUpIntern.length > 0 &&
+                                    studentSignUpIntern.map((student) => (
+                                        <InternItem
+                                            key={student.id}
+                                            student={student}
+                                            interned={false}
+                                            waiting={true}
+                                            loadStudentSignUpIntern={loadStudentSignUpIntern}
+                                        />
+                                    ))}
+                            </div>
                         ) : (
                             <span className={cx('notice')}>Không có bất kỳ dữ liệu đang chờ xử lý nào</span>
                         )}
                     </div>
                     <div className={cx('intern-category')}>
                         <h4 className={cx('list-heading')}>Danh sách đang chờ xử lý yêu cầu đăng ký thực tập</h4>
-
+                        <Filter
+                            setAcademic={setAcademicRequestJob}
+                            setSemester={setSemesterRequestJob}
+                            setSearchStudentInternRequestJob={setSearchStudentInternRequestJob}
+                            searchStudentInternRequestJob={searchStudentInternRequestJob}
+                        />
                         {studentRequestJobIntern.length > 0 ? (
-                            <React.Fragment>
-                                <Filter
-                                    setAcademic={setAcademicRequestJob}
-                                    setSemester={setSemesterRequestJob}
-                                    setSearchStudentInternRequestJob={setSearchStudentInternRequestJob}
-                                    searchStudentInternRequestJob={searchStudentInternRequestJob}
-                                />
-                                <div className={cx('intern-list')}>
-                                    <div className={cx('intern-heading-list')}>
-                                        <ul className={cx('main-heading-list')}>
-                                            {WAITING_HEADINGS.map((heading, index) => (
-                                                <li className={cx('main-heading')} key={index}>
-                                                    {heading}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                        <h5 className={cx('option-heading-list', 'option-heading')}>Lựa chọn</h5>
-                                    </div>
-                                    {studentRequestJobIntern.length > 0 &&
-                                        studentRequestJobIntern.map((student) => (
-                                            <InternshipItem
-                                                key={student.id}
-                                                student={student}
-                                                interned={false}
-                                                waiting={true}
-                                                loadStudentRequestJobIntern={loadStudentRequestJobIntern}
-                                            />
+                            <div className={cx('intern-list')}>
+                                <div className={cx('intern-heading-list')}>
+                                    <ul className={cx('main-heading-list')}>
+                                        {WAITING_HEADINGS.map((heading, index) => (
+                                            <li className={cx('main-heading')} key={index}>
+                                                {heading}
+                                            </li>
                                         ))}
+                                    </ul>
+                                    <h5 className={cx('option-heading-list', 'option-heading')}>Lựa chọn</h5>
                                 </div>
-                            </React.Fragment>
+                                {studentRequestJobIntern.length > 0 &&
+                                    studentRequestJobIntern.map((student) => (
+                                        <InternshipItem
+                                            key={student.id}
+                                            student={student}
+                                            interned={false}
+                                            waiting={true}
+                                            loadStudentRequestJobIntern={loadStudentRequestJobIntern}
+                                        />
+                                    ))}
+                            </div>
                         ) : (
                             <span className={cx('notice')}>Không có bất kỳ dữ liệu đang chờ xử lý nào</span>
                         )}
                     </div>
                     <div className={cx('intern-category')}>
                         <h4 className={cx('list-heading')}>Danh sách sinh viên đang thực tập</h4>
-                        <Filter />
-                        <div className={cx('intern-list')}>
-                            <div className={cx('intern-heading-list')}>
-                                <ul className={cx('main-heading-list')}>
-                                    {INTERNING_HEADINGS.map((heading, index) => (
-                                        <li className={cx('main-heading')} key={index}>
-                                            {heading}
-                                        </li>
+                        {interningStudents.length > 0 ? (
+                            <React.Fragment>
+                                <div className={cx('intern-list')}>
+                                    <div className={cx('intern-heading-list')}>
+                                        <ul className={cx('main-heading-list')}>
+                                            {INTERNING_HEADINGS.map((heading, index) => (
+                                                <li className={cx('main-heading')} key={index}>
+                                                    {heading}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    {interningStudents.map((student) => (
+                                        <InternItem
+                                            key={student.id}
+                                            student={student}
+                                            interned={false}
+                                            waiting={false}
+                                            loadStudentSignUpIntern={loadStudentSignUpIntern}
+                                        />
                                     ))}
-                                </ul>
-                            </div>
-                            {INTERNING_LIST.length > 0 &&
-                                INTERNING_LIST.map((student) => (
-                                    <InternItem
-                                        key={student.id}
-                                        student={student}
-                                        interned={false}
-                                        waiting={false}
-                                        loadStudentSignUpIntern={loadStudentSignUpIntern}
-                                    />
-                                ))}
-                        </div>
-                        <button className={cx('btn-mark')} onClick={() => setInternMarkScreen(true)}>
-                            Xem hội đồng chấm thi
-                        </button>
+                                </div>
+                                <button className={cx('btn-mark')} onClick={() => setInternMarkScreen(true)}>
+                                    Xem hội đồng chấm thi
+                                </button>
+                            </React.Fragment>
+                        ) : (
+                            <span className={cx('notice')}>Không có bất kỳ dữ liệu sinh viên nào</span>
+                        )}
                     </div>
                     <div className={cx('intern-category')}>
                         <h4 className={cx('list-heading')}>Danh sách sinh viên đã hoàn thành thực tập</h4>
-                        <Filter />
-                        <div className={cx('intern-list')}>
-                            <div className={cx('intern-heading-list')}>
-                                <ul className={cx('main-heading-list', 'interned')}>
-                                    {INTERNED_HEADINGS.map((heading, index) => (
-                                        <li className={cx('main-heading')} key={index}>
-                                            {heading}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                            {INTERNED_LIST.length > 0 &&
-                                INTERNED_LIST.map((student) => (
+                        {internedStudents.length > 0 ? (
+                            <div className={cx('intern-list')}>
+                                <div className={cx('intern-heading-list')}>
+                                    <ul className={cx('main-heading-list', 'interned')}>
+                                        {INTERNED_HEADINGS.map((heading, index) => (
+                                            <li className={cx('main-heading')} key={index}>
+                                                {heading}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                {internedStudents.map((student) => (
                                     <InternItem
                                         key={student.id}
                                         student={student}
@@ -349,7 +339,10 @@ const ManageIntern = () => {
                                         loadStudentSignUpIntern={loadStudentSignUpIntern}
                                     />
                                 ))}
-                        </div>
+                            </div>
+                        ) : (
+                            <span className={cx('notice')}>Không có bất kỳ dữ liệu sinh viên nào</span>
+                        )}
                     </div>
 
                     {openSubjectScreen && <OpenSubject close={setOpenSubjectScreen} />}
