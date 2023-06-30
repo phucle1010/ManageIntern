@@ -21,8 +21,23 @@ const ViewStudent = ({ student, setChosedStudent }) => {
   
     const handleDocxFileChange = async (event) => {
         const file = event.target.files[0];
-        const base64 = await convertBase64(file);
+        let base64 = await convertBase64(file);
+        base64 = base64.replace(/^data:.*;base64,/, '');
+
         console.log(base64);
+
+        if (typeof base64 !== 'string') {
+            alert('Dữ liệu không hợp lệ: không phải là một chuỗi');
+            return;
+        }
+        if (base64.length === 0) {
+            alert('Dữ liệu không hợp lệ: chuỗi rỗng');
+            return;
+        }
+        if (!base64.match(/^[A-Za-z0-9+/=]*$/)) {
+            alert('Dữ liệu không hợp lệ: chuỗi chứa ký tự không hợp lệ');
+            return;
+        }
         setDocx(base64);
     };
 
