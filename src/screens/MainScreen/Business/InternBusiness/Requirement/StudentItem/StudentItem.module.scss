@@ -20,8 +20,15 @@
     }
 }
 
+.btn-options {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .btn-submit {
+    margin: 4px 0;
     padding: 6px 20px;
+    width: 60%;
     color: #fff;
     line-height: 20px;
     background-color: var(--working-color);
@@ -33,5 +40,9 @@
 
     &:hover {
         opacity: 0.8;
+    }
+
+    &.view {
+        background-color: var(--primary-color);
     }
 }

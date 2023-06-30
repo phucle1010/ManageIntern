@@ -45,9 +45,14 @@ const StudentItem = ({ student, order, loadData, isSubmitable, getSubmitHistory 
             <span className={cx('student-info')}>{student.job_name}</span>
             <div className={cx('student-info')}>
                 {isSubmitable ? (
-                    <button className={cx('btn-submit')} onClick={() => aceptRequest()}>
-                        Xác nhận
-                    </button>
+                    <div className={cx('btn-options')}>
+                        <button className={cx('btn-submit')} onClick={() => aceptRequest()}>
+                            Xác nhận
+                        </button>
+                        <button className={cx('btn-submit', 'view')} onClick={() => {}}>
+                            Xem hồ sơ
+                        </button>
+                    </div>
                 ) : (
                     <span>{formattedDate()}</span>
                 )}

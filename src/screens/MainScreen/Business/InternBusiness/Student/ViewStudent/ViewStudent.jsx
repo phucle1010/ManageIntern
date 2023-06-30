@@ -82,7 +82,7 @@ const ViewStudent = ({ student, setChosedStudent }) => {
                                 name="email"
                                 placeholder="0368xxx"
                                 readOnly={true}
-                                value={student.phone}
+                                value={`0${student.phone}`}
                             />
                         </div>
                         <div className={cx('user-data-item')}>

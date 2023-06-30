@@ -17,8 +17,6 @@ const SendRequest = () => {
     const [requestJob, setRequestJob] = useState([]);
     const [loaded, setLoaded] = useState(false);
 
-    console.log(registRequests);
-
     const getStudentId = async () => {
         await axios
             .get('/student/id_data/user_id', {
@@ -78,7 +76,6 @@ const SendRequest = () => {
             .then((res) => {
                 if (res.data.statusCode === 200) {
                     setRequestJob(res.data.responseData);
-                    console.log(res.data.responseData);
                 }
             })
             .catch((err) => alert(err));
