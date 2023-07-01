@@ -4,11 +4,13 @@ import styles from './InternItem.module.scss';
 import { Visibility } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
 import DetailSignUpInfo from '../DetailSignUpInfo';
-
+import FileSaver from 'file-saver';
+const { Buffer } = require('buffer');
 const cx = classNames.bind(styles);
 
 const InternItem = ({ student, interned, waiting, loadStudentSignUpIntern }) => {
     const [detailSignUpInternScreen, setDetailSignUpInternScreen] = useState(false);
+    const files = [student.report_file, student.result_business_file, student.result_teacher_file];
 
     useEffect(() => {
         loadStudentSignUpIntern();
@@ -18,6 +20,19 @@ const InternItem = ({ student, interned, waiting, loadStudentSignUpIntern }) => 
         const date = new Date(Date.parse(student.start_date));
         return `${date.getDate()}-${date.getMonth() + 1}-${date.getUTCFullYear()}`;
     };
+
+    const handleDownloadFilesStudent = () => {
+        if (!files.every(file => file)){
+            console.log(files[0]);
+            alert('Sinh viên chưa gữi files báo cáo');
+        } else {
+            files.forEach((file, index) => {
+                const docxData = Buffer.from(Buffer.from(file).toString(), 'base64');
+                const blob = new Blob([docxData], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+                FileSaver.saveAs(blob, `file${index + 1}.docx`);
+            });
+        }
+    }
 
     return (
         <div className={cx('wrapper')}>
@@ -38,8 +53,8 @@ const InternItem = ({ student, interned, waiting, loadStudentSignUpIntern }) => 
                         </div>
                         <div className={cx('data-item', { interned })}>
                             {/* <span className={cx('title-heading')}>{formattedDate()}</span> */}
-                            <button className={cx('btn-submit')} onClick={() => {}}>
-                                Theo dõi báo cáo
+                            <button className={cx('btn-submit')} onClick={() => {handleDownloadFilesStudent()}}>
+                                {files[0]? 'Tải file báo cáo': 'Chưa nộp file báo cáo'}
                             </button>
                         </div>
                     </React.Fragment>
