@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import classNames from 'classnames/bind';
 import styles from './Report.module.scss';
 import { AttachFile } from '@mui/icons-material';
+import { Buffer } from 'buffer';
 
 import Loading from '../../../../../components/LoadingSpinner';
 
@@ -155,6 +156,21 @@ const Report = () => {
         setDocx(base64);
     };
 
+    const loadFileReport = () => {
+        const token = JSON.parse(localStorage.getItem('user_token'));
+        axios
+            .get('/student/report', {headers: {'Authorization': token}})
+            .then((res) => {
+                console.log(res.data);
+                setResultFile(Buffer.from(res.data?.report_file.data).toString('base64'));
+                setResultBusinessFile(Buffer.from(res.data?.result_business_file.data).toString('base64'));
+                setResultTeacherFile(Buffer.from(res.data?.result_teacher_file.data).toString('base64'));
+            })
+            .catch((err) => console.log(err));
+    }
+
+    useEffect(() => loadFileReport(), []);
+
     const convertBase64 = (file) => {
         return new Promise((resolve, reject) => {
             const fileReader = new FileReader();
@@ -173,7 +189,7 @@ const Report = () => {
         axios
             .post(`/student/report`, {result_file, result_business_file, result_teacher_file}, {headers: {'authorization': token}})
             .then((res) => alert('Cập nhật thành công'))
-            .catch((err) => console.log(err));
+            .catch((err) => alert(err.response.data.details[0].message));
     }
 
     return (
@@ -193,7 +209,13 @@ const Report = () => {
             <div className={cx('report-category')}>
                 <h4 className={cx('main-heading')}>Báo cáo cuối kì</h4>
                 <div className={cx('intern-detail')}>
-                    <input className={cx('intern-input')} type="text" placeholder="File báo cáo" readOnly={true} value={result_file}/>
+                    <input 
+                        className={cx('intern-input')} 
+                        type="text" 
+                        placeholder="File báo cáo" 
+                        readOnly={true} 
+                        value={result_file? 'Bạn đã nộp file báo cáo': 'Bạn chưa nộp file báo cáo'}
+                    />
                     <input type="file" id={cx('gif-input-report')} accept=".docx" onChange={(e) => handleDocxFileChange(e, setResultFile)}/>
                     <label htmlFor={cx('gif-input-report')} className={cx('gif-label')}>
                         <AttachFile className={cx('gif-btn')} htmlFor={cx('gif-input')} />
@@ -205,7 +227,7 @@ const Report = () => {
                         type="text"
                         placeholder="Phiếu đánh giá quá trình thực tập sinh viên của công ty"
                         readOnly={true}
-                        value={result_business_file}
+                        value={result_business_file? 'Bạn đã nộp file đánh giá quá trình thực tập sinh viên của công ty' : 'Bạn chưa nộp file đánh giá quá trình thực tập sinh viên của công ty'}
                     />
                     <input type="file" id={cx('gif-input-business')} accept=".docx" onChange={(e) => handleDocxFileChange(e, setResultBusinessFile)}/>
                     <label htmlFor={cx('gif-input-business')} className={cx('gif-label')}>
@@ -218,7 +240,7 @@ const Report = () => {
                         type="text"
                         placeholder="Phiếu đánh giá quá trình thực tập sinh viên của giảng viên"
                         readOnly={true}
-                        value={result_teacher_file}
+                        value={result_teacher_file? 'Bạn đã nộp file đánh giá quá trình thực tập sinh viên của giảng viên': 'Bạn chưa nộp file đánh giá quá trình thực tập sinh viên của giảng viên'}
                     />
                     <input type="file" id={cx('gif-input-teacher')} accept=".docx" onChange={(e) => handleDocxFileChange(e, setResultTeacherFile)}/>
                     <label htmlFor={cx('gif-input-teacher')} className={cx('gif-label')}>
