@@ -122,11 +122,12 @@ const ScoreTable = () => {
         });
     };
 
-    const handleSubmitCompleteInternProcess = (id, internJobId) => {
+    const handleSubmitCompleteInternProcess = (id, internJobId, studentId) => {
         axios
             .put('/teacher/student/intern/completed', {
                 intern_id: id,
                 intern_job_id: internJobId,
+                student_id: studentId,
             })
             .then((res) => {
                 alert(res.data);
@@ -288,6 +289,7 @@ const ScoreTable = () => {
                                                 handleSubmitCompleteInternProcess(
                                                     student.studentLearnInternId,
                                                     student.internJobId,
+                                                    student.studentId,
                                                 )
                                             }
                                         >
@@ -321,7 +323,7 @@ const ScoreTable = () => {
                                 </div>
                                 <div className={cx('student-list')}>
                                     {completedInternStudents?.map((student) => (
-                                        <div key={student.studentId} className={cx('student-item')}>
+                                        <div key={student.id} className={cx('student-item')}>
                                             <div className={cx('student-item-detail', 'sub')}>
                                                 <Avatar src={student.studentImage} />
                                             </div>

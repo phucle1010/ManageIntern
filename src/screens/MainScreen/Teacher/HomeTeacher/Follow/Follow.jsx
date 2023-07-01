@@ -11,6 +11,7 @@ import Appreciation from './Appreciation';
 const cx = classNames.bind(styles);
 
 const TodoItem = ({ todo, setSelectedTodo, getTodoList }) => {
+    console.log(todo.completed_status.data[0]);
     const [content, setContent] = useState('');
 
     const handleSendAppreciation = async () => {

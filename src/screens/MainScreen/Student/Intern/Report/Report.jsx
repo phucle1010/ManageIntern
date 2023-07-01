@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import classNames from 'classnames/bind';
 import styles from './Report.module.scss';
 import { AttachFile } from '@mui/icons-material';
+import { Buffer } from 'buffer';
 
 import Loading from '../../../../../components/LoadingSpinner';
 import Appreciation from './Appreciation/Appreciation';
@@ -106,11 +107,12 @@ const Report = () => {
     const user = useSelector((state) => state.user);
     const [studentId, setStudentId] = useState(null);
     const [todos, setTodos] = useState([]);
-    const [loaded, setLoaded] = useState(false);
+    const [isInterning, setIsInterning] = useState(false);
     const [selectedJob, setSelectedJob] = useState(null);
     const [result_file, setResultFile] = useState(null);
     const [result_business_file, setResultBusinessFile] = useState(null);
     const [result_teacher_file, setResultTeacherFile] = useState(null);
+    const [loaded, setLoaded] = useState(false);
 
     const getStudentId = async () => {
         await axios
@@ -129,6 +131,17 @@ const Report = () => {
         }
     }, [user]);
 
+    const studentIsInterning = async () => {
+        await axios
+            .get('/student/interning', {
+                params: {
+                    studentId,
+                },
+            })
+            .then((res) => res.data.length > 0 && setIsInterning(true))
+            .catch((err) => alert(err));
+    };
+
     const getAllTodos = async () => {
         await axios
             .get('/student/todo/all', {
@@ -138,10 +151,32 @@ const Report = () => {
             })
             .then((res) => {
                 res.data.statusCode === 200 && setTodos(res.data.responseData);
-                setLoaded(true);
             })
+            .then(() => setLoaded(true))
             .catch((err) => alert(err));
     };
+
+    const loadFileReport = () => {
+        const token = JSON.parse(localStorage.getItem('user_token'));
+        axios
+            .get('/student/report', { headers: { Authorization: token } })
+            .then((res) => {
+                setResultFile(Buffer.from(res.data?.report_file?.data).toString('base64'));
+                setResultBusinessFile(Buffer.from(res.data?.result_business_file?.data).toString('base64'));
+                setResultTeacherFile(Buffer.from(res.data?.result_teacher_file?.data).toString('base64'));
+            })
+            .catch((err) => console.log(err));
+    };
+
+    useEffect(() => {
+        loadFileReport();
+    }, []);
+
+    useEffect(() => {
+        if (studentId) {
+            studentIsInterning();
+        }
+    }, [studentId]);
 
     useEffect(() => {
         if (studentId !== null) {
@@ -182,93 +217,109 @@ const Report = () => {
     };
 
     return (
-        <div className={cx('wrapper')}>
-            <div className={cx('report-category')}>
-                <h4 className={cx('main-heading')}>Báo cáo tiến độ</h4>
-                <h5 className={cx('sub-heading')}>Danh sách các công việc</h5>
-                {loaded ? (
-                    <div className={cx('todo-list')}>
-                        {todos.length > 0 &&
-                            todos.map((todo, index) => (
-                                <TodoItem
-                                    todo={todo}
-                                    key={index}
-                                    getAllTodos={getAllTodos}
-                                    setSelectedJob={setSelectedJob}
-                                />
-                            ))}
+        <React.Fragment>
+            {isInterning ? (
+                <div className={cx('wrapper')}>
+                    <div className={cx('report-category')}>
+                        <h4 className={cx('main-heading')}>Báo cáo tiến độ</h4>
+                        <h5 className={cx('sub-heading')}>Danh sách các công việc</h5>
+                        {loaded ? (
+                            <div className={cx('todo-list')}>
+                                {todos.length > 0 &&
+                                    todos.map((todo, index) => (
+                                        <TodoItem
+                                            todo={todo}
+                                            key={index}
+                                            getAllTodos={getAllTodos}
+                                            setSelectedJob={setSelectedJob}
+                                        />
+                                    ))}
+                            </div>
+                        ) : (
+                            <Loading />
+                        )}
                     </div>
-                ) : (
-                    <Loading />
-                )}
-            </div>
-            <div className={cx('report-category')}>
-                <h4 className={cx('main-heading')}>Báo cáo cuối kì</h4>
-                <div className={cx('intern-detail')}>
-                    <input
-                        className={cx('intern-input')}
-                        type="text"
-                        placeholder="File báo cáo"
-                        readOnly={true}
-                        value={result_file ? 'Đã gửi file' : 'Chưa gửi file'}
-                    />
-                    <input
-                        type="file"
-                        id={cx('gif-input-report')}
-                        accept=".docx"
-                        onChange={(e) => handleDocxFileChange(e, setResultFile)}
-                    />
-                    <label htmlFor={cx('gif-input-report')} className={cx('gif-label')}>
-                        <AttachFile className={cx('gif-btn')} htmlFor={cx('gif-input')} />
-                    </label>
-                </div>
-                <div className={cx('intern-detail')}>
-                    <input
-                        className={cx('intern-input')}
-                        type="text"
-                        placeholder="Phiếu đánh giá quá trình thực tập sinh viên của công ty"
-                        readOnly={true}
-                        value={result_business_file ? 'Đã gửi file' : 'Chưa gửi file'}
-                    />
-                    <input
-                        type="file"
-                        id={cx('gif-input-business')}
-                        accept=".docx"
-                        onChange={(e) => handleDocxFileChange(e, setResultBusinessFile)}
-                    />
-                    <label htmlFor={cx('gif-input-business')} className={cx('gif-label')}>
-                        <AttachFile className={cx('gif-btn')} />
-                    </label>
-                </div>
-                <div className={cx('intern-detail')}>
-                    <input
-                        className={cx('intern-input')}
-                        type="text"
-                        placeholder="Phiếu đánh giá quá trình thực tập sinh viên của giảng viên"
-                        readOnly={true}
-                        value={result_teacher_file ? 'Đã gửi file' : 'Chưa gửi file'}
-                    />
-                    <input
-                        type="file"
-                        id={cx('gif-input-teacher')}
-                        accept=".docx"
-                        onChange={(e) => handleDocxFileChange(e, setResultTeacherFile)}
-                    />
-                    <label htmlFor={cx('gif-input-teacher')} className={cx('gif-label')}>
-                        <AttachFile className={cx('gif-btn')} />
-                    </label>
-                </div>
-            </div>
+                    <div className={cx('report-category')}>
+                        <h4 className={cx('main-heading')}>Báo cáo cuối kì</h4>
+                        <div className={cx('intern-detail')}>
+                            <input
+                                className={cx('intern-input')}
+                                type="text"
+                                placeholder="File báo cáo"
+                                readOnly={true}
+                                value={result_file ? 'Bạn đã nộp file báo cáo' : 'Bạn chưa nộp file báo cáo'}
+                            />
+                            <input
+                                type="file"
+                                id={cx('gif-input-report')}
+                                accept=".docx"
+                                onChange={(e) => handleDocxFileChange(e, setResultFile)}
+                            />
+                            <label htmlFor={cx('gif-input-report')} className={cx('gif-label')}>
+                                <AttachFile className={cx('gif-btn')} htmlFor={cx('gif-input')} />
+                            </label>
+                        </div>
+                        <div className={cx('intern-detail')}>
+                            <input
+                                className={cx('intern-input')}
+                                type="text"
+                                placeholder="Phiếu đánh giá quá trình thực tập sinh viên của công ty"
+                                readOnly={true}
+                                value={
+                                    result_business_file
+                                        ? 'Bạn đã nộp file đánh giá quá trình thực tập sinh viên của công ty'
+                                        : 'Bạn chưa nộp file đánh giá quá trình thực tập sinh viên của công ty'
+                                }
+                            />
+                            <input
+                                type="file"
+                                id={cx('gif-input-business')}
+                                accept=".docx"
+                                onChange={(e) => handleDocxFileChange(e, setResultBusinessFile)}
+                            />
+                            <label htmlFor={cx('gif-input-business')} className={cx('gif-label')}>
+                                <AttachFile className={cx('gif-btn')} />
+                            </label>
+                        </div>
+                        <div className={cx('intern-detail')}>
+                            <input
+                                className={cx('intern-input')}
+                                type="text"
+                                placeholder="Phiếu đánh giá quá trình thực tập sinh viên của giảng viên"
+                                readOnly={true}
+                                value={
+                                    result_teacher_file
+                                        ? 'Bạn đã nộp file đánh giá quá trình thực tập sinh viên của giảng viên'
+                                        : 'Bạn chưa nộp file đánh giá quá trình thực tập sinh viên của giảng viên'
+                                }
+                            />
+                            <input
+                                type="file"
+                                id={cx('gif-input-teacher')}
+                                accept=".docx"
+                                onChange={(e) => handleDocxFileChange(e, setResultTeacherFile)}
+                            />
+                            <label htmlFor={cx('gif-input-teacher')} className={cx('gif-label')}>
+                                <AttachFile className={cx('gif-btn')} />
+                            </label>
+                        </div>
+                    </div>
 
-            <div className={cx('option')}>
-                <button className={cx('btn-submit')} onClick={() => saveReport()}>
-                    Nộp bài
-                </button>
-            </div>
-            {selectedJob && Object.keys(selectedJob).length && (
-                <Appreciation todo={selectedJob} setSelectedTodo={setSelectedJob} />
+                    <div className={cx('option')}>
+                        <button className={cx('btn-submit')} onClick={() => saveReport()}>
+                            Nộp bài
+                        </button>
+                    </div>
+                    {selectedJob && Object.keys(selectedJob).length && (
+                        <Appreciation todo={selectedJob} setSelectedTodo={setSelectedJob} />
+                    )}
+                </div>
+            ) : (
+                <div className={cx('notice')}>
+                    <span>Bạn chưa đăng ký thực tập</span>
+                </div>
             )}
-        </div>
+        </React.Fragment>
     );
 };
 
