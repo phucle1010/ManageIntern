@@ -26,7 +26,8 @@ const ViewStudent = ({ student, setChosedStudent }) => {
 
     const handleDocxFileChange = async (event) => {
         const file = event.target.files[0];
-        const base64 = await convertBase64(file);
+        let base64 = await convertBase64(file);
+        base64 = base64.replace(/^data:.*;base64,/, '');
         console.log(base64);
         setDocx(base64);
     };
