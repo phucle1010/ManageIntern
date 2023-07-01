@@ -61,7 +61,7 @@ const ScoreTable = () => {
 
     useEffect(() => {
         loadData();
-    }, [academic, semester, searchStudent]);
+    }, [academic, semester, searchStudent, showSendFile]);
 
     const handleSave = (studentId, score, id) => {
         setEditedScores({

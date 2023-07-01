@@ -29,7 +29,7 @@ const Student = () => {
 
     useEffect(() => {
         getInterningStudent();
-    }, [searchIntern]);
+    }, [searchIntern, chosedStudent]);
 
     return (
         <React.Fragment>

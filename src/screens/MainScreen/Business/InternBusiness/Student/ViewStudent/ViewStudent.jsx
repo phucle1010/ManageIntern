@@ -21,13 +21,14 @@ const ViewStudent = ({ student, setChosedStudent }) => {
                 { headers: { authorization: token } },
             )
             .then((res) => alert('Cập nhật thành công'))
+            .then(() => setChosedStudent({}))
             .catch((err) => console.log(err));
     };
 
     const handleDocxFileChange = async (event) => {
         const file = event.target.files[0];
-        const base64 = await convertBase64(file);
-        console.log(base64);
+        let base64 = await convertBase64(file);
+        base64 = base64.replace(/^data:.*;base64,/, '');
         setDocx(base64);
     };
 
@@ -49,6 +50,7 @@ const ViewStudent = ({ student, setChosedStudent }) => {
         const formattedDate = selectedDate.toISOString().slice(0, 10);
         setStartDate(formattedDate);
     };
+
     return (
         <div className={cx('wrapper')}>
             <Close className={cx('close-main-btn')} onClick={() => setChosedStudent({})} />
@@ -136,7 +138,7 @@ const ViewStudent = ({ student, setChosedStudent }) => {
                                 className={cx('input-item')}
                                 type="text"
                                 placeholder="File đính kèm thông tin giới thiệu thực tập"
-                                value={docx}
+                                value={docx ? 'Đã gữi file đánh giá' : 'Chưa gữi file đánh giá'}
                                 readOnly={true}
                             />
                         </div>

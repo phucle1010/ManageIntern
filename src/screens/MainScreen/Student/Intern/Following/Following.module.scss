@@ -31,3 +31,26 @@
         background-color: var(--second-color);
     }
 }
+
+.btn-download {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 16px;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+    background-color: var(--leave-work-color);
+    color: #fff;
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+        opacity: 0.8;
+    }
+}
+
+.download-icon {
+    margin-right: 8px;
+}

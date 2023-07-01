@@ -51,9 +51,11 @@ const Chat = () => {
             .then((res) => setStudents(res.data))
             .catch((err) => console.log(err));
     };
+
     useEffect(() => {
         loadStudent();
     }, []);
+
     useEffect(() => {
         loadMessage();
     }, [chatContentIndex, students]);

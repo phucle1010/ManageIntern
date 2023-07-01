@@ -51,6 +51,11 @@
     flex: 1;
 }
 
+.job-descs {
+    height: 500px;
+    overflow-y: scroll;
+}
+
 .job-img {
     width: 100%;
     height: 200px;
