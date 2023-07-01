@@ -29,7 +29,7 @@ const InternItem = ({ student, interned, waiting, loadStudentSignUpIntern }) => 
             files.forEach((file, index) => {
                 const docxData = Buffer.from(Buffer.from(file).toString(), 'base64');
                 const blob = new Blob([docxData], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
-                FileSaver.saveAs(blob, `file${index + 1}.docx`);
+                FileSaver.saveAs(blob, `file${index + 1 + student.studentName}.docx`);
             });
         }
     }
