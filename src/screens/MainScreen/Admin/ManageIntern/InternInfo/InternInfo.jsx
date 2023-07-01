@@ -14,8 +14,8 @@ const InternInfo = ({ show, student }) => {
     const handleDocxFileChange = async (event) => {
         const file = event.target.files[0];
         setFileName(file.name);
-        const base64 = await convertBase64(file);
-        console.log(base64);
+        let base64 = await convertBase64(file);
+        base64 = base64.replace(/^data:.*;base64,/, '');
         setDocx(base64);
     };
 

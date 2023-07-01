@@ -4,6 +4,8 @@ import classNames from 'classnames/bind';
 import styles from './ScoreTable.module.scss';
 import { Avatar } from '@mui/material';
 import { Save, Restore, Edit, AttachFile } from '@mui/icons-material';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 
 import SearchBox from '../../../../components/SearchBox';
 import Loading from '../../../../components/LoadingSpinner/LoadingSpinner';
@@ -12,9 +14,12 @@ import SendFile from './SendFile';
 const cx = classNames.bind(styles);
 
 const MENU_HEADINGS = ['Ảnh', 'Mã số sinh viên', 'Họ và tên', 'Lớp', 'Điểm', 'Lựa chọn'];
+const SUBMENU_HEADINGS = ['Ảnh', 'Mã số sinh viên', 'Họ và tên', 'Vị trí thực tập', 'Điểm cuối kì'];
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 const ScoreTable = () => {
     const [students, setStudents] = useState([]);
+    const [completedInternStudents, setCompletedInternStudents] = useState([]);
     const [semesters, setSemesters] = useState([]);
     const [academics, setAcademics] = useState([]);
 
@@ -23,6 +28,7 @@ const ScoreTable = () => {
     const [editedScores, setEditedScores] = useState({});
     const [searchStudent, setSearchStudent] = useState(null);
     const [showSendFile, setShowSendFile] = useState({});
+    const [clickedSubmit, setClickedSubmit] = useState(false);
     const [loaded, setLoaded] = useState(false);
 
     const loadData = () => {
@@ -38,6 +44,12 @@ const ScoreTable = () => {
             })
             .then(() => setLoaded(true))
             .catch((err) => console.log(err));
+    };
+
+    const loadInternedStudents = async () => {
+        await axios
+            .get('/admin/intern/students/completed')
+            .then((res) => res.data.statusCode === 200 && setCompletedInternStudents(res.data.responseData));
     };
 
     const loadSemester = () => {
@@ -61,7 +73,8 @@ const ScoreTable = () => {
 
     useEffect(() => {
         loadData();
-    }, [academic, semester, searchStudent, showSendFile]);
+        loadInternedStudents();
+    }, [academic, semester, searchStudent, showSendFile, clickedSubmit]);
 
     const handleSave = (studentId, score, id) => {
         setEditedScores({
@@ -83,6 +96,7 @@ const ScoreTable = () => {
             [studentId]: undefined,
         });
     };
+
     const handleSaveAll = () => {
         const editedStudents = students.filter((student) => editedScores[student.studentId] !== undefined);
         const editedStudentScores = editedStudents.map((student) => ({
@@ -108,13 +122,87 @@ const ScoreTable = () => {
         });
     };
 
+    const handleSubmitCompleteInternProcess = (id, internJobId) => {
+        axios
+            .put('/teacher/student/intern/completed', {
+                intern_id: id,
+                intern_job_id: internJobId,
+            })
+            .then((res) => {
+                alert(res.data);
+                setClickedSubmit((prev) => !prev);
+            })
+            .catch((err) => alert(err.toString()));
+    };
+
+    const generatePDF = () => {
+        const newData = completedInternStudents.map((student) => {
+            return [
+                {
+                    image: student.studentImage,
+                    width: 40,
+                    height: 40,
+                    marginTop: 10,
+                    marginBottom: 10,
+                },
+                {
+                    text: student.id,
+                    marginTop: 25,
+                    marginBottom: 25,
+                    fontSize: 10,
+                    textAlign: 'center',
+                },
+                {
+                    text: student.studentName,
+                    marginTop: 25,
+                    marginBottom: 25,
+                    fontSize: 10,
+                },
+                {
+                    text: student.job_name,
+                    marginTop: 25,
+                    marginBottom: 25,
+                    fontSize: 10,
+                },
+                {
+                    text: student.score,
+                    marginTop: 25,
+                    marginBottom: 25,
+                    fontSize: 10,
+                },
+            ];
+        });
+
+        const mergedBody = () => {
+            const initBody = [];
+            initBody.push(SUBMENU_HEADINGS.map((heading) => ({ text: heading, bold: true })));
+            newData.filter((data) => initBody.push(data));
+            return initBody;
+        };
+
+        const docDefinition = {
+            content: [
+                {
+                    layout: 'lightHorizontalLines',
+                    table: {
+                        headerRows: 1,
+                        widths: [50, 90, '*', '*', '*'],
+                        body: mergedBody(),
+                    },
+                },
+            ],
+        };
+
+        pdfMake.createPdf(docDefinition).download('Bảng điểm sinh viên');
+    };
+
     return (
         <React.Fragment>
             {loaded ? (
                 <div className={cx('wrapper')}>
                     <h3 className={cx('title-heading')}>BẢNG ĐIỂM</h3>
                     <SearchBox className={cx('search')} search={searchStudent} setSearch={setSearchStudent} />
-                    <h4 className={cx('main-heading')}>Danh sách sinh viên</h4>
+                    <h4 className={cx('main-heading')}>Danh sách sinh viên đang thực tập</h4>
                     <div className={cx('filters')}>
                         <select className={cx('filter-select-item')} onChange={(e) => setAcademic(e.target.value)}>
                             <option value={0}>Năm học</option>
@@ -157,9 +245,9 @@ const ScoreTable = () => {
                                         <span>{student.class_name}</span>
                                     </div>
                                     <div className={cx('student-item-detail')}>
-                                        {/* <input type="text" className={cx('score-input')} placeholder="Nhập điểm" value={student.score} /> */}
                                         {editedScores[student.studentId] !== undefined ? (
                                             <input
+                                                className={cx('score-input')}
                                                 type="number"
                                                 min="0"
                                                 max="10"
@@ -194,6 +282,17 @@ const ScoreTable = () => {
                                             className={cx('btn-gif')}
                                             onClick={() => setShowSendFile(student)}
                                         />
+                                        <button
+                                            className={cx('btn-completed')}
+                                            onClick={() =>
+                                                handleSubmitCompleteInternProcess(
+                                                    student.studentLearnInternId,
+                                                    student.internJobId,
+                                                )
+                                            }
+                                        >
+                                            Hoàn thành
+                                        </button>
                                     </div>
                                 </div>
                             ))}
@@ -208,6 +307,46 @@ const ScoreTable = () => {
                             Lưu bảng điểm
                         </button>
                     </div>
+
+                    {completedInternStudents.length > 0 && (
+                        <React.Fragment>
+                            <h4 className={cx('main-heading')}>Danh sách sinh viên đã hoàn thành thực tập</h4>
+                            <div className={cx('student-container')}>
+                                <div className={cx('menu-list')}>
+                                    {SUBMENU_HEADINGS.map((menu, index) => (
+                                        <span className={cx('menu-item', 'sub')} key={index}>
+                                            {menu}
+                                        </span>
+                                    ))}
+                                </div>
+                                <div className={cx('student-list')}>
+                                    {completedInternStudents?.map((student) => (
+                                        <div key={student.studentId} className={cx('student-item')}>
+                                            <div className={cx('student-item-detail', 'sub')}>
+                                                <Avatar src={student.studentImage} />
+                                            </div>
+                                            <div className={cx('student-item-detail', 'sub')}>
+                                                <span>{student.id}</span>
+                                            </div>
+                                            <div className={cx('student-item-detail', 'sub')}>
+                                                <span>{student.studentName}</span>
+                                            </div>
+                                            <div className={cx('student-item-detail', 'sub')}>
+                                                <span>{student.job_name}</span>
+                                            </div>
+                                            <div className={cx('student-item-detail', 'sub')}>{student.score}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className={cx('option')}>
+                                    <button className={cx('btn-save-all', 'export')} onClick={generatePDF}>
+                                        Xuất bảng điểm
+                                    </button>
+                                </div>
+                            </div>
+                        </React.Fragment>
+                    )}
+
                     {Object.keys(showSendFile).length > 0 && <SendFile show={setShowSendFile} student={showSendFile} />}
                 </div>
             ) : (

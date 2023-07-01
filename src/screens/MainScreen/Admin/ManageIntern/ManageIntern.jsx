@@ -146,15 +146,13 @@ const ManageIntern = () => {
     const [searchStudentInternRequestJob, setSearchStudentInternRequestJob] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
 
-    console.log(interningStudents);
-
     const loadStudentSignUpIntern = async () => {
         await axios
             .get('/admin/student/signup_intern', {
                 params: { academic, semester, teacher, searchStudentIntern: searchStudentIntern || null },
             })
             .then((res) => setStudentSignUpIntern(res.data))
-            .then(() => setIsLoaded(true))
+
             .catch((err) => console.log(err));
     };
 
@@ -194,6 +192,7 @@ const ManageIntern = () => {
         await axios
             .get('/admin/intern/students/completed')
             .then((res) => res.data.statusCode === 200 && setInternedStudents(res.data.responseData))
+            .then(() => setIsLoaded(true))
             .catch((err) => alert(err));
     };
 
